@@ -7,6 +7,5 @@
 Description here
 
 """
-
-from configuration import AxelrodConfiguration
-from dynamicloading import load_class
+from lattice import SquareLatticeModel
+from base import GraphModel
