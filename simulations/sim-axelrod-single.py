@@ -15,6 +15,9 @@ import argparse
 import madsenlab.axelrod.utils as utils
 import madsenlab.axelrod.data as data
 import madsenlab.axelrod.rules as rules
+import networkx as nx
+import matplotlib.pyplot as plt
+
 
 
 
@@ -76,16 +79,24 @@ def main():
         timestep += 1
         axelrod.step(timestep)
         if model.get_time_last_interaction() == timestep:
-            print "Interaction at time %s for %s total" % (timestep, model.get_interactions())
+            log.debug("Interaction at time %s for %s total", timestep, model.get_interactions())
+        else:
+            check_liveness(model, timestep)
 
 
 
 
+def check_liveness(model, timestep):
+    diff = timestep - model.get_time_last_interaction()
+    num_links = model.model.number_of_edges()
 
-
-
-
-
+    if (diff > (2 * num_links)):
+        log.debug("No interactions have occurred for %s ticks, which is 2 * %s network edges", diff, num_links)
+        nx.write_gml(model.model, "snapshot.gml")
+        nodes,colors=zip(*nx.get_node_attributes(model.model,'traits').items())
+        nx.draw(model.model,nodelist=nodes,node_color=colors)
+        plt.show()
+        exit(0)
 
 
 if __name__ == "__main__":

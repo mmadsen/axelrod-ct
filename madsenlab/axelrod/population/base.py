@@ -14,6 +14,7 @@ import madsenlab.axelrod.utils.configuration
 import numpy as np
 import math as m
 import pprint as pp
+import matplotlib.pyplot as plt
 
 
 
@@ -47,6 +48,10 @@ class GraphModel(object):
         nt = self.simconfig.num_traits
         for nodename in self.model.nodes():
             self.model.node[nodename]['traits'] = np.random.random_integers(0, nt - 1, size=nf)
+
+        nodes,colors=zip(*nx.get_node_attributes(self.model,'traits').items())
+        nx.draw(self.model,nodelist=nodes,node_color=colors)
+        plt.show()
 
     def get_agent_by_id(self, agent_id):
         return (agent_id, self.model.node[agent_id]['traits'])

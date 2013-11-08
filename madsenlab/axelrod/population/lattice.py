@@ -13,6 +13,7 @@ import logging as log
 import math as m
 import networkx as nx
 
+
 class SquareLatticeModel(b.GraphModel):
     """
     Defines a population of agents, each of which is represented by an array of integers.
@@ -49,10 +50,12 @@ class SquareLatticeModel(b.GraphModel):
             log.error("Lattice model: population size %s is not a perfect square", simconfig.popsize)
             exit(1)
 
-        self.model = nx.grid_2d_graph(self.lattice_dimension, self.lattice_dimension, periodic=simconfig.STRUCTURE_PERIODIC_BOUNDARY)
+        self.model = nx.grid_2d_graph(self.lattice_dimension, self.lattice_dimension, periodic=False)
         # now convert the resulting graph to have simple nodenames to use as keys
         g = nx.convert_node_labels_to_integers(self.model)
         self.model = g
+
+
 
 
 
