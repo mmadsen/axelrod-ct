@@ -17,7 +17,7 @@ import pprint as pp
 
 
 
-class GraphModel:
+class GraphModel(object):
     """
     Base class for all Axelrod models.  Specifies no specific graph, lattice, or network model,
     but defines operations usable on any specific model as long as the graph is represented by the
@@ -85,3 +85,6 @@ class GraphModel:
 
     def get_time_last_interaction(self):
         return self.time_step_last_interaction
+
+    def get_interactions(self):
+        return self.interactions

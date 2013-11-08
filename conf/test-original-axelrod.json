@@ -1,0 +1,10 @@
+{
+
+    "REPLICATIONS_PER_PARAM_SET" : 1,
+    "POPULATION_SIZES_STUDIED" : [100],
+    "NUMBER_OF_DIMENSIONS_OR_FEATURES" : [2],
+    "NUMBER_OF_TRAITS_PER_DIMENSION" :  [6],
+    "POPULATION_STRUCTURE_CLASS" : "madsenlab.axelrod.population.SquareLatticeModel"
+
+
+}

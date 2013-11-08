@@ -37,7 +37,7 @@ class AxelrodConfiguration(object):
     The fully qualified import path for a class which implements the population model.
     """
 
-    STRUCTURE_PERIODIC_BOUNDARY = True
+    STRUCTURE_PERIODIC_BOUNDARY = [True, False]
 
 
     POPULATION_SIZES_STUDIED = [100,400,900,1600,2500,10000]

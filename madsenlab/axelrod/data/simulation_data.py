@@ -15,7 +15,8 @@
 import logging as log
 from ming import Session, Field, schema
 from ming.declarative import Document
-import madsenlab.axelrod.data as data
+from dbutils import generate_collection_id
+
 
 __author__ = 'mark'
 
@@ -29,7 +30,7 @@ def _get_collection_id():
     """
     :return: returns the collection name for this data object
     """
-    return data.generate_collection_id("_samples_raw")
+    return generate_collection_id("_samples_raw")
 
 
 

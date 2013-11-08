@@ -30,8 +30,12 @@ class SquareLatticeModel(b.GraphModel):
     """
 
     def __init__(self, simconfig):
+
+        super(SquareLatticeModel, self).__init__()
+
         self.simconfig = simconfig
         self.lattice_dimension = 0
+
 
         # The lattice size should be a perfect square, ideally, and is sqrt(population size)
         l = m.sqrt(self.simconfig.popsize)

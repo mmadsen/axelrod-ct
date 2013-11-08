@@ -10,7 +10,9 @@ Description here
 
 
 import logging as log
-from simulation_data import storeSimulationData, SimulationRun
+from simulation_data import SimulationRun, storeSimulationData
+from dbutils import *
+
 
 
 # the following *should* be overridden by command line processing, even by defaults.
@@ -27,49 +29,4 @@ experiment = "test"
 # include only two lines which are fully generic.
 
 modules = [simulation_data]
-
-
-def getMingConfiguration():
-    config = {}
-    for module in modules:
-        urlstring = 'mongodb://'
-        urlstring += dbhost
-        urlstring += ":"
-        urlstring += dbport
-        urlstring += "/"
-
-        key = ''
-        key += 'ming.'
-        key += module._get_dataobj_id()
-        key += '.uri'
-        collection = module._get_collection_id()
-        urlstring += collection
-        #log.debug("Configuring %s module as %s", module, urlstring)
-        config[key] = urlstring
-    return config
-
-
-def set_database_hostname(name):
-    global dbhost
-    dbhost = name
-
-def set_database_port(port):
-    global dbport
-    dbport = port
-
-def set_experiment_name(name):
-    """
-    Takes the name of the experiment currently being run, for use as a prefix to database collection names
-
-    :param name:
-    :return: none
-    """
-    global experiment_name
-    experiment_name = name
-
-
-def generate_collection_id(suffix):
-    collection_id = experiment_name
-    collection_id += suffix
-    return collection_id
 
