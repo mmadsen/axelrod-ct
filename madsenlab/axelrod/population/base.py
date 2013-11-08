@@ -16,8 +16,27 @@ import math as m
 import pprint as pp
 
 
-class GraphModel:
 
+class GraphModel:
+    """
+    Base class for all Axelrod models.  Specifies no specific graph, lattice, or network model,
+    but defines operations usable on any specific model as long as the graph is represented by the
+    NetworkX library and API.  Agents are given by nodes, and edges define "neighbors".
+
+    Important operations on a model include choosing a random agent, finding a random neighbor,
+    updating an agent's traits, and updating statistics such as the time the last interaction occurred
+    (which is used to know when (or if) we've reached a fully absorbing state and can stop.
+
+    Subclasses should ONLY implement an __init__ method, in which self.model is assigned an
+    instance of a
+    """
+
+    def __init__(self):
+        self.interactions = 0
+        self.time_step_last_interaction = 0
+
+
+    # TODO:  initialization needs to be refactored before doing the structured model, so we can reuse the structure and part of the rules, but change the "traits"
     def initialize_population(self):
         """
         Given a graph and a simulation configuration, this method constructs
@@ -58,3 +77,11 @@ class GraphModel:
         rand_neighbor_id = neighbor_list[np.random.randint(0,num_neighbors)]
         trait_list = self.model.node[rand_neighbor_id]['traits']
         return self.get_agent_by_id(rand_neighbor_id)
+
+
+    def update_interactions(self, timestep):
+        self.interactions += 1
+        self.time_step_last_interaction = timestep
+
+    def get_time_last_interaction(self):
+        return self.time_step_last_interaction
