@@ -77,7 +77,7 @@ def main():
 
     while(1):
         timestep += 1
-        if(timestep % 100000 == 0):
+        if(timestep % 1000000 == 0):
             log.info("time: %s", timestep)
         axelrod.step(timestep)
         if model.get_time_last_interaction() != timestep:
