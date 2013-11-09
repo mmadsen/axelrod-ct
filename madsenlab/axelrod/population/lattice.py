@@ -52,6 +52,11 @@ class SquareLatticeModel(b.GraphModel):
 
         self.model = nx.grid_2d_graph(self.lattice_dimension, self.lattice_dimension, periodic=False)
         # now convert the resulting graph to have simple nodenames to use as keys
+        # We need to retain the original nodenames, because they're tuples which represent the position
+        # of the node in the lattice.  So we first store them as attribution 'pos' and then convert
+        for nodename in self.model.nodes():
+            self.model.node[nodename]['pos'] = nodename
+
         g = nx.convert_node_labels_to_integers(self.model)
         self.model = g
 

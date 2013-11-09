@@ -50,7 +50,9 @@ class GraphModel(object):
             self.model.node[nodename]['traits'] = np.random.random_integers(0, nt - 1, size=nf)
 
         nodes,colors=zip(*nx.get_node_attributes(self.model,'traits').items())
-        nx.draw(self.model,nodelist=nodes,node_color=colors)
+        nodes,pos = zip(*nx.get_node_attributes(self.model, 'pos').items())
+        color_tupled_compressed = [int(''.join(str(i) for i in t)) for t in colors]
+        nx.draw(self.model,pos=pos,nodelist=nodes,node_color=color_tupled_compressed)
         plt.show()
 
     def get_agent_by_id(self, agent_id):

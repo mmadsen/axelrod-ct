@@ -77,10 +77,10 @@ def main():
 
     while(1):
         timestep += 1
+        if(timestep % 100000 == 0):
+            log.info("time: %s", timestep)
         axelrod.step(timestep)
-        if model.get_time_last_interaction() == timestep:
-            log.debug("Interaction at time %s for %s total", timestep, model.get_interactions())
-        else:
+        if model.get_time_last_interaction() != timestep:
             check_liveness(model, timestep)
 
 
@@ -91,12 +91,20 @@ def check_liveness(model, timestep):
     num_links = model.model.number_of_edges()
 
     if (diff > (2 * num_links)):
-        log.debug("No interactions have occurred for %s ticks, which is 2 * %s network edges", diff, num_links)
-        nx.write_gml(model.model, "snapshot.gml")
+        log.info("No interactions have occurred for %s ticks, which is 2 * %s network edges", diff, num_links)
         nodes,colors=zip(*nx.get_node_attributes(model.model,'traits').items())
-        nx.draw(model.model,nodelist=nodes,node_color=colors)
+        color_tupled_compressed = [int(''.join(str(i) for i in t)) for t in colors]
+        nodes,pos = zip(*nx.get_node_attributes(model.model, 'pos').items())
+        nx.draw(model.model,pos=pos,nodelist=nodes,node_color=color_tupled_compressed)
         plt.show()
-        exit(0)
+        finalize_model(model, timestep)
+    else:
+        pass
+
+
+def finalize_model(model, timestep):
+    exit(0)
+
 
 
 if __name__ == "__main__":
