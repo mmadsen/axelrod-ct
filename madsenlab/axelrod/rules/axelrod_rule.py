@@ -62,20 +62,44 @@ class AxelrodRule(object):
         elif prob == 1.0:
             return
         else:
-            if npr.random() < prob:
+            draw = npr.random()
+            if draw < prob:
                 differing_features = self.get_different_feature_positions(agent_traits, neighbor_traits)
-                random_feature = npr.randint(0, len(differing_features))
+                old_agent_traits = list(agent_traits)
+                if len(differing_features) == 1:
+                    random_feature = differing_features[0]
+                else:
+                    rand_feature_num = npr.randint(0, len(differing_features))
+                    random_feature = differing_features[rand_feature_num]
                 neighbor_trait = neighbor_traits[random_feature]
                 agent_traits[random_feature] = neighbor_trait
+                #log.debug("agent %s: old: %s  neighbor: %s  post: %s differing: %s feature: %s val: %s ", agent_id, old_agent_traits, neighbor_traits, agent_traits,differing_features, random_feature, neighbor_trait )
                 self.model.set_agent_traits(agent_id, agent_traits)
 
                 # track the interaction and time
                 self.model.update_interactions(timestep)
             else:
                 # no interaction given the random draw and probability, so just return
+                #log.debug("no interaction")
                 return
 
 
+    def get_fraction_links_active(self):
+        """
+        Calculate the fraction of links whose probability of interaction is not 1.0 or 0.0.
+        """
+        active_links = 0
+        for (a,b) in self.model.model.edges_iter():
+            (a_id, a_traits) = self.model.get_agent_by_id(a)
+            (b_id, b_traits) = self.model.get_agent_by_id(b)
+            prob = self.calc_probability_interaction(a_traits, b_traits)
+            if prob > 0.0 and prob < 1.0:
+                #log.debug("active link (%s %s) prob: %s  a_trait: %s  b_trait: %s", a_id, b_id, prob, a_traits, b_traits)
+                active_links += 1
+        num_links_total = self.model.model.number_of_edges()
+        #log.debug("active links: %s total links: %s", active_links, num_links_total)
+        fraction_active = float(active_links) / num_links_total
+        return fraction_active
 
 
     def calc_probability_interaction(self, agent_traits, neighbor_traits):
@@ -88,7 +112,11 @@ class AxelrodRule(object):
 
 
         """
-        return (1.0 - ssd.hamming(agent_traits, neighbor_traits))
+        diff = len(self.get_different_feature_positions(agent_traits,neighbor_traits))
+        prob = 1.0 - (float(diff) / float(len(agent_traits)))
+        return prob
+        #log.debug("num features differ: %s, prob: %s", diff, prob)
+        #return (1.0 - ssd.hamming(agent_traits, neighbor_traits))
 
 
     def get_different_feature_positions(self, agent_traits, neighbor_traits):
@@ -100,4 +128,5 @@ class AxelrodRule(object):
         for i in range(0, len(agent_traits)):
             if agent_traits[i] != neighbor_traits[i]:
                 features.append(i)
+        #log.debug("differing features: %s", features)
         return features

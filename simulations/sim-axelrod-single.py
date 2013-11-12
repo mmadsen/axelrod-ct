@@ -15,6 +15,7 @@ import argparse
 import madsenlab.axelrod.utils as utils
 import madsenlab.axelrod.data as data
 import madsenlab.axelrod.rules as rules
+
 import networkx as nx
 import matplotlib.pyplot as plt
 
@@ -70,34 +71,36 @@ def main():
     model = model_constructor(simconfig)
     model.initialize_population()
 
-    axelrod = rules.AxelrodRule(model)
+    ax = rules.AxelrodRule(model)
 
     timestep = 0
     last_interaction = 0
 
     while(1):
         timestep += 1
-        if(timestep % 1000000 == 0):
-            log.info("time: %s", timestep)
-        axelrod.step(timestep)
+        if(timestep % 10000 == 0):
+            log.info("time: %s  frac active links %s", timestep, ax.get_fraction_links_active())
+        ax.step(timestep)
         if model.get_time_last_interaction() != timestep:
-            check_liveness(model, timestep)
+            check_liveness(ax, model, timestep)
+
+
+# end main
 
 
 
-
-def check_liveness(model, timestep):
+def check_liveness(ax, model, timestep):
     diff = timestep - model.get_time_last_interaction()
     num_links = model.model.number_of_edges()
 
-    if (diff > (2 * num_links)):
-        log.info("No interactions have occurred for %s ticks, which is 2 * %s network edges", diff, num_links)
-        nodes,colors=zip(*nx.get_node_attributes(model.model,'traits').items())
-        color_tupled_compressed = [int(''.join(str(i) for i in t)) for t in colors]
-        nodes,pos = zip(*nx.get_node_attributes(model.model, 'pos').items())
-        nx.draw(model.model,pos=pos,nodelist=nodes,node_color=color_tupled_compressed)
-        plt.show()
-        finalize_model(model, timestep)
+    if (diff > (5 * num_links)):
+        log.info("No interactions have occurred for %s ticks, which is 5 * %s network edges", diff, num_links)
+        if ax.get_fraction_links_active() == 0.0:
+            log.info("No active links found in the model, finalizing")
+            model.draw_network_colored_by_culture()
+            finalize_model(model, timestep)
+        else:
+            pass
     else:
         pass
 

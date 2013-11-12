@@ -15,6 +15,7 @@ import numpy as np
 import math as m
 import pprint as pp
 import matplotlib.pyplot as plt
+from numpy.random import RandomState
 
 
 
@@ -35,9 +36,18 @@ class GraphModel(object):
     def __init__(self):
         self.interactions = 0
         self.time_step_last_interaction = 0
+        self.prng = RandomState()  # allow the library to choose a seed via OS specific mechanism
 
 
     # TODO:  initialization needs to be refactored before doing the structured model, so we can reuse the structure and part of the rules, but change the "traits"
+
+    def draw_network_colored_by_culture(self):
+        nodes, colors = zip(*nx.get_node_attributes(self.model, 'traits').items())
+        nodes, pos = zip(*nx.get_node_attributes(self.model, 'pos').items())
+        color_tupled_compressed = [int(''.join(str(i) for i in t)) for t in colors]
+        nx.draw(self.model, pos=pos, nodelist=nodes, node_color=color_tupled_compressed)
+        plt.show()
+
     def initialize_population(self):
         """
         Given a graph and a simulation configuration, this method constructs
@@ -47,13 +57,9 @@ class GraphModel(object):
         nf = self.simconfig.num_features
         nt = self.simconfig.num_traits
         for nodename in self.model.nodes():
-            self.model.node[nodename]['traits'] = np.random.random_integers(0, nt - 1, size=nf)
+            self.model.node[nodename]['traits'] = self.prng.randint(0, nt, size=nf)
 
-        nodes,colors=zip(*nx.get_node_attributes(self.model,'traits').items())
-        nodes,pos = zip(*nx.get_node_attributes(self.model, 'pos').items())
-        color_tupled_compressed = [int(''.join(str(i) for i in t)) for t in colors]
-        nx.draw(self.model,pos=pos,nodelist=nodes,node_color=color_tupled_compressed)
-        plt.show()
+        #self.draw_network_colored_by_culture()
 
     def get_agent_by_id(self, agent_id):
         return (agent_id, self.model.node[agent_id]['traits'])
@@ -65,14 +71,17 @@ class GraphModel(object):
 
         To modify the traits, change one or more elements in the array, and then call set_agent_traits(agent_id, new_list)
         """
-        rand_agent_id = np.random.randint(0, self.simconfig.popsize)
+        rand_agent_id = self.prng.randint(0, self.simconfig.popsize)
         return self.get_agent_by_id(rand_agent_id)
 
     def set_agent_traits(self, agent_id, trait_list):
         """
         Stores a modified version of the trait list for an agent.
         """
+        #old_traits = self.model.node[agent_id]['traits']
         self.model.node[agent_id]['traits'] = trait_list
+        #new_traits = self.model.node[agent_id]['traits']
+        #log.debug("setting agent %s: target traits: %s  old: %s new: %s", agent_id, trait_list, old_traits, new_traits)
 
     def get_random_neighbor_for_agent(self, agent_id):
         """
@@ -81,7 +90,7 @@ class GraphModel(object):
         """
         neighbor_list = self.model.neighbors(agent_id)
         num_neighbors = len(neighbor_list)
-        rand_neighbor_id = neighbor_list[np.random.randint(0,num_neighbors)]
+        rand_neighbor_id = neighbor_list[self.prng.randint(0,num_neighbors)]
         trait_list = self.model.node[rand_neighbor_id]['traits']
         return self.get_agent_by_id(rand_neighbor_id)
 
