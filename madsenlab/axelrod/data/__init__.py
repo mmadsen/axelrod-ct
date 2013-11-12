@@ -10,7 +10,7 @@ Description here
 
 
 import logging as log
-from simulation_data import SimulationRun, storeSimulationData
+from axelrod_run_original import AxelrodStatsOriginal, store_stats_axelrod_original
 from dbutils import *
 
 
@@ -28,5 +28,5 @@ experiment = "test"
 # of the data object being stored.  Ming configuration is then automatic so that simulation simulations need
 # include only two lines which are fully generic.
 
-modules = [simulation_data]
+modules = [axelrod_run_original]
 

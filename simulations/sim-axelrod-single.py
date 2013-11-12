@@ -15,9 +15,8 @@ import argparse
 import madsenlab.axelrod.utils as utils
 import madsenlab.axelrod.data as data
 import madsenlab.axelrod.rules as rules
-
-import networkx as nx
-import matplotlib.pyplot as plt
+import madsenlab.axelrod.analysis as stats
+import uuid
 
 
 
@@ -34,6 +33,7 @@ def setup():
     parser.add_argument("--popsize", help="Population size", required=True)
     parser.add_argument("--features", help="Number of features (int >= 1)", required=True)
     parser.add_argument("--traits", help="Number of traits (int > 1)", required=True)
+    parser.add_argument("--diagram", help="Draw a diagram of the converged model", action="store_true")
 
     args = parser.parse_args()
 
@@ -57,6 +57,8 @@ def setup():
 
 
 def main():
+    global sim_id
+    sim_id = uuid.uuid4().urn
 
     structure_class_name = simconfig.POPULATION_STRUCTURE_CLASS
     log.info("Configuring Axelrod model with structure class: %s", structure_class_name)
@@ -97,16 +99,20 @@ def check_liveness(ax, model, timestep):
         log.info("No interactions have occurred for %s ticks, which is 5 * %s network edges", diff, num_links)
         if ax.get_fraction_links_active() == 0.0:
             log.info("No active links found in the model, finalizing")
-            model.draw_network_colored_by_culture()
-            finalize_model(model, timestep)
+            finalize_model(model, simconfig)
+            if args.diagram == True:
+                model.draw_network_colored_by_culture()
+            exit(0)
         else:
             pass
     else:
         pass
 
 
-def finalize_model(model, timestep):
-    exit(0)
+def finalize_model(model,simconfig):
+    counts = stats.get_culture_counts(model)
+    data.store_stats_axelrod_original(simconfig.popsize,None,sim_id,simconfig.num_features,simconfig.num_traits,__file__,len(counts),model.get_time_last_interaction(),counts)
+
 
 
 

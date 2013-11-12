@@ -48,6 +48,9 @@ class GraphModel(object):
         nx.draw(self.model, pos=pos, nodelist=nodes, node_color=color_tupled_compressed)
         plt.show()
 
+    def get_traits_packed(self,agent_traits):
+        return ''.join(str(i) for i in agent_traits)
+
     def initialize_population(self):
         """
         Given a graph and a simulation configuration, this method constructs
