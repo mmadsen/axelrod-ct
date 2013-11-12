@@ -15,7 +15,7 @@ import argparse
 import madsenlab.axelrod.utils as utils
 import madsenlab.axelrod.data as data
 import madsenlab.axelrod.rules as rules
-import madsenlab.axelrod.analysis as stats
+
 import uuid
 
 
@@ -26,7 +26,7 @@ def setup():
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--experiment", help="provide name for experiment", required=True)
-    parser.add_argument("--debug", help="turn on debugging output")
+    parser.add_argument("--debug", help="turn on debugging output", action="store_true")
     parser.add_argument("--dbhost", help="database hostname, defaults to localhost", default="localhost")
     parser.add_argument("--dbport", help="database port, defaults to 27017", default="27017")
     parser.add_argument("--configuration", help="Configuration file for experiment", required=True)
@@ -54,17 +54,17 @@ def setup():
     simconfig.popsize = int(args.popsize)
     simconfig.num_features = int(args.features)
     simconfig.num_traits = int(args.traits)
+    simconfig.sim_id = uuid.uuid4().urn
 
 
 def main():
-    global sim_id
-    sim_id = uuid.uuid4().urn
+
 
     structure_class_name = simconfig.POPULATION_STRUCTURE_CLASS
-    log.info("Configuring Axelrod model with structure class: %s", structure_class_name)
+    log.debug("Configuring Axelrod model with structure class: %s", structure_class_name)
 
 
-    log.info("Run for popsize %s  features: %s, traits: %s", simconfig.popsize,
+    log.debug("Run for popsize %s  features: %s, traits: %s", simconfig.popsize,
              simconfig.num_features, simconfig.num_traits)
 
 
@@ -81,37 +81,13 @@ def main():
     while(1):
         timestep += 1
         if(timestep % 10000 == 0):
-            log.info("time: %s  frac active links %s", timestep, ax.get_fraction_links_active())
+            log.debug("time: %s  frac active links %s", timestep, ax.get_fraction_links_active())
         ax.step(timestep)
         if model.get_time_last_interaction() != timestep:
-            check_liveness(ax, model, timestep)
+            utils.check_liveness(ax, model, args, simconfig, timestep)
 
 
 # end main
-
-
-
-def check_liveness(ax, model, timestep):
-    diff = timestep - model.get_time_last_interaction()
-    num_links = model.model.number_of_edges()
-
-    if (diff > (5 * num_links)):
-        log.info("No interactions have occurred for %s ticks, which is 5 * %s network edges", diff, num_links)
-        if ax.get_fraction_links_active() == 0.0:
-            log.info("No active links found in the model, finalizing")
-            finalize_model(model, simconfig)
-            if args.diagram == True:
-                model.draw_network_colored_by_culture()
-            exit(0)
-        else:
-            pass
-    else:
-        pass
-
-
-def finalize_model(model,simconfig):
-    counts = stats.get_culture_counts(model)
-    data.store_stats_axelrod_original(simconfig.popsize,None,sim_id,simconfig.num_features,simconfig.num_traits,__file__,len(counts),model.get_time_last_interaction(),counts)
 
 
 

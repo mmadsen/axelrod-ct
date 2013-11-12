@@ -44,7 +44,7 @@ class SquareLatticeModel(b.GraphModel):
         # so we have to test the fractional part, not check python types
         frac, integral = m.modf(l)
         if frac == 0.0:
-            log.info("Lattice model:  popsize %s, lattice will be %s by %s", simconfig.popsize, l, l)
+            log.debug("Lattice model:  popsize %s, lattice will be %s by %s", simconfig.popsize, l, l)
             self.lattice_dimension = int(l)
         else:
             log.error("Lattice model: population size %s is not a perfect square", simconfig.popsize)

@@ -118,6 +118,15 @@ class AxelrodConfiguration(object):
         self._popsize = None
         self._num_features = None
         self._num_traits = None
+        self._sim_id = None
+
+    @property
+    def sim_id(self):
+        return self._sim_id
+
+    @sim_id.setter
+    def sim_id(self,id):
+        self._sim_id = id
 
 
     @property
