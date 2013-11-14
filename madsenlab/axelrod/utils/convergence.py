@@ -23,11 +23,11 @@ def check_liveness(ax, model, args, simconfig, timestep):
             finalize_model(model, simconfig)
             if args.diagram == True:
                 model.draw_network_colored_by_culture()
-            exit(0)
+            return False
         else:
-            pass
+            True
     else:
-        pass
+        True
 
 
 def finalize_model(model,simconfig):

@@ -50,7 +50,13 @@ class SquareLatticeModel(b.GraphModel):
             log.error("Lattice model: population size %s is not a perfect square", simconfig.popsize)
             exit(1)
 
-        self.model = nx.grid_2d_graph(self.lattice_dimension, self.lattice_dimension, periodic=False)
+        if simconfig.periodic == 1:
+            p = True
+            log.debug("periodic boundary condition selected")
+        else:
+            p = False
+
+        self.model = nx.grid_2d_graph(self.lattice_dimension, self.lattice_dimension, periodic=p)
         # now convert the resulting graph to have simple nodenames to use as keys
         # We need to retain the original nodenames, because they're tuples which represent the position
         # of the node in the lattice.  So we first store them as attribution 'pos' and then convert

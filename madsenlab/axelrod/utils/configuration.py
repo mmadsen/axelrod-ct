@@ -119,6 +119,16 @@ class AxelrodConfiguration(object):
         self._num_features = None
         self._num_traits = None
         self._sim_id = None
+        self._periodic = None
+
+
+    @property
+    def periodic(self):
+        return self._periodic
+
+    @periodic.setter
+    def periodic(self,p):
+        self._periodic = p
 
     @property
     def sim_id(self):

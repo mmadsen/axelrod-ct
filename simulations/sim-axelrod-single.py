@@ -33,7 +33,9 @@ def setup():
     parser.add_argument("--popsize", help="Population size", required=True)
     parser.add_argument("--features", help="Number of features (int >= 1)", required=True)
     parser.add_argument("--traits", help="Number of traits (int > 1)", required=True)
+    parser.add_argument("--periodic", help="Periodic boundary condition", choices=['1','0'], required=True)
     parser.add_argument("--diagram", help="Draw a diagram of the converged model", action="store_true")
+
 
     args = parser.parse_args()
 
@@ -55,6 +57,10 @@ def setup():
     simconfig.num_features = int(args.features)
     simconfig.num_traits = int(args.traits)
     simconfig.sim_id = uuid.uuid4().urn
+    if args.periodic == '1':
+        simconfig.periodic = 1
+    elif args.periodic == '0':
+        simconfig.periodic = 0
 
 
 def main():
@@ -84,8 +90,9 @@ def main():
             log.debug("time: %s  frac active links %s", timestep, ax.get_fraction_links_active())
         ax.step(timestep)
         if model.get_time_last_interaction() != timestep:
-            utils.check_liveness(ax, model, args, simconfig, timestep)
-
+            live = utils.check_liveness(ax, model, args, simconfig, timestep)
+            if live == False:
+                exit(0)
 
 # end main
 
