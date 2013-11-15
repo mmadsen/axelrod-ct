@@ -16,6 +16,7 @@ import time
 import itertools
 import copy
 import os
+import uuid
 import multiprocessing as mp
 import madsenlab.axelrod.utils as utils
 import madsenlab.axelrod.data as data
@@ -111,6 +112,8 @@ def queue_simulations(queue, simconfig, args):
             sc.popsize = int(param_combination[0])
             sc.num_features = int(param_combination[1])
             sc.num_traits = int(param_combination[2])
+            sc.sim_id = uuid.uuid4().urn
+            sc.script = __file__
             sc.periodic = 0
 
             queue.put(sc)
@@ -127,8 +130,8 @@ def run_simulation_worker(queue, args):
     completed_count = 0
     while True:
         try:
-            log.info("worker %s: starting simulation run", os.getpid())
             simconfig = queue.get()
+            log.info("worker %s: starting run for popsize: %s numfeatures: %s numtraits: %s", os.getpid(), simconfig.popsize, simconfig.num_features, simconfig.num_traits)
             model_constructor = utils.load_class(simconfig.POPULATION_STRUCTURE_CLASS)
             model = model_constructor(simconfig)
             model.initialize_population()

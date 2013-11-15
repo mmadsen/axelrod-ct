@@ -32,5 +32,5 @@ def check_liveness(ax, model, args, simconfig, timestep):
 
 def finalize_model(model,simconfig):
     counts = stats.get_culture_counts(model)
-    data.store_stats_axelrod_original(simconfig.popsize,None,simconfig.sim_id,simconfig.num_features,simconfig.num_traits,__file__,len(counts),model.get_time_last_interaction(),counts)
+    data.store_stats_axelrod_original(simconfig.popsize,None,simconfig.sim_id,simconfig.num_features,simconfig.num_traits,simconfig.script,len(counts),model.get_time_last_interaction(),counts)
 

@@ -120,7 +120,16 @@ class AxelrodConfiguration(object):
         self._num_traits = None
         self._sim_id = None
         self._periodic = None
+        self._script = None
 
+
+    @property
+    def script(self):
+        return self._script
+
+    @script.setter
+    def script(self,s):
+        self._script = s
 
     @property
     def periodic(self):
