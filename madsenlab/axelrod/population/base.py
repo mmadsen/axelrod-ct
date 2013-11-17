@@ -37,7 +37,7 @@ class GraphModel(object):
         self.interactions = 0
         self.time_step_last_interaction = 0
         self.prng = RandomState()  # allow the library to choose a seed via OS specific mechanism
-
+        self.lattice_coordination_number = 0
 
     # TODO:  initialization needs to be refactored before doing the structured model, so we can reuse the structure and part of the rules, but change the "traits"
 
@@ -107,3 +107,6 @@ class GraphModel(object):
 
     def get_interactions(self):
         return self.interactions
+
+    def get_coordination_number(self):
+        return self.lattice_coordination_number

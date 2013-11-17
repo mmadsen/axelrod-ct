@@ -36,6 +36,7 @@ class SquareLatticeModel(b.GraphModel):
 
         self.simconfig = simconfig
         self.lattice_dimension = 0
+        self.lattice_coordination_number = 4
 
 
         # The lattice size should be a perfect square, ideally, and is sqrt(population size)

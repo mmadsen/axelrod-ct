@@ -10,6 +10,7 @@ Description here
 from axelrod_rule import AxelrodRule
 import logging as log
 import madsenlab.axelrod.population as pop
+import madsenlab.axelrod.analysis as analysis
 import math as m
 import numpy.random as npr
 import scipy.spatial.distance as ssd
@@ -50,7 +51,7 @@ class AxelrodDriftRule(AxelrodRule):
         (agent_id, agent_traits) = self.model.get_random_agent()
         (neighbor_id, neighbor_traits) = self.model.get_random_neighbor_for_agent(agent_id)
 
-        prob = self.calc_probability_interaction(agent_traits, neighbor_traits)
+        prob = analysis.calc_probability_interaction(agent_traits, neighbor_traits)
 
         if prob == 0.0:
             return
@@ -59,7 +60,7 @@ class AxelrodDriftRule(AxelrodRule):
         else:
             draw = npr.random()
             if draw < prob:
-                differing_features = self.get_different_feature_positions(agent_traits, neighbor_traits)
+                differing_features = analysis.get_different_feature_positions(agent_traits, neighbor_traits)
                 old_agent_traits = list(agent_traits)
                 if len(differing_features) == 1:
                     random_feature = differing_features[0]

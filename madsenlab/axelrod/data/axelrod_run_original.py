@@ -36,7 +36,7 @@ def _get_collection_id():
 
 def store_stats_axelrod_original(popsize,sim_id,nf,nt,
                                  driftrate,ruleclass,popclass,script,
-                                 num_cultures,convergence_time,counts):
+                                 num_cultures,convergence_time,counts,klemm):
     """Stores the parameters and metadata for a simulation run in the database.
 
         Args:
@@ -69,7 +69,8 @@ def store_stats_axelrod_original(popsize,sim_id,nf,nt,
         pop_class = popclass,
         num_culture_regions = num_cultures,
         convergence_time = convergence_time,
-        culture_counts = counts
+        culture_counts = counts,
+        klemm_normalized_L = klemm
     )).m.insert()
     return True
 
@@ -92,5 +93,6 @@ class AxelrodStatsOriginal(Document):
     num_culture_regions = Field(int)
     culture_counts = Field([dict(cultureid=str,count=int)])
     convergence_time = Field(int)
+    klemm_normalized_L = Field(float)
 
 

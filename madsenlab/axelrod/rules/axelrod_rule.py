@@ -20,6 +20,7 @@ import madsenlab.axelrod.population as pop
 import math as m
 import numpy.random as npr
 import scipy.spatial.distance as ssd
+import madsenlab.axelrod.analysis as analysis
 
 
 class AxelrodRule(object):
@@ -55,7 +56,7 @@ class AxelrodRule(object):
         (agent_id, agent_traits) = self.model.get_random_agent()
         (neighbor_id, neighbor_traits) = self.model.get_random_neighbor_for_agent(agent_id)
 
-        prob = self.calc_probability_interaction(agent_traits, neighbor_traits)
+        prob = analysis.calc_probability_interaction(agent_traits, neighbor_traits)
 
         if prob == 0.0:
             return
@@ -64,7 +65,7 @@ class AxelrodRule(object):
         else:
             draw = npr.random()
             if draw < prob:
-                differing_features = self.get_different_feature_positions(agent_traits, neighbor_traits)
+                differing_features = analysis.get_different_feature_positions(agent_traits, neighbor_traits)
                 old_agent_traits = list(agent_traits)
                 if len(differing_features) == 1:
                     random_feature = differing_features[0]
@@ -92,7 +93,7 @@ class AxelrodRule(object):
         for (a,b) in self.model.model.edges_iter():
             (a_id, a_traits) = self.model.get_agent_by_id(a)
             (b_id, b_traits) = self.model.get_agent_by_id(b)
-            prob = self.calc_probability_interaction(a_traits, b_traits)
+            prob = analysis.calc_probability_interaction(a_traits, b_traits)
             if prob > 0.0 and prob < 1.0:
                 #log.debug("active link (%s %s) prob: %s  a_trait: %s  b_trait: %s", a_id, b_id, prob, a_traits, b_traits)
                 active_links += 1
@@ -102,31 +103,5 @@ class AxelrodRule(object):
         return fraction_active
 
 
-    def calc_probability_interaction(self, agent_traits, neighbor_traits):
-        """
-        The probability of interaction is simply the inverse of the fraction of the features for which the
-        two agents have different traits at any given time.  Since the traits are held in
-        arrays, this probability reduces to the Hamming distance between the two arrays.  Which
-        scipy does quickly.  So the relevant probability is 1 - hamming(a,b).
 
 
-
-        """
-        diff = len(self.get_different_feature_positions(agent_traits,neighbor_traits))
-        prob = 1.0 - (float(diff) / float(len(agent_traits)))
-        return prob
-        #log.debug("num features differ: %s, prob: %s", diff, prob)
-        #return (1.0 - ssd.hamming(agent_traits, neighbor_traits))
-
-
-    def get_different_feature_positions(self, agent_traits, neighbor_traits):
-        """
-        Returns a list of the positions at which two lists of traits differ (but not the differing
-        traits themselves).
-        """
-        features = []
-        for i in range(0, len(agent_traits)):
-            if agent_traits[i] != neighbor_traits[i]:
-                features.append(i)
-        #log.debug("differing features: %s", features)
-        return features
