@@ -17,6 +17,7 @@ import itertools
 import copy
 import os
 import uuid
+import pprint as pp
 import multiprocessing as mp
 import madsenlab.axelrod.utils as utils
 import madsenlab.axelrod.data as data
@@ -81,7 +82,7 @@ def main():
 
 
 def create_queueing_process(queue, worker):
-    process = mp.Process(target=worker, args=(queue, simconfig, args))
+    process = mp.Process(target=worker, args=(queue, args))
     process.daemon = True
     process_list.append(process)
     process.start()
@@ -95,23 +96,36 @@ def create_processes(queue, worker):
         process.start()
 
 
-def queue_simulations(queue, simconfig, args):
+def queue_simulations(queue, args):
+    basic_config = utils.AxelrodConfiguration(args.configuration)
 
-    state_space = [
-        simconfig.POPULATION_SIZES_STUDIED,
-        simconfig.NUMBER_OF_DIMENSIONS_OR_FEATURES,
-        simconfig.NUMBER_OF_TRAITS_PER_DIMENSION
-    ]
-
+    if basic_config.INTERACTION_RULE_CLASS == 'madsenlab.axelrod.rules.AxelrodDriftRule':
+        state_space = [
+            basic_config.POPULATION_SIZES_STUDIED,
+            basic_config.NUMBER_OF_DIMENSIONS_OR_FEATURES,
+            basic_config.NUMBER_OF_TRAITS_PER_DIMENSION,
+            basic_config.DRIFT_RATES
+        ]
+    elif basic_config.INTERACTION_RULE_CLASS == 'madsenlab.axelrod.rules.AxelrodRule':
+        state_space = [
+            basic_config.POPULATION_SIZES_STUDIED,
+            basic_config.NUMBER_OF_DIMENSIONS_OR_FEATURES,
+            basic_config.NUMBER_OF_TRAITS_PER_DIMENSION,
+        ]
+    else:
+        log.error("Unknown interaction rule class: %s", basic_config.INTERACTION_RULE_CLASS)
 
     for param_combination in itertools.product(*state_space):
         # for each parameter combination, make a copy of the base configuration
         # set the specific param combo values, and queue the object
-        for repl in range(0, simconfig.REPLICATIONS_PER_PARAM_SET):
-            sc = copy.deepcopy(simconfig)
+        for repl in range(0, basic_config.REPLICATIONS_PER_PARAM_SET):
+            #log.debug("param combination: %s", param_combination)
+            sc = copy.deepcopy(basic_config)
             sc.popsize = int(param_combination[0])
             sc.num_features = int(param_combination[1])
             sc.num_traits = int(param_combination[2])
+            if len(param_combination) == 4:
+                sc.drift_rate = float(param_combination[3])
             sc.sim_id = uuid.uuid4().urn
             sc.script = __file__
             sc.periodic = 0
@@ -131,19 +145,23 @@ def run_simulation_worker(queue, args):
     while True:
         try:
             simconfig = queue.get()
-            log.info("worker %s: starting run for popsize: %s numfeatures: %s numtraits: %s", os.getpid(), simconfig.popsize, simconfig.num_features, simconfig.num_traits)
+
+            log.info("worker %s: starting run for popsize: %s numfeatures: %s numtraits: %s drift: %s",
+                     os.getpid(), simconfig.popsize, simconfig.num_features, simconfig.num_traits,
+                     simconfig.drift_rate)
             model_constructor = utils.load_class(simconfig.POPULATION_STRUCTURE_CLASS)
+            rule_constructor = utils.load_class(simconfig.INTERACTION_RULE_CLASS)
             model = model_constructor(simconfig)
             model.initialize_population()
 
-            ax = rules.AxelrodRule(model)
+            ax = rule_constructor(model)
 
             timestep = 0
             last_interaction = 0
 
             while(1):
                 timestep += 1
-                if timestep % 10000 == 0:
+                if timestep % 10 == 0:
                     log.debug("time: %s active links: %s", timestep, ax.get_fraction_links_active())
                 ax.step(timestep)
                 if model.get_time_last_interaction() != timestep:

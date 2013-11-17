@@ -32,6 +32,8 @@ class AxelrodConfiguration(object):
     reproducibility.
     """
 
+    INTERACTION_RULE_CLASS = 'madsenlab.axelrod.rules.AxelrodRule'
+
     POPULATION_STRUCTURE_CLASS = 'madsenlab.axelrod.population.SquareLatticeModel'
     """
     The fully qualified import path for a class which implements the population model.
@@ -40,7 +42,7 @@ class AxelrodConfiguration(object):
     STRUCTURE_PERIODIC_BOUNDARY = [True, False]
 
 
-    POPULATION_SIZES_STUDIED = [100,400,900,1600,2500,10000]
+    POPULATION_SIZES_STUDIED = [1000,2000]
     """
     In most of the CT models we study, the absolute amount of variation we might expect to see is
     partially a function of the number of individuals doing the transmitting.  This is *total* population
@@ -49,27 +51,27 @@ class AxelrodConfiguration(object):
     the lattice size (on a side) is SQRT(N).
     """
 
-    NUMBER_OF_DIMENSIONS_OR_FEATURES = [1,2,4,8,16]
+    NUMBER_OF_DIMENSIONS_OR_FEATURES = [100,200]
     """
     This is the number of "loci" or "features" in Axelrod's original terminology.  By analogy with classifications,
     these are also "dimensions".
     """
 
-    NUMBER_OF_TRAITS_PER_DIMENSION = [2,3,4,6,8,12,16,32]
+    NUMBER_OF_TRAITS_PER_DIMENSION = [500,1000]
     """
     The Axelrod model dynamics are strongly affected by the number of possible traits per locus or feature.  We
     model a range of values to capture the full phase diagram of the process.
     """
 
+    DRIFT_RATES = [0.001,0.005]
 
-    REPLICATIONS_PER_PARAM_SET = 10
+
+    REPLICATIONS_PER_PARAM_SET = 8
     """
     For each combination of simulation parameters, CTPy and simuPOP will run this many replicate
     populations, saving samples identically for each, but initializing each replicate with a
     different population and random seed.
     """
-
-
 
     parameter_labels = {
         'POPULATION_SIZES_STUDIED' : 'Population sizes',
@@ -81,7 +83,7 @@ class AxelrodConfiguration(object):
 
 
     # For Latex or Pandoc output, we also filter out any object instance variables, and output only the class-level variables.
-    vars_to_filter = ['config', "_popsize", "_num_features", "_num_traits"]
+    vars_to_filter = ['config', "_popsize", "_num_features", "_num_traits", "_sim_id", "_periodic", "_script", "_drift_rate"]
     """
     List of variables which are never (or at least currently) pretty-printed into summary tables using the latex or markdown/pandoc methods
 
@@ -121,6 +123,16 @@ class AxelrodConfiguration(object):
         self._sim_id = None
         self._periodic = None
         self._script = None
+        self._drift_rate = None
+
+
+    @property
+    def drift_rate(self):
+        return self._drift_rate
+
+    @drift_rate.setter
+    def drift_rate(self, r):
+        self._drift_rate = r
 
 
     @property
@@ -172,6 +184,8 @@ class AxelrodConfiguration(object):
     def num_traits(self,val):
         self._num_traits = val
 
+    def get_state_space_for_rule(self, rule):
+        return self.state_space_map[rule]
 
 
     def __repr__(self):

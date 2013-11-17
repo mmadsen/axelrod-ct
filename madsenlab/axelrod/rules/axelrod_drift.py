@@ -4,34 +4,27 @@
 # This work is licensed under the terms of the Apache Software License, Version 2.0.  See the file LICENSE for details.
 
 """
-This rule implements the original Axelrod model on a lattice, given descriptions in Axelrod (1997) and:
-
-@book{Barrat2009,
-    Author = {Barrat, A and Barth\'elemy, M and Vespignani, A},
-    Publisher = {Cambridge University Press},
-    Title = {Dynamical processes on complex networks},
-    Year = {2009}}
-
+Description here
 
 """
-
+from axelrod_rule import AxelrodRule
 import logging as log
 import madsenlab.axelrod.population as pop
 import math as m
 import numpy.random as npr
 import scipy.spatial.distance as ssd
 
-
-class AxelrodRule(object):
+class AxelrodDriftRule(AxelrodRule):
     """
-    Implements the original Axelrod model, taking an instance of a lattice model at construction.
-    Returns control to the caller after each step(), so that other code can run to determine completion,
-    take samples, etc.
+    Subclass of AxelrodRule, we want to keep everything since it's now well tested, and
+    simply add another aspect to the step() method.
     """
 
-    def __init__(self, model):
+    def __init__(self,model):
         self.model = model
         self.sc = self.model.simconfig
+
+
 
     def step(self, timestep):
         """
@@ -51,7 +44,9 @@ class AxelrodRule(object):
         3.  Otherwise, with probability equal to similarity (or, usually, 1 - dissimilarity), the focal
         agent adopts one of the neighbor's traits for which they are dissimilar.
 
+        4.  With probability R, perturb a random feature to a random trait value to simulate drift.
         """
+
         (agent_id, agent_traits) = self.model.get_random_agent()
         (neighbor_id, neighbor_traits) = self.model.get_random_neighbor_for_agent(agent_id)
 
@@ -83,50 +78,13 @@ class AxelrodRule(object):
                 #log.debug("no interaction")
                 return
 
+        # now do the independent drift step
+        draw2 = npr.random()
+        if draw2 < self.model.simconfig.drift_rate:
+            old_agent_traits = list(agent_traits)
+            rand_feature_num = npr.randint(0, len(agent_traits))
+            rand_trait_val = npr.randint(0, self.model.simconfig.num_traits)
+            agent_traits[rand_feature_num] = rand_trait_val
+            log.debug("drift event: old: %s  new: %s", old_agent_traits, agent_traits)
+            self.model.set_agent_traits(agent_id, agent_traits)
 
-    def get_fraction_links_active(self):
-        """
-        Calculate the fraction of links whose probability of interaction is not 1.0 or 0.0.
-        """
-        active_links = 0
-        for (a,b) in self.model.model.edges_iter():
-            (a_id, a_traits) = self.model.get_agent_by_id(a)
-            (b_id, b_traits) = self.model.get_agent_by_id(b)
-            prob = self.calc_probability_interaction(a_traits, b_traits)
-            if prob > 0.0 and prob < 1.0:
-                #log.debug("active link (%s %s) prob: %s  a_trait: %s  b_trait: %s", a_id, b_id, prob, a_traits, b_traits)
-                active_links += 1
-        num_links_total = self.model.model.number_of_edges()
-        #log.debug("active links: %s total links: %s", active_links, num_links_total)
-        fraction_active = float(active_links) / num_links_total
-        return fraction_active
-
-
-    def calc_probability_interaction(self, agent_traits, neighbor_traits):
-        """
-        The probability of interaction is simply the inverse of the fraction of the features for which the
-        two agents have different traits at any given time.  Since the traits are held in
-        arrays, this probability reduces to the Hamming distance between the two arrays.  Which
-        scipy does quickly.  So the relevant probability is 1 - hamming(a,b).
-
-
-
-        """
-        diff = len(self.get_different_feature_positions(agent_traits,neighbor_traits))
-        prob = 1.0 - (float(diff) / float(len(agent_traits)))
-        return prob
-        #log.debug("num features differ: %s, prob: %s", diff, prob)
-        #return (1.0 - ssd.hamming(agent_traits, neighbor_traits))
-
-
-    def get_different_feature_positions(self, agent_traits, neighbor_traits):
-        """
-        Returns a list of the positions at which two lists of traits differ (but not the differing
-        traits themselves).
-        """
-        features = []
-        for i in range(0, len(agent_traits)):
-            if agent_traits[i] != neighbor_traits[i]:
-                features.append(i)
-        #log.debug("differing features: %s", features)
-        return features

@@ -34,7 +34,9 @@ def _get_collection_id():
 
 
 
-def store_stats_axelrod_original(popsize,mutation,sim_id,num_features,num_traits_per_feature,script,num_cultures,convergence_time,counts):
+def store_stats_axelrod_original(popsize,sim_id,nf,nt,
+                                 driftrate,ruleclass,popclass,script,
+                                 num_cultures,convergence_time,counts):
     """Stores the parameters and metadata for a simulation run in the database.
 
         Args:
@@ -60,8 +62,11 @@ def store_stats_axelrod_original(popsize,mutation,sim_id,num_features,num_traits
         population_size=popsize,
         simulation_run_id=sim_id,
         script_filename=script,
-        num_features = num_features,
-        num_traits_per_feature = num_traits_per_feature,
+        num_features = nf,
+        num_traits_per_feature = nt,
+        drift_rate = driftrate,
+        rule_class = ruleclass,
+        pop_class = popclass,
         num_culture_regions = num_cultures,
         convergence_time = convergence_time,
         culture_counts = counts
@@ -79,6 +84,9 @@ class AxelrodStatsOriginal(Document):
     script_filename = Field(str)
     num_features = Field(int)
     num_traits_per_feature = Field(int)
+    drift_rate = Field(float)
+    rule_class = Field(str)
+    pop_class = Field(str)
     population_size = Field(int)
     simulation_run_id = Field(str)
     num_culture_regions = Field(int)

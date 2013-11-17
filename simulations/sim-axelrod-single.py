@@ -26,7 +26,7 @@ def setup():
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--experiment", help="provide name for experiment", required=True)
-    parser.add_argument("--debug", help="turn on debugging output", action="store_true")
+    parser.add_argument("--debug", help="turn on debugging output")
     parser.add_argument("--dbhost", help="database hostname, defaults to localhost", default="localhost")
     parser.add_argument("--dbport", help="database port, defaults to 27017", default="27017")
     parser.add_argument("--configuration", help="Configuration file for experiment", required=True)
@@ -35,13 +35,14 @@ def setup():
     parser.add_argument("--traits", help="Number of traits (int > 1)", required=True)
     parser.add_argument("--periodic", help="Periodic boundary condition", choices=['1','0'], required=True)
     parser.add_argument("--diagram", help="Draw a diagram of the converged model", action="store_true")
+    parser.add_argument("--drift_rate", help="Rate of drift")
 
 
     args = parser.parse_args()
 
     simconfig = utils.AxelrodConfiguration(args.configuration)
 
-    if args.debug:
+    if args.debug == '1':
         log.basicConfig(level=log.DEBUG, format='%(asctime)s %(levelname)s: %(message)s')
     else:
         log.basicConfig(level=log.INFO, format='%(asctime)s %(levelname)s: %(message)s')
@@ -53,9 +54,13 @@ def setup():
     config = data.getMingConfiguration(data.modules)
     ming.configure(**config)
 
+    if args.drift_rate:
+        simconfig.drift_rate = float(args.drift_rate)
+
     simconfig.popsize = int(args.popsize)
     simconfig.num_features = int(args.features)
     simconfig.num_traits = int(args.traits)
+
     simconfig.sim_id = uuid.uuid4().urn
     if args.periodic == '1':
         simconfig.periodic = 1
@@ -64,10 +69,8 @@ def setup():
 
 
 def main():
-
-
     structure_class_name = simconfig.POPULATION_STRUCTURE_CLASS
-    log.debug("Configuring Axelrod model with structure class: %s", structure_class_name)
+    log.debug("Configuring Axelrod model with structure class: %s and interaction rule: %s", structure_class_name, simconfig.INTERACTION_RULE_CLASS)
 
 
     log.debug("Run for popsize %s  features: %s, traits: %s", simconfig.popsize,
@@ -75,11 +78,12 @@ def main():
 
 
     model_constructor = utils.load_class(structure_class_name)
+    rule_constructor = utils.load_class(simconfig.INTERACTION_RULE_CLASS)
 
     model = model_constructor(simconfig)
     model.initialize_population()
 
-    ax = rules.AxelrodRule(model)
+    ax = rule_constructor(model)
 
     timestep = 0
     last_interaction = 0
