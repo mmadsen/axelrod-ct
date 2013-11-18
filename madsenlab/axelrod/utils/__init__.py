@@ -10,4 +10,4 @@ Description here
 
 from configuration import AxelrodConfiguration
 from dynamicloading import load_class
-from convergence import check_liveness
+from convergence import check_liveness_axelrod

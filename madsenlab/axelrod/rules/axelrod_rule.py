@@ -56,7 +56,7 @@ class AxelrodRule(object):
         (agent_id, agent_traits) = self.model.get_random_agent()
         (neighbor_id, neighbor_traits) = self.model.get_random_neighbor_for_agent(agent_id)
 
-        prob = analysis.calc_probability_interaction(agent_traits, neighbor_traits)
+        prob = analysis.calc_probability_interaction_axelrod(agent_traits, neighbor_traits)
 
         if prob == 0.0:
             return
@@ -65,7 +65,7 @@ class AxelrodRule(object):
         else:
             draw = npr.random()
             if draw < prob:
-                differing_features = analysis.get_different_feature_positions(agent_traits, neighbor_traits)
+                differing_features = analysis.get_different_feature_positions_axelrod(agent_traits, neighbor_traits)
                 old_agent_traits = list(agent_traits)
                 if len(differing_features) == 1:
                     random_feature = differing_features[0]
@@ -93,7 +93,7 @@ class AxelrodRule(object):
         for (a,b) in self.model.model.edges_iter():
             (a_id, a_traits) = self.model.get_agent_by_id(a)
             (b_id, b_traits) = self.model.get_agent_by_id(b)
-            prob = analysis.calc_probability_interaction(a_traits, b_traits)
+            prob = analysis.calc_probability_interaction_axelrod(a_traits, b_traits)
             if prob > 0.0 and prob < 1.0:
                 #log.debug("active link (%s %s) prob: %s  a_trait: %s  b_trait: %s", a_id, b_id, prob, a_traits, b_traits)
                 active_links += 1

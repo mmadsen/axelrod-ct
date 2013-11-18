@@ -51,7 +51,7 @@ class AxelrodDriftRule(AxelrodRule):
         (agent_id, agent_traits) = self.model.get_random_agent()
         (neighbor_id, neighbor_traits) = self.model.get_random_neighbor_for_agent(agent_id)
 
-        prob = analysis.calc_probability_interaction(agent_traits, neighbor_traits)
+        prob = analysis.calc_probability_interaction_axelrod(agent_traits, neighbor_traits)
 
         if prob == 0.0:
             return
@@ -60,7 +60,7 @@ class AxelrodDriftRule(AxelrodRule):
         else:
             draw = npr.random()
             if draw < prob:
-                differing_features = analysis.get_different_feature_positions(agent_traits, neighbor_traits)
+                differing_features = analysis.get_different_feature_positions_axelrod(agent_traits, neighbor_traits)
                 old_agent_traits = list(agent_traits)
                 if len(differing_features) == 1:
                     random_feature = differing_features[0]

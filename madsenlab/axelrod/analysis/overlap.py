@@ -8,7 +8,7 @@ Description here
 
 """
 
-def calc_probability_interaction(agent_traits, neighbor_traits):
+def calc_probability_interaction_axelrod(agent_traits, neighbor_traits):
         """
         The probability of interaction is simply the inverse of the fraction of the features for which the
         two agents have different traits at any given time.  Since the traits are held in
@@ -18,14 +18,14 @@ def calc_probability_interaction(agent_traits, neighbor_traits):
 
 
         """
-        diff = len(get_different_feature_positions(agent_traits,neighbor_traits))
+        diff = len(get_different_feature_positions_axelrod(agent_traits,neighbor_traits))
         prob = 1.0 - (float(diff) / float(len(agent_traits)))
         return prob
         #log.debug("num features differ: %s, prob: %s", diff, prob)
         #return (1.0 - ssd.hamming(agent_traits, neighbor_traits))
 
 
-def calc_overlap(agent_traits, neighbor_traits):
+def calc_overlap_axelrod(agent_traits, neighbor_traits):
     """
     Returns the number of features at which two lists overlap (ie., the opposite of what we normally
     calcultion for interaction).
@@ -38,7 +38,7 @@ def calc_overlap(agent_traits, neighbor_traits):
     return overlap
 
 
-def get_different_feature_positions(agent_traits, neighbor_traits):
+def get_different_feature_positions_axelrod(agent_traits, neighbor_traits):
     """
     Returns a list of the positions at which two lists of traits differ (but not the differing
     traits themselves).

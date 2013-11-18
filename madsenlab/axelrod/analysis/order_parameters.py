@@ -10,7 +10,7 @@ Description here
 import overlap as o
 import logging as log
 
-def klemm_normalized_L(model,simconfig):
+def klemm_normalized_L_axelrod(model,simconfig):
     """
     The normalized Lyapunov potential defined in Klemm et al. 2003, Physica A (327) 1-5.  Implements
     Equation (1).
@@ -32,7 +32,7 @@ def klemm_normalized_L(model,simconfig):
     for (a,b) in g.edges_iter():
         (a_id, a_traits) = model.get_agent_by_id(a)
         (b_id, b_traits) = model.get_agent_by_id(b)
-        overlap = o.calc_overlap(a_traits, b_traits)
+        overlap = o.calc_overlap_axelrod(a_traits, b_traits)
         sums += (F - overlap)
 
     result = norm_constant * sums

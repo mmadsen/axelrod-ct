@@ -7,6 +7,6 @@
 Description here
 
 """
-from descriptive_stats import get_culture_counts
-from overlap import calc_probability_interaction, get_different_feature_positions, calc_overlap
-from order_parameters import klemm_normalized_L
+from descriptive_stats import get_culture_counts_axelrod
+from overlap import calc_probability_interaction_axelrod, get_different_feature_positions_axelrod, calc_overlap_axelrod
+from order_parameters import klemm_normalized_L_axelrod

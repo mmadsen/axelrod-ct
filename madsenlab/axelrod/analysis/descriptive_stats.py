@@ -11,7 +11,7 @@ Description here
 import logging as log
 from collections import defaultdict
 
-def get_culture_counts(model):
+def get_culture_counts_axelrod(model):
     """
     Takes an instance of a "population" and counts the distinct trait lists (i.e., cultures in the
     Axelrod model sense) in the population.  Cultures are represented by packing the feature/trait list
