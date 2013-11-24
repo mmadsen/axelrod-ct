@@ -11,16 +11,9 @@ Description here
 import json
 from operator import itemgetter
 
-class AxelrodConfiguration(object):
+class BaseConfiguration(object):
     """
-    Defines a number of class level constants which serve as configuration for a set of simulation models.
-    Each constant can be overriden by a JSON configuration file, which this class is responsible for
-    parsing.  Given a JSON configuration file, the values for any constants defined in that file replace
-    the default values given here -- but the names must match.
-
-    This class also contains any logic required by a simulation model to calculate derived parameters -- i.e.,
-    those values which the simulation model may treat as configuration but which are derived by calculation from
-    user supplied parameter values.
+    Common behavior for all configuration classes.
 
     An object of this class also has property getter/setters for specific instances of the configuration, which would
     characterize a specific simulation run.  These must be set by a simulation model's script, for consumption by
@@ -30,64 +23,6 @@ class AxelrodConfiguration(object):
     parameters, as a LaTeX table or a Pandoc-formatted Markdown table.  With a wrapper script, these methods
     allow direct incorporation of simulation configurations into publications and reports, for accuracy and
     reproducibility.
-    """
-
-    INTERACTION_RULE_CLASS = 'madsenlab.axelrod.rules.AxelrodRule'
-
-    POPULATION_STRUCTURE_CLASS = 'madsenlab.axelrod.population.SquareLatticeModel'
-    """
-    The fully qualified import path for a class which implements the population model.
-    """
-
-    STRUCTURE_PERIODIC_BOUNDARY = [True, False]
-
-
-    POPULATION_SIZES_STUDIED = [1000,2000]
-    """
-    In most of the CT models we study, the absolute amount of variation we might expect to see is
-    partially a function of the number of individuals doing the transmitting.  This is *total* population
-    size, either for a single population, or the metapopulation as a whole in a spatial model.  Because we are
-    going to model this on a grid, these numbers should be perfect squares, so that if the population size is N,
-    the lattice size (on a side) is SQRT(N).
-    """
-
-    NUMBER_OF_DIMENSIONS_OR_FEATURES = [100,200]
-    """
-    This is the number of "loci" or "features" in Axelrod's original terminology.  By analogy with classifications,
-    these are also "dimensions".
-    """
-
-    NUMBER_OF_TRAITS_PER_DIMENSION = [500,1000]
-    """
-    The Axelrod model dynamics are strongly affected by the number of possible traits per locus or feature.  We
-    model a range of values to capture the full phase diagram of the process.
-    """
-
-    DRIFT_RATES = [0.001,0.005]
-
-
-    REPLICATIONS_PER_PARAM_SET = 8
-    """
-    For each combination of simulation parameters, CTPy and simuPOP will run this many replicate
-    populations, saving samples identically for each, but initializing each replicate with a
-    different population and random seed.
-    """
-
-    parameter_labels = {
-        'POPULATION_SIZES_STUDIED' : 'Population sizes',
-        'STRUCTURE_PERIODIC_BOUNDARY' : 'Does the population structure have a periodic boundary condition?',
-        'REPLICATIONS_PER_PARAM_SET' : 'Replicate simulation runs at each parameter combination',
-        'NUMBER_OF_TRAITS_PER_DIMENSION': 'Number of traits per locus/dimension/feature',
-        'NUMBER_OF_DIMENSIONS_OR_FEATURES': 'Number of loci/dimensions/features each individual holds'
-    }
-
-
-    # For Latex or Pandoc output, we also filter out any object instance variables, and output only the class-level variables.
-    vars_to_filter = ['config', "_popsize", "_num_features", "_num_traits", "_sim_id", "_periodic", "_script", "_drift_rate"]
-    """
-    List of variables which are never (or at least currently) pretty-printed into summary tables using the latex or markdown/pandoc methods
-
-    Some variables might be here because they're currently unused or unimplemented....
     """
 
     def __init__(self, config_file):
@@ -116,24 +51,12 @@ class AxelrodConfiguration(object):
         # finalize the list of derived values
         self._calc_derived_values()
 
-        # object properties for each specific run
+
+        # run-specific values common to all models
         self._popsize = None
-        self._num_features = None
-        self._num_traits = None
         self._sim_id = None
         self._periodic = None
         self._script = None
-        self._drift_rate = None
-
-
-    @property
-    def drift_rate(self):
-        return self._drift_rate
-
-    @drift_rate.setter
-    def drift_rate(self, r):
-        self._drift_rate = r
-
 
     @property
     def script(self):
@@ -168,31 +91,11 @@ class AxelrodConfiguration(object):
     def popsize(self, val):
         self._popsize = val
 
-    @property
-    def num_features(self):
-        return self._num_features
-
-    @num_features.setter
-    def num_features(self,val):
-        self._num_features = val
-
-    @property
-    def num_traits(self):
-        return self._num_traits
-
-    @num_traits.setter
-    def num_traits(self,val):
-        self._num_traits = val
-
-    def get_state_space_for_rule(self, rule):
-        return self.state_space_map[rule]
-
 
     def __repr__(self):
         attrs = vars(self)
         rep = '\n'.join("%s: %s" % item for item in attrs.items() if item[0] != "config")
         return rep
-
 
     def to_latex_table(self, experiment, **kwargs):
         """
@@ -257,9 +160,6 @@ class AxelrodConfiguration(object):
 
         return ''.join(t)
 
-
-
-
     def to_pandoc_table(self, experiment, **kwargs):
         """
         Constructs a Markdown table (in pandoc format) for the simulation parameters and
@@ -297,6 +197,174 @@ class AxelrodConfiguration(object):
         filtered.sort(key=itemgetter(0))
         return filtered
 
+
+class AxelrodConfiguration(BaseConfiguration):
+    """
+    Defines a number of class level constants which serve as configuration for a set of simulation models.
+    Each constant can be overriden by a JSON configuration file, which this class is responsible for
+    parsing.  Given a JSON configuration file, the values for any constants defined in that file replace
+    the default values given here -- but the names must match.
+
+    This class also contains any logic required by a simulation model to calculate derived parameters -- i.e.,
+    those values which the simulation model may treat as configuration but which are derived by calculation from
+    user supplied parameter values.
+
+
+    """
+
+    INTERACTION_RULE_CLASS = 'madsenlab.axelrod.rules.AxelrodRule'
+
+    POPULATION_STRUCTURE_CLASS = 'madsenlab.axelrod.population.SquareLatticeFixedTraitModel'
+    """
+    The fully qualified import path for a class which implements the population model.
+    """
+
+    STRUCTURE_PERIODIC_BOUNDARY = [True, False]
+
+
+    POPULATION_SIZES_STUDIED = [1000,2000]
+    """
+    In most of the CT models we study, the absolute amount of variation we might expect to see is
+    partially a function of the number of individuals doing the transmitting.  This is *total* population
+    size, either for a single population, or the metapopulation as a whole in a spatial model.  Because we are
+    going to model this on a grid, these numbers should be perfect squares, so that if the population size is N,
+    the lattice size (on a side) is SQRT(N).
+    """
+
+    NUMBER_OF_DIMENSIONS_OR_FEATURES = [100,200]
+    """
+    This is the number of "loci" or "features" in Axelrod's original terminology.  By analogy with classifications,
+    these are also "dimensions".
+    """
+
+    NUMBER_OF_TRAITS_PER_DIMENSION = [500,1000]
+    """
+    The Axelrod model dynamics are strongly affected by the number of possible traits per locus or feature.  We
+    model a range of values to capture the full phase diagram of the process.
+    """
+
+    DRIFT_RATES = [0.001,0.005]
+
+
+    REPLICATIONS_PER_PARAM_SET = 8
+    """
+    For each combination of simulation parameters, CTPy and simuPOP will run this many replicate
+    populations, saving samples identically for each, but initializing each replicate with a
+    different population and random seed.
+    """
+
+    parameter_labels = {
+        'POPULATION_SIZES_STUDIED' : 'Population sizes',
+        'STRUCTURE_PERIODIC_BOUNDARY' : 'Does the population structure have a periodic boundary condition?',
+        'REPLICATIONS_PER_PARAM_SET' : 'Replicate simulation runs at each parameter combination',
+        'NUMBER_OF_TRAITS_PER_DIMENSION': 'Number of traits per locus/dimension/feature',
+        'NUMBER_OF_DIMENSIONS_OR_FEATURES': 'Number of loci/dimensions/features each individual holds'
+    }
+
+
+    # For Latex or Pandoc output, we also filter out any object instance variables, and output only the class-level variables.
+    vars_to_filter = ['config', "_popsize", "_num_features", "_num_traits", "_sim_id", "_periodic", "_script", "_drift_rate"]
+    """
+    List of variables which are never (or at least currently) pretty-printed into summary tables using the latex or markdown/pandoc methods
+
+    Some variables might be here because they're currently unused or unimplemented....
+    """
+
+    def __init__(self, config_file):
+
+        super(AxelrodConfiguration, self).__init__(config_file)
+
+        # object properties for each specific run
+
+        self._num_features = None
+        self._num_traits = None
+        self._drift_rate = None
+
+
+    @property
+    def drift_rate(self):
+        return self._drift_rate
+
+    @drift_rate.setter
+    def drift_rate(self, r):
+        self._drift_rate = r
+
+    @property
+    def num_features(self):
+        return self._num_features
+
+    @num_features.setter
+    def num_features(self,val):
+        self._num_features = val
+
+    @property
+    def num_traits(self):
+        return self._num_traits
+
+    @num_traits.setter
+    def num_traits(self,val):
+        self._num_traits = val
+
+
+
+    def _calc_derived_values(self):
+        """
+        No known derived values right now....
+        """
+        pass
+
+
+class AxelrodExtensibleConfiguration(BaseConfiguration):
+
+    TRAIT_ADDITION_RATE = [0.01, 0.05, 0.1, 0.25]
+    """
+    When an interaction occurs, some models may allow the trait list to grow by adding a neighbor's trait
+    to the list, instead of replacing an existing trait with it.  This isn't very interesting in a basic
+    extensible model, but it's the foundation for models where addition happens for a *reason* -- i.e.,
+    learning prerequisites, etc.
+    """
+
+    MAXIMUM_INITIAL_TRAITS = [4,8,16,32]
+    """
+    Individual agents will receive a random number of initial traits, distributed between 1 and this MAX value.
+    The distribution used to generate each agent's initial trait endowment may vary by rule.
+    """
+
+    DRIFT_RATES = [0.001,0.005]
+    """
+    Rates at which random mutations occur within the population.
+    """
+
+    def __init__(self, config_file):
+        super(AxelrodExtensibleConfiguration, self).__init__(config_file)
+
+        self._maxtraits = None
+        self._drift_rate = None
+        self._add_rate = None
+
+    @property
+    def maxtraits(self):
+        return self._maxtraits
+
+    @maxtraits.setter
+    def maxtraits(self,val):
+        self._maxtraits = val
+
+    @property
+    def drift_rate(self):
+        return self._drift_rate
+
+    @drift_rate.setter
+    def drift_rate(self, r):
+        self._drift_rate = r
+
+    @property
+    def add_rate(self):
+        return self._add_rate
+
+    @add_rate.setter
+    def add_rate(self,val):
+        self._add_rate = val
 
     def _calc_derived_values(self):
         """

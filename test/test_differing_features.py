@@ -12,6 +12,7 @@ import unittest
 import madsenlab.axelrod.utils as utils
 import madsenlab.axelrod.rules as rules
 import madsenlab.axelrod.population as pop
+import madsenlab.axelrod.analysis as analysis
 import logging as log
 import tempfile
 
@@ -37,7 +38,7 @@ class DifferingFeaturesTest(unittest.TestCase):
         config.num_features = 4
         config.num_traits = 4
 
-        self.pop = pop.SquareLatticeModel(config)
+        self.pop = pop.SquareLatticeFixedTraitModel(config)
         self.pop.initialize_population()
         self.rule = rules.AxelrodRule(self.pop)
 
@@ -46,7 +47,7 @@ class DifferingFeaturesTest(unittest.TestCase):
         a = [3,3,0,2]
         b = [3,0,0,0]
         expected = [1,3]
-        obs = self.rule.get_different_feature_positions(a,b)
+        obs = analysis.get_different_feature_positions_axelrod(a,b)
         log.info("obs: %s expected: %s", obs, expected)
 
 if __name__ == "__main__":

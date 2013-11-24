@@ -4,7 +4,7 @@
     "POPULATION_SIZES_STUDIED" : [64,100],
     "NUMBER_OF_DIMENSIONS_OR_FEATURES" : [2,3,4,8],
     "NUMBER_OF_TRAITS_PER_DIMENSION" :  [2,3,4,8,16],
-    "POPULATION_STRUCTURE_CLASS" : "madsenlab.axelrod.population.SquareLatticeModel",
+    "POPULATION_STRUCTURE_CLASS" : "madsenlab.axelrod.population.SquareLatticeFixedTraitModel",
     "INTERACTION_RULE_CLASS" : "madsenlab.axelrod.rules.AxelrodRule"
 
 }

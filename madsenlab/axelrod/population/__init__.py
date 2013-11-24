@@ -7,5 +7,5 @@
 Description here
 
 """
-from lattice import SquareLatticeModel
-from base import GraphModel
+from lattice_models import SquareLatticeFixedTraitModel
+from base_population_classes import FixedTraitStructurePopulationBase
