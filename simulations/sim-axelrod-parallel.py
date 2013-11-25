@@ -149,9 +149,11 @@ def run_simulation_worker(queue, args):
             log.info("worker %s: starting run for popsize: %s numfeatures: %s numtraits: %s drift: %s",
                      os.getpid(), simconfig.popsize, simconfig.num_features, simconfig.num_traits,
                      simconfig.drift_rate)
+            gf_constructor = utils.load_class(simconfig.NETWORK_FACTORY_CLASS)
             model_constructor = utils.load_class(simconfig.POPULATION_STRUCTURE_CLASS)
             rule_constructor = utils.load_class(simconfig.INTERACTION_RULE_CLASS)
-            model = model_constructor(simconfig)
+            graph_factory = gf_constructor(simconfig)
+            model = model_constructor(simconfig, graph_factory)
             model.initialize_population()
 
             ax = rule_constructor(model)

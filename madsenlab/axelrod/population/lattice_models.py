@@ -14,7 +14,7 @@ import math as m
 import networkx as nx
 
 
-class SquareLatticeFixedTraitModel(b.FixedTraitStructurePopulationBase):
+class SquareLatticeFactory(object):
     """
     Defines a population of agents, each of which is represented by an array of integers.
     Position in the array represents the locus or feature, and the integer at the array
@@ -31,12 +31,16 @@ class SquareLatticeFixedTraitModel(b.FixedTraitStructurePopulationBase):
     """
 
     def __init__(self, simconfig):
-
-        super(SquareLatticeFixedTraitModel, self).__init__(simconfig)
-
+        self.simconfig = simconfig
         self.lattice_dimension = 0
         self.lattice_coordination_number = 4
 
+    def get_lattice_coordination_number(self):
+        return self.lattice_coordination_number
+
+    def get_graph(self):
+        lattice_coord_num = 4
+        side_length = 0
 
         # The lattice size should be a perfect square, ideally, and is sqrt(population size)
         l = m.sqrt(self.simconfig.popsize)
@@ -44,27 +48,27 @@ class SquareLatticeFixedTraitModel(b.FixedTraitStructurePopulationBase):
         # so we have to test the fractional part, not check python types
         frac, integral = m.modf(l)
         if frac == 0.0:
-            log.debug("Lattice model:  popsize %s, lattice will be %s by %s", simconfig.popsize, l, l)
-            self.lattice_dimension = int(l)
+            log.debug("Lattice model:  popsize %s, lattice will be %s by %s", self.simconfig.popsize, l, l)
+            side_length = int(l)
         else:
-            log.error("Lattice model: population size %s is not a perfect square", simconfig.popsize)
+            log.error("Lattice model: population size %s is not a perfect square", self.simconfig.popsize)
             exit(1)
 
-        if simconfig.periodic == 1:
+        if self.simconfig.periodic == 1:
             p = True
             log.debug("periodic boundary condition selected")
         else:
             p = False
 
-        self.model = nx.grid_2d_graph(self.lattice_dimension, self.lattice_dimension, periodic=p)
+        model = nx.grid_2d_graph(side_length, side_length, periodic=p)
         # now convert the resulting graph to have simple nodenames to use as keys
         # We need to retain the original nodenames, because they're tuples which represent the position
         # of the node in the lattice.  So we first store them as attribution 'pos' and then convert
-        for nodename in self.model.nodes():
-            self.model.node[nodename]['pos'] = nodename
+        for nodename in model.nodes():
+            model.node[nodename]['pos'] = nodename
 
-        g = nx.convert_node_labels_to_integers(self.model)
-        self.model = g
+        g = nx.convert_node_labels_to_integers(model)
+        return g
 
 
 

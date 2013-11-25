@@ -3,7 +3,8 @@
     "POPULATION_SIZES_STUDIED" : [64,100],
     "NUMBER_OF_DIMENSIONS_OR_FEATURES" : [2,3,4,8],
     "NUMBER_OF_TRAITS_PER_DIMENSION" :  [2,3,4,8,16],
-    "POPULATION_STRUCTURE_CLASS" : "madsenlab.axelrod.population.SquareLatticeFixedTraitModel",
+    "POPULATION_STRUCTURE_CLASS" : "madsenlab.axelrod.population.FixedTraitStructurePopulationBase",
     "DRIFT_RATES" : [0.1,0.05,0.01,0.005,0.001],
-    "INTERACTION_RULE_CLASS" : "madsenlab.axelrod.rules.AxelrodDriftRule"
+    "INTERACTION_RULE_CLASS" : "madsenlab.axelrod.rules.AxelrodDriftRule",
+    "NETWORK_FACTORY_CLASS" : "madsenlab.axelrod.population.SquareLatticeFactory"
 }

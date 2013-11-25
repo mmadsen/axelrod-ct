@@ -10,7 +10,7 @@ Description here
 import overlap as o
 import logging as log
 
-def klemm_normalized_L_axelrod(model,simconfig):
+def klemm_normalized_L_axelrod(pop,simconfig):
     """
     The normalized Lyapunov potential defined in Klemm et al. 2003, Physica A (327) 1-5.  Implements
     Equation (1).
@@ -19,9 +19,9 @@ def klemm_normalized_L_axelrod(model,simconfig):
     Variable names differ from the rest of the codebase, but are designed to be identical to the Klemm notation.
     """
     # following is shorthand for the NetworkX graph
-    g = model.model
+    g = pop.model
     N = simconfig.popsize
-    z = model.get_coordination_number()
+    z = pop.get_coordination_number()
     F = simconfig.num_features
 
     #log.debug("z: %s F: %s N: %s", z, F, N)
@@ -30,8 +30,8 @@ def klemm_normalized_L_axelrod(model,simconfig):
     sums = 0
 
     for (a,b) in g.edges_iter():
-        (a_id, a_traits) = model.get_agent_by_id(a)
-        (b_id, b_traits) = model.get_agent_by_id(b)
+        (a_id, a_traits) = pop.get_agent_by_id(a)
+        (b_id, b_traits) = pop.get_agent_by_id(b)
         overlap = o.calc_overlap_axelrod(a_traits, b_traits)
         sums += (F - overlap)
 

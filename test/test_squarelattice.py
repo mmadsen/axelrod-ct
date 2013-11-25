@@ -38,7 +38,8 @@ class SquareLatticeTest(unittest.TestCase):
         config.num_features = 8
         config.num_traits = 16
 
-        self.pop = pop.SquareLatticeFixedTraitModel(config)
+        graph_factory = pop.SquareLatticeFactory(config)
+        self.pop = pop.FixedTraitStructurePopulationBase(config,graph_factory)
         self.pop.initialize_population()
 
 

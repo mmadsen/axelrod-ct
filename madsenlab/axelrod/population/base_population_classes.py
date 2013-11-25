@@ -27,12 +27,16 @@ class BaseGraphPopulation(object):
     "neighbor" methods are concentrated here.
     """
 
-    def __init__(self,simconfig):
+    def __init__(self,simconfig,graph_factory):
         self.simconfig = simconfig
         self.interactions = 0
         self.time_step_last_interaction = 0
         self.prng = RandomState()  # allow the library to choose a seed via OS specific mechanism
-        self.lattice_coordination_number = 0
+        self.graph_factory = graph_factory
+
+        # initialize the graph structure via the factory object
+        self.model = self.graph_factory.get_graph()
+
 
     def get_agent_by_id(self, agent_id):
         return (agent_id, self.model.node[agent_id]['traits'])
@@ -60,7 +64,7 @@ class BaseGraphPopulation(object):
 
 
     def get_coordination_number(self):
-        return self.lattice_coordination_number
+        return self.graph_factory.get_lattice_coordination_number()
 
     def update_interactions(self, timestep):
         self.interactions += 1
@@ -78,8 +82,8 @@ class ExtensibleTraitStructurePopulationBase(BaseGraphPopulation):
     """
     Base class for all Axelrod models which feature a non-fixed number of features/traits per individual.
     """
-    def __init__(self, simconfig):
-        super(ExtensibleTraitStructurePopulationBase, self).__init__(simconfig)
+    def __init__(self, simconfig,graph_factory):
+        super(ExtensibleTraitStructurePopulationBase, self).__init__(simconfig,graph_factory)
 
 
 
@@ -103,8 +107,8 @@ class FixedTraitStructurePopulationBase(BaseGraphPopulation):
     instance of a
     """
 
-    def __init__(self, simconfig):
-        super(FixedTraitStructurePopulationBase, self).__init__(simconfig)
+    def __init__(self, simconfig,graph_factory):
+        super(FixedTraitStructurePopulationBase, self).__init__(simconfig, graph_factory)
 
     # TODO:  initialization needs to be refactored before doing the structured model, so we can reuse the structure and part of the rules, but change the "traits"
 

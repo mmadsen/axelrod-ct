@@ -25,6 +25,15 @@ class BaseConfiguration(object):
     reproducibility.
     """
 
+    INTERACTION_RULE_CLASS = 'madsenlab.axelrod.rules.AxelrodRule'
+
+    POPULATION_STRUCTURE_CLASS = 'madsenlab.axelrod.population.SquareLatticeFixedTraitModel'
+
+    NETWORK_FACTORY_CLASS = 'madsenlab.axelrod.population.SquareLatticeFactory'
+    """
+    The fully qualified import path for a class which implements the population model.
+    """
+
     def __init__(self, config_file):
         # if we don't give a configuration file on the command line, then we
         # just return a Configuration object, which has the default values specified above.
@@ -210,13 +219,6 @@ class AxelrodConfiguration(BaseConfiguration):
     user supplied parameter values.
 
 
-    """
-
-    INTERACTION_RULE_CLASS = 'madsenlab.axelrod.rules.AxelrodRule'
-
-    POPULATION_STRUCTURE_CLASS = 'madsenlab.axelrod.population.SquareLatticeFixedTraitModel'
-    """
-    The fully qualified import path for a class which implements the population model.
     """
 
     STRUCTURE_PERIODIC_BOUNDARY = [True, False]

@@ -70,7 +70,7 @@ def setup():
 
 def main():
     structure_class_name = simconfig.POPULATION_STRUCTURE_CLASS
-    log.debug("Configuring Axelrod model with structure class: %s and interaction rule: %s", structure_class_name, simconfig.INTERACTION_RULE_CLASS)
+    log.debug("Configuring Axelrod model with structure class: %s graph factory: %s interaction rule: %s", structure_class_name, simconfig.NETWORK_FACTORY_CLASS, simconfig.INTERACTION_RULE_CLASS)
 
 
     log.debug("Run for popsize %s  features: %s, traits: %s", simconfig.popsize,
@@ -79,8 +79,11 @@ def main():
 
     model_constructor = utils.load_class(structure_class_name)
     rule_constructor = utils.load_class(simconfig.INTERACTION_RULE_CLASS)
+    graph_factor_constructor = utils.load_class(simconfig.NETWORK_FACTORY_CLASS)
 
-    model = model_constructor(simconfig)
+    graph_factory = graph_factor_constructor(simconfig)
+
+    model = model_constructor(simconfig, graph_factory)
     model.initialize_population()
 
     ax = rule_constructor(model)
