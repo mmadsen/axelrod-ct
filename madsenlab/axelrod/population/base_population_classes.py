@@ -76,6 +76,23 @@ class BaseGraphPopulation(object):
     def get_interactions(self):
         return self.interactions
 
+
+    ### Abstract methods - derived classes need to override
+    def draw_network_colored_by_culture(self):
+        raise NotImplementedError
+
+    def get_traits_packed(self,agent_traits):
+        raise NotImplementedError
+
+    def initialize_population(self):
+        raise NotImplementedError
+
+    def set_agent_traits(self, agent_id, trait_list):
+        raise NotImplementedError
+
+
+
+
 ###################################################################################
 
 class ExtensibleTraitStructurePopulationBase(BaseGraphPopulation):
@@ -86,7 +103,33 @@ class ExtensibleTraitStructurePopulationBase(BaseGraphPopulation):
         super(ExtensibleTraitStructurePopulationBase, self).__init__(simconfig,graph_factory)
 
 
+    def initialize_population(self):
+        mt = self.simconfig.maxtraits
+        for nodename in self.model.nodes():
+            # get a random number of initial traits between 1 and mt
+            trait_set = set()
+            init_trait_num = self.prng.random_integers(1, mt)
 
+            for i in range(0, init_trait_num):
+                trait = self.prng.random_integers(0,self.simconfig.MAX_TRAIT_TOKEN)
+                trait_set.add(trait)
+
+            log.debug("traits: %s", pp.pformat(trait_set))
+            self.model.node[nodename]['traits'] = trait_set
+
+    def set_agent_traits(self, agent_id, trait_set):
+        self.model.node[agent_id]['traits'] = trait_set
+
+    def get_traits_packed(self,agent_traits):
+        hashable_set = frozenset(agent_traits)
+        return hash(hashable_set)
+
+    def draw_network_colored_by_culture(self):
+        nodes, traits = zip(*nx.get_node_attributes(self.model, 'traits').items())
+        nodes, pos = zip(*nx.get_node_attributes(self.model, 'pos').items())
+        color_tupled_compressed = [self.get_traits_packed(t) for t in traits]
+        nx.draw(self.model, pos=pos, nodelist=nodes, node_color=color_tupled_compressed)
+        plt.show()
 
 
 

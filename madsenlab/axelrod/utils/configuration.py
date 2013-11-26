@@ -10,6 +10,7 @@ Description here
 
 import json
 from operator import itemgetter
+import sys
 
 class BaseConfiguration(object):
     """
@@ -32,6 +33,24 @@ class BaseConfiguration(object):
     NETWORK_FACTORY_CLASS = 'madsenlab.axelrod.population.SquareLatticeFactory'
     """
     The fully qualified import path for a class which implements the population model.
+    """
+
+    STRUCTURE_PERIODIC_BOUNDARY = [True, False]
+
+    REPLICATIONS_PER_PARAM_SET = 8
+    """
+    For each combination of simulation parameters, CTPy and simuPOP will run this many replicate
+    populations, saving samples identically for each, but initializing each replicate with a
+    different population and random seed.
+    """
+
+    POPULATION_SIZES_STUDIED = [1000,2000]
+    """
+    In most of the CT models we study, the absolute amount of variation we might expect to see is
+    partially a function of the number of individuals doing the transmitting.  This is *total* population
+    size, either for a single population, or the metapopulation as a whole in a spatial model.  Because we are
+    going to model this on a grid, these numbers should be perfect squares, so that if the population size is N,
+    the lattice size (on a side) is SQRT(N).
     """
 
     def __init__(self, config_file):
@@ -221,18 +240,6 @@ class AxelrodConfiguration(BaseConfiguration):
 
     """
 
-    STRUCTURE_PERIODIC_BOUNDARY = [True, False]
-
-
-    POPULATION_SIZES_STUDIED = [1000,2000]
-    """
-    In most of the CT models we study, the absolute amount of variation we might expect to see is
-    partially a function of the number of individuals doing the transmitting.  This is *total* population
-    size, either for a single population, or the metapopulation as a whole in a spatial model.  Because we are
-    going to model this on a grid, these numbers should be perfect squares, so that if the population size is N,
-    the lattice size (on a side) is SQRT(N).
-    """
-
     NUMBER_OF_DIMENSIONS_OR_FEATURES = [100,200]
     """
     This is the number of "loci" or "features" in Axelrod's original terminology.  By analogy with classifications,
@@ -248,12 +255,6 @@ class AxelrodConfiguration(BaseConfiguration):
     DRIFT_RATES = [0.001,0.005]
 
 
-    REPLICATIONS_PER_PARAM_SET = 8
-    """
-    For each combination of simulation parameters, CTPy and simuPOP will run this many replicate
-    populations, saving samples identically for each, but initializing each replicate with a
-    different population and random seed.
-    """
 
     parameter_labels = {
         'POPULATION_SIZES_STUDIED' : 'Population sizes',
@@ -336,6 +337,12 @@ class AxelrodExtensibleConfiguration(BaseConfiguration):
     """
     Rates at which random mutations occur within the population.
     """
+
+    MAX_TRAIT_TOKEN = 20
+    """
+    Traits can be any token from 0 to this value.
+    """
+
 
     def __init__(self, config_file):
         super(AxelrodExtensibleConfiguration, self).__init__(config_file)

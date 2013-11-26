@@ -8,6 +8,6 @@ Description here
 
 """
 
-from configuration import AxelrodConfiguration
+from configuration import AxelrodConfiguration, AxelrodExtensibleConfiguration
 from dynamicloading import load_class
 from convergence import check_liveness_axelrod

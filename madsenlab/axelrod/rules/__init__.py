@@ -9,3 +9,4 @@ Description here
 """
 from axelrod_rule import AxelrodRule
 from axelrod_drift import AxelrodDriftRule
+from extensible_axelrod_rule import ExtensibleAxelrodRule
