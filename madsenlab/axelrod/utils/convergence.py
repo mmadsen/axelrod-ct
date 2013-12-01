@@ -32,7 +32,7 @@ def check_liveness_axelrod(ax, model, args, simconfig, timestep):
 
 
 def finalize_axelrod_model(model,simconfig):
-    counts = stats.get_culture_counts_axelrod(model)
+    counts = stats.get_culture_counts(model)
     klemm = stats.klemm_normalized_L_axelrod(model,simconfig)
     data.store_stats_axelrod_original(simconfig.popsize,
                                       simconfig.sim_id,

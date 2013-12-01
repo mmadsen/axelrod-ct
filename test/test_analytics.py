@@ -18,7 +18,43 @@ import pprint as pp
 import tempfile
 
 
-class ExtensibleTraitTest(unittest.TestCase):
+class AxelrodAnalytics(unittest.TestCase):
+
+
+    def setUp(self):
+        log.basicConfig(level=log.DEBUG, format='%(asctime)s %(levelname)s: %(message)s')
+        self.tf = tempfile.NamedTemporaryFile(dir="/tmp", delete=False)
+        self.tf.write("""
+        {
+    "REPLICATIONS_PER_PARAM_SET" : 5,
+    "POPULATION_SIZES_STUDIED" : [500,1000],
+    "NUMBER_OF_DIMENSIONS_OR_FEATURES" : [1,2,4,8,16],
+    "NUMBER_OF_TRAITS_PER_DIMENSION" :  [2,3,4,6,8,12,16,32]
+}
+        """)
+        self.tf.flush()
+        config = utils.AxelrodConfiguration(self.tf.name)
+        self.config = config
+
+        config.popsize = 25
+        config.num_features = 4
+        config.num_traits = 4
+
+        graph_factory = pop.SquareLatticeFactory(config)
+        self.pop = pop.FixedTraitStructurePopulationBase(config, graph_factory)
+        self.pop.initialize_population()
+
+
+    def test_culture_counts(self):
+        counts = analysis.get_culture_counts(self.pop)
+        log.info("counts: %s", pp.pformat(counts))
+
+    def test_klemm(self):
+        klemm_val = analysis.klemm_normalized_L_axelrod(self.pop, self.config)
+        log.info("klemm axelrod value: %s", klemm_val)
+
+
+class ExtensibleAnalytics(unittest.TestCase):
 
 
     def setUp(self):
@@ -37,6 +73,7 @@ class ExtensibleTraitTest(unittest.TestCase):
         """)
         self.tf.flush()
         config = utils.AxelrodExtensibleConfiguration(self.tf.name)
+        self.config = config
 
         config.popsize = 25
         config.maxtraits = 16
@@ -47,17 +84,14 @@ class ExtensibleTraitTest(unittest.TestCase):
         self.pop.initialize_population()
 
 
-    def test_node_coloring(self):
+    def test_culture_counts(self):
+        counts = analysis.get_culture_counts(self.pop)
+        log.info("counts: %s", pp.pformat(counts))
 
-        node0_traits = self.pop.model.node[0]['traits']
-        pack = self.pop.get_traits_packed(node0_traits)
-        log.info("node0_traits: %s packed: %s", pp.pformat(node0_traits), pack)
-        self.assertTrue(isinstance(pack, (int, long)))
+    def test_klemm(self):
+        klemm_val = analysis.klemm_normalized_L_extensible(self.pop, self.config)
+        log.info("klemm extensible value: %s", klemm_val)
 
-
-    def test_diagram(self):
-        #self.pop.draw_network_colored_by_culture()
-        pass
 
 if __name__ == "__main__":
     unittest.main

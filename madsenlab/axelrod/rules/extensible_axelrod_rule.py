@@ -36,7 +36,7 @@ class ExtensibleAxelrodRule(object):
 
     def step(self, timestep):
         """
-        Implements a single time step in the Axelrod model, selecting a focal agent at
+        Implements a single time step in the Trait-Extensible Axelrod model, selecting a focal agent at
         random, and then one of the focal agent's neighbors (this rule knows nothing about
         how "neighbors" are represented, so the rule itself is fully generic to many
         population structures, including those with long-distance connections.
@@ -50,7 +50,9 @@ class ExtensibleAxelrodRule(object):
         simply move on, and don't make a random trial because there's no point.
 
         3.  Otherwise, with probability equal to similarity (or, usually, 1 - dissimilarity), the focal
-        agent adopts one of the neighbor's traits for which they are dissimilar.
+        agent adopts one of the neighbor's traits for which they are dissimilar.  With probability "addition rate",
+        this occurs by adding the neighbor's trait to the focal agent's trait set without replacing an existing trait,
+        otherwise, the focal agent replaces a random trait in its existing set by the neighbor's trait.
 
         """
         (agent_id, agent_traits) = self.model.get_random_agent()

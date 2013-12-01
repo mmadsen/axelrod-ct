@@ -59,7 +59,7 @@ def calc_overlap_extensible(agent_traits, neighbor_traits):
     for sets of different length, which is crucial in the extensible and semantic models.
     """
     overlap = len(agent_traits.intersection(neighbor_traits)) / len(agent_traits.union(neighbor_traits))
-    log.debug("overlap: %s", overlap)
+    #log.debug("overlap: %s", overlap)
     return overlap
 
 
