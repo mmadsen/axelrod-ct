@@ -10,4 +10,5 @@ Description here
 
 from configuration import AxelrodConfiguration, AxelrodExtensibleConfiguration
 from dynamicloading import load_class
-from convergence import check_liveness_axelrod
+from convergence import check_liveness
+from finalize import finalize_axelrod_model, finalize_extensible_model

@@ -10,6 +10,8 @@ Description here
 
 import logging as log
 from collections import defaultdict
+import numpy as np
+import math
 
 def get_culture_counts(pop):
     """
@@ -29,7 +31,22 @@ def get_culture_counts(pop):
     # transform into the list of dicts that's more convenient to stuff into mongodb
     stored_counts = []
     for key,val in counts.items():
-        stored_counts.append(dict(cultureid=key,count=val))
-    #log.debug("counts: %s", stored_counts)
+        stored_counts.append(dict(cultureid=str(key),count=val))
+    log.debug("counts: %s", stored_counts)
     return stored_counts
+
+
+def get_culture_size_statistics(pop):
+    """
+    Takes an instance of a population and returns a tuple with the mean and standard deviation of the
+    number of traits per individual.  Only useful for the extensible and semantic models.
+
+    """
+    sizes = []
+    for nodename in pop.model.nodes():
+        sizes.append(len(pop.model.node[nodename]['traits']))
+    mean = np.mean(np.asarray(sizes))
+    sd = math.sqrt(np.var(np.asarray(sizes)))
+    return (mean, sd)
+
 

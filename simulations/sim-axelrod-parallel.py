@@ -167,8 +167,9 @@ def run_simulation_worker(queue, args):
                     log.debug("time: %s active links: %s", timestep, ax.get_fraction_links_active())
                 ax.step(timestep)
                 if model.get_time_last_interaction() != timestep:
-                    live = utils.check_liveness_axelrod(ax, model, args, simconfig, timestep)
+                    live = utils.check_liveness(ax, model, args, simconfig, timestep)
                     if live == False:
+                        utils.finalize_axelrod_model(model, args, simconfig)
                         break
 
             # clean up before moving to next queue item

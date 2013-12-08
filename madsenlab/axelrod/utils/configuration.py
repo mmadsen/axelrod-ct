@@ -338,7 +338,7 @@ class AxelrodExtensibleConfiguration(BaseConfiguration):
     Rates at which random mutations occur within the population.
     """
 
-    MAX_TRAIT_TOKEN = 20
+    MAX_TRAIT_TOKEN = 100
     """
     Traits can be any token from 0 to this value.
     """

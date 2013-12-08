@@ -114,7 +114,7 @@ class ExtensibleTraitStructurePopulationBase(BaseGraphPopulation):
                 trait = self.prng.random_integers(0,self.simconfig.MAX_TRAIT_TOKEN)
                 trait_set.add(trait)
 
-            log.debug("traits: %s", pp.pformat(trait_set))
+            #log.debug("traits: %s", pp.pformat(trait_set))
             self.model.node[nodename]['traits'] = trait_set
 
     def set_agent_traits(self, agent_id, trait_set):

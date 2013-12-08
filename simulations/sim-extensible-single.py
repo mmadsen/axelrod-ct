@@ -79,9 +79,9 @@ def main():
 
     model_constructor = utils.load_class(structure_class_name)
     rule_constructor = utils.load_class(simconfig.INTERACTION_RULE_CLASS)
-    graph_factor_constructor = utils.load_class(simconfig.NETWORK_FACTORY_CLASS)
+    graph_factory_constructor = utils.load_class(simconfig.NETWORK_FACTORY_CLASS)
 
-    graph_factory = graph_factor_constructor(simconfig)
+    graph_factory = graph_factory_constructor(simconfig)
 
     model = model_constructor(simconfig, graph_factory)
     model.initialize_population()
@@ -97,8 +97,9 @@ def main():
             log.debug("time: %s  frac active links %s", timestep, ax.get_fraction_links_active())
         ax.step(timestep)
         if model.get_time_last_interaction() != timestep:
-            live = utils.check_liveness_axelrod(ax, model, args, simconfig, timestep)
+            live = utils.check_liveness(ax, model, args, simconfig, timestep)
             if live == False:
+                utils.finalize_extensible_model(model, args, simconfig)
                 exit(0)
 
 # end main

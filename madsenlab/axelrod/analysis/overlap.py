@@ -17,8 +17,6 @@ def calc_probability_interaction_axelrod(agent_traits, neighbor_traits):
         arrays, this probability reduces to the Hamming distance between the two arrays.  Which
         scipy does quickly.  So the relevant probability is 1 - hamming(a,b).
 
-
-
         """
         diff = len(get_different_feature_positions_axelrod(agent_traits,neighbor_traits))
         prob = 1.0 - (float(diff) / float(len(agent_traits)))
@@ -33,8 +31,11 @@ def calc_probability_interaction_extensible(agent_traits, neighbor_traits):
     are easy in python given symmetric differences and unions between set objects.  This also accounts
     for sets of different length, which is crucial in the extensible and semantic models.
     """
-    prob = len(agent_traits.symmetric_difference(neighbor_traits)) / len(agent_traits.union(neighbor_traits))
-    log.debug("prob interaction: %s", prob)
+    diff = agent_traits.symmetric_difference(neighbor_traits)
+    un = agent_traits.union(neighbor_traits)
+
+    prob = float(len(diff)) / float(len(un))
+    #log.debug("focal: %s neighbor: %s diff: %s un: %s prob: %s", agent_traits, neighbor_traits, diff, un, prob)
     return prob
 
 
@@ -58,7 +59,7 @@ def calc_overlap_extensible(agent_traits, neighbor_traits):
     are easy in python given symmetric differences and unions between set objects.  This also accounts
     for sets of different length, which is crucial in the extensible and semantic models.
     """
-    overlap = len(agent_traits.intersection(neighbor_traits)) / len(agent_traits.union(neighbor_traits))
+    overlap = float(len(agent_traits.intersection(neighbor_traits))) / float(len(agent_traits.union(neighbor_traits)))
     #log.debug("overlap: %s", overlap)
     return overlap
 
@@ -77,8 +78,8 @@ def get_different_feature_positions_axelrod(agent_traits, neighbor_traits):
 
 
 def get_traits_differing_from_focal_extensible(focal_traits, neighbor_traits):
-    return focal_traits.difference(neighbor_traits)
+    diff = neighbor_traits - focal_traits
+    #log.debug("tdfrom focal: %s", diff)
+    return diff
 
-def get_traits_differing_from_neighbor_extensible(focal_traits, neighbor_traits):
-    return neighbor_traits.difference(focal_traits)
 
