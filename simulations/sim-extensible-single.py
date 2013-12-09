@@ -80,10 +80,12 @@ def main():
     model_constructor = utils.load_class(structure_class_name)
     rule_constructor = utils.load_class(simconfig.INTERACTION_RULE_CLASS)
     graph_factory_constructor = utils.load_class(simconfig.NETWORK_FACTORY_CLASS)
+    trait_factory_constructor = utils.load_class(simconfig.TRAIT_FACTORY_CLASS)
 
     graph_factory = graph_factory_constructor(simconfig)
+    trait_factory = trait_factory_constructor(simconfig)
 
-    model = model_constructor(simconfig, graph_factory)
+    model = model_constructor(simconfig, graph_factory, trait_factory)
     model.initialize_population()
 
     ax = rule_constructor(model)

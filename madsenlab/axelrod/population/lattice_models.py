@@ -26,7 +26,10 @@ class SquareLatticeFactory(object):
     The SquareLatticeFixedTraitModel has, by default, periodic boundary conditions (thus, the lattice is
     a torus), but this can be overridden in configuration.
 
-    Inherits generic methods for
+
+    This factory is dynamically loaded from its fully qualified name in a configuration file,
+     and passed the simulation configuration object in its constructor.  The instantiating
+     code then calls get_graph()
 
     """
 

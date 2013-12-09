@@ -27,12 +27,13 @@ class BaseGraphPopulation(object):
     "neighbor" methods are concentrated here.
     """
 
-    def __init__(self,simconfig,graph_factory):
+    def __init__(self,simconfig,graph_factory,trait_factory):
         self.simconfig = simconfig
         self.interactions = 0
         self.time_step_last_interaction = 0
         self.prng = RandomState()  # allow the library to choose a seed via OS specific mechanism
         self.graph_factory = graph_factory
+        self.trait_factory = trait_factory
 
         # initialize the graph structure via the factory object
         self.model = self.graph_factory.get_graph()
@@ -76,15 +77,14 @@ class BaseGraphPopulation(object):
     def get_interactions(self):
         return self.interactions
 
+    def initialize_population(self):
+        self.trait_factory.initialize_population(self.model)
 
     ### Abstract methods - derived classes need to override
     def draw_network_colored_by_culture(self):
         raise NotImplementedError
 
     def get_traits_packed(self,agent_traits):
-        raise NotImplementedError
-
-    def initialize_population(self):
         raise NotImplementedError
 
     def set_agent_traits(self, agent_id, trait_list):
@@ -99,23 +99,8 @@ class ExtensibleTraitStructurePopulationBase(BaseGraphPopulation):
     """
     Base class for all Axelrod models which feature a non-fixed number of features/traits per individual.
     """
-    def __init__(self, simconfig,graph_factory):
-        super(ExtensibleTraitStructurePopulationBase, self).__init__(simconfig,graph_factory)
-
-
-    def initialize_population(self):
-        mt = self.simconfig.maxtraits
-        for nodename in self.model.nodes():
-            # get a random number of initial traits between 1 and mt
-            trait_set = set()
-            init_trait_num = self.prng.random_integers(1, mt)
-
-            for i in range(0, init_trait_num):
-                trait = self.prng.random_integers(0,self.simconfig.MAX_TRAIT_TOKEN)
-                trait_set.add(trait)
-
-            #log.debug("traits: %s", pp.pformat(trait_set))
-            self.model.node[nodename]['traits'] = trait_set
+    def __init__(self, simconfig,graph_factory,trait_factory):
+        super(ExtensibleTraitStructurePopulationBase, self).__init__(simconfig,graph_factory, trait_factory)
 
     def set_agent_traits(self, agent_id, trait_set):
         self.model.node[agent_id]['traits'] = trait_set
@@ -150,8 +135,8 @@ class FixedTraitStructurePopulationBase(BaseGraphPopulation):
     instance of a
     """
 
-    def __init__(self, simconfig,graph_factory):
-        super(FixedTraitStructurePopulationBase, self).__init__(simconfig, graph_factory)
+    def __init__(self, simconfig,graph_factory, trait_factory):
+        super(FixedTraitStructurePopulationBase, self).__init__(simconfig, graph_factory, trait_factory)
 
     # TODO:  initialization needs to be refactored before doing the structured model, so we can reuse the structure and part of the rules, but change the "traits"
 
@@ -164,17 +149,6 @@ class FixedTraitStructurePopulationBase(BaseGraphPopulation):
 
     def get_traits_packed(self,agent_traits):
         return ''.join(str(i) for i in agent_traits)
-
-    def initialize_population(self):
-        """
-        Given a graph and a simulation configuration, this method constructs
-        an initial random population given the configuration for number of features
-        and traits.
-        """
-        nf = self.simconfig.num_features
-        nt = self.simconfig.num_traits
-        for nodename in self.model.nodes():
-            self.model.node[nodename]['traits'] = self.prng.randint(0, nt, size=nf)
 
 
     def set_agent_traits(self, agent_id, trait_list):

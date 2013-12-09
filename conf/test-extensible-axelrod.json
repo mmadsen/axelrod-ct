@@ -6,5 +6,6 @@
     "MAXIMUM_INITIAL_TRAITS" : [4,8,16,32],
     "POPULATION_STRUCTURE_CLASS" : "madsenlab.axelrod.population.ExtensibleTraitStructurePopulationBase",
     "INTERACTION_RULE_CLASS" : "madsenlab.axelrod.rules.ExtensibleAxelrodRule",
-    "NETWORK_FACTORY_CLASS" : "madsenlab.axelrod.population.SquareLatticeFactory"
+    "NETWORK_FACTORY_CLASS" : "madsenlab.axelrod.population.SquareLatticeFactory",
+    "TRAIT_FACTORY_CLASS" : "madsenlab.axelrod.traits.ExtensibleTraitFactory"
 }

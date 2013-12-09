@@ -6,6 +6,6 @@
     "NUMBER_OF_TRAITS_PER_DIMENSION" :  [2,3,4,8,16],
     "POPULATION_STRUCTURE_CLASS" : "madsenlab.axelrod.population.FixedTraitStructurePopulationBase",
     "INTERACTION_RULE_CLASS" : "madsenlab.axelrod.rules.AxelrodRule",
-    "NETWORK_FACTORY_CLASS" : "madsenlab.axelrod.population.SquareLatticeFactory"
-
+    "NETWORK_FACTORY_CLASS" : "madsenlab.axelrod.population.SquareLatticeFactory",
+    "TRAIT_FACTORY_CLASS" : "madsenlab.axelrod.traits.AxelrodTraitFactory"
 }

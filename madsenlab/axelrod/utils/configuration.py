@@ -31,6 +31,8 @@ class BaseConfiguration(object):
     POPULATION_STRUCTURE_CLASS = 'madsenlab.axelrod.population.SquareLatticeFixedTraitModel'
 
     NETWORK_FACTORY_CLASS = 'madsenlab.axelrod.population.SquareLatticeFactory'
+
+    TRAIT_FACTORY_CLASS = 'madsenlab.axelrod.traits.AxelrodTraitFactory'
     """
     The fully qualified import path for a class which implements the population model.
     """

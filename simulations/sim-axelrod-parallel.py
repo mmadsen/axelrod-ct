@@ -152,8 +152,10 @@ def run_simulation_worker(queue, args):
             gf_constructor = utils.load_class(simconfig.NETWORK_FACTORY_CLASS)
             model_constructor = utils.load_class(simconfig.POPULATION_STRUCTURE_CLASS)
             rule_constructor = utils.load_class(simconfig.INTERACTION_RULE_CLASS)
+            trait_factory_constructor = utils.load_class(simconfig.TRAIT_FACTORY_CLASS)
+            trait_factory = trait_factory_constructor(simconfig)
             graph_factory = gf_constructor(simconfig)
-            model = model_constructor(simconfig, graph_factory)
+            model = model_constructor(simconfig, graph_factory, trait_factory)
             model.initialize_population()
 
             ax = rule_constructor(model)
