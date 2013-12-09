@@ -50,7 +50,7 @@ def klemm_normalized_L_extensible(pop, simconfig):
     Ranges between [0,1], with 0 possible only for the completely homogeneous configurations.
     Variable names differ from the rest of the codebase, but are designed to be identical to the Klemm notation.
 
-    Basic idea is the same as the core axelrod model, except num_features is the average number of traits in the
+    Basic idea is the same as the core axelrod model, except num_features is the max number of traits in the
     population
     """
     g = pop.model
@@ -60,7 +60,7 @@ def klemm_normalized_L_extensible(pop, simconfig):
     sizes = []
     for nodename in pop.model.nodes():
         sizes.append(len(pop.model.node[nodename]['traits']))
-    F = np.mean(np.asarray(sizes))
+    F = np.amax(np.asarray(sizes))
 
 
 
