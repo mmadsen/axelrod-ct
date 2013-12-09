@@ -12,6 +12,7 @@ import logging as log
 import unittest
 import madsenlab.axelrod.utils as utils
 import madsenlab.axelrod.population as pop
+import madsenlab.axelrod.traits as traits
 import os
 import tempfile
 import pprint as pp
@@ -39,7 +40,8 @@ class SquareLatticeTest(unittest.TestCase):
         config.num_traits = 16
 
         graph_factory = pop.SquareLatticeFactory(config)
-        self.pop = pop.FixedTraitStructurePopulationBase(config,graph_factory)
+        trait_factory = traits.AxelrodTraitFactory(config)
+        self.pop = pop.FixedTraitStructurePopulationBase(config,graph_factory, trait_factory)
         self.pop.initialize_population()
 
 

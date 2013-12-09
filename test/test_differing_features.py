@@ -12,6 +12,7 @@ import unittest
 import madsenlab.axelrod.utils as utils
 import madsenlab.axelrod.rules as rules
 import madsenlab.axelrod.population as pop
+import madsenlab.axelrod.traits as traits
 import madsenlab.axelrod.analysis as analysis
 import logging as log
 import tempfile
@@ -39,7 +40,8 @@ class DifferingFeaturesTest(unittest.TestCase):
         config.num_traits = 4
 
         graph_factory = pop.SquareLatticeFactory(config)
-        self.pop = pop.FixedTraitStructurePopulationBase(config, graph_factory)
+        trait_factory = traits.AxelrodTraitFactory(config)
+        self.pop = pop.FixedTraitStructurePopulationBase(config, graph_factory, trait_factory)
         self.pop.initialize_population()
         self.rule = rules.AxelrodRule(self.pop)
 

@@ -12,6 +12,7 @@ import unittest
 import madsenlab.axelrod.utils as utils
 import madsenlab.axelrod.rules as rules
 import madsenlab.axelrod.population as pop
+import madsenlab.axelrod.traits as traits
 import madsenlab.axelrod.analysis as analysis
 import logging as log
 import pprint as pp
@@ -43,7 +44,8 @@ class ExtensibleTraitTest(unittest.TestCase):
         config.add_rate = 0.1
 
         graph_factory = pop.SquareLatticeFactory(config)
-        self.pop = pop.ExtensibleTraitStructurePopulationBase(config, graph_factory)
+        trait_factory = traits.ExtensibleTraitFactory(config)
+        self.pop = pop.ExtensibleTraitStructurePopulationBase(config, graph_factory, trait_factory)
         self.pop.initialize_population()
 
 
