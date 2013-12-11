@@ -12,6 +12,8 @@ import json
 from operator import itemgetter
 import sys
 
+##########################################################################
+
 class BaseConfiguration(object):
     """
     Common behavior for all configuration classes.
@@ -227,6 +229,7 @@ class BaseConfiguration(object):
         filtered.sort(key=itemgetter(0))
         return filtered
 
+##########################################################################
 
 class AxelrodConfiguration(BaseConfiguration):
     """
@@ -319,6 +322,8 @@ class AxelrodConfiguration(BaseConfiguration):
         pass
 
 
+##########################################################################
+
 class AxelrodExtensibleConfiguration(BaseConfiguration):
 
     TRAIT_ADDITION_RATE = [0.01, 0.05, 0.1, 0.25]
@@ -376,6 +381,100 @@ class AxelrodExtensibleConfiguration(BaseConfiguration):
     @add_rate.setter
     def add_rate(self,val):
         self._add_rate = val
+
+    def _calc_derived_values(self):
+        """
+        No known derived values right now....
+        """
+        pass
+
+##########################################################################
+
+class TreeStructuredConfiguration(BaseConfiguration):
+
+    TRAIT_ADDITION_RATE = [0.01, 0.05, 0.1, 0.25]
+    """
+    When an interaction occurs, some models may allow the trait list to grow by adding a neighbor's trait
+    to the list, instead of replacing an existing trait with it.  This isn't very interesting in a basic
+    extensible model, but it's the foundation for models where addition happens for a *reason* -- i.e.,
+    learning prerequisites, etc.
+    """
+
+    MAXIMUM_INITIAL_TRAITS = [4,8,16,32]
+    """
+    Individual agents will receive a random number of initial traits, distributed between 1 and this MAX value.
+    The distribution used to generate each agent's initial trait endowment may vary by rule.
+    """
+
+    NUM_TRAIT_TREES = [1,4,8,16,32]
+    """
+    The number of independent trait trees created to serve as the trait universe.
+    """
+
+    TREE_BRANCHING_FACTOR = [2,3,4,8]
+    """
+    Interpretable either as the fixed branching factor for regular trees, or the mean branching factor for
+    random trees.
+    """
+
+    TREE_DEPTH_FACTOR = [4,5,6,8]
+    """
+    Interpretable either as the fixed depth for regular trees (e.g., balanced trees), or the mean depth for
+    random trees.
+    """
+
+
+
+    def __init__(self, config_file):
+        super(TreeStructuredConfiguration, self).__init__(config_file)
+
+        self._maxtraits = None
+        self._add_rate = None
+        self._num_trees = None
+        self._branching_factor = None
+        self._depth_factor = None
+
+
+    @property
+    def maxtraits(self):
+        return self._maxtraits
+
+    @maxtraits.setter
+    def maxtraits(self,val):
+        self._maxtraits = val
+
+    @property
+    def add_rate(self):
+        return self._add_rate
+
+    @add_rate.setter
+    def add_rate(self,val):
+        self._add_rate = val
+
+    @property
+    def num_trees(self):
+        return self._num_trees
+
+    @num_trees.setter
+    def num_trees(self,val):
+        self._num_trees = val
+
+    @property
+    def branching_factor(self):
+        return self._branching_factor
+
+    @branching_factor.setter
+    def branching_factor(self,val):
+        self._branching_factor = val
+
+    @property
+    def depth_factor(self):
+        return self._depth_factor
+
+    @depth_factor.setter
+    def depth_factor(self,val):
+        self._depth_factor = val
+
 
     def _calc_derived_values(self):
         """

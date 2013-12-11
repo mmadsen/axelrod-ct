@@ -31,7 +31,7 @@ class ExtensibleTraitTest(unittest.TestCase):
     "POPULATION_SIZES_STUDIED" : [64,100],
     "TRAIT_ADDITION_RATE" : [0.01, 0.05, 0.1, 0.25],
     "MAXIMUM_INITIAL_TRAITS" : [4,8,16,32],
-    "POPULATION_STRUCTURE_CLASS" : "madsenlab.axelrod.population.ExtensibleTraitStructurePopulationBase",
+    "POPULATION_STRUCTURE_CLASS" : "madsenlab.axelrod.population.ExtensibleTraitStructurePopulation",
     "INTERACTION_RULE_CLASS" : "madsenlab.axelrod.rules.AxelrodRule",
     "NETWORK_FACTORY_CLASS" : "madsenlab.axelrod.population.SquareLatticeFactory"
 }
@@ -45,7 +45,7 @@ class ExtensibleTraitTest(unittest.TestCase):
 
         graph_factory = pop.SquareLatticeFactory(config)
         trait_factory = traits.ExtensibleTraitFactory(config)
-        self.pop = pop.ExtensibleTraitStructurePopulationBase(config, graph_factory, trait_factory)
+        self.pop = pop.ExtensibleTraitStructurePopulation(config, graph_factory, trait_factory)
         self.pop.initialize_population()
 
 

@@ -8,4 +8,4 @@ Description here
 
 """
 from lattice_models import SquareLatticeFactory
-from base_population_classes import FixedTraitStructurePopulationBase, ExtensibleTraitStructurePopulationBase
+from base_population_classes import FixedTraitStructurePopulation, ExtensibleTraitStructurePopulation

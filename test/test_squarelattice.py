@@ -41,7 +41,7 @@ class SquareLatticeTest(unittest.TestCase):
 
         graph_factory = pop.SquareLatticeFactory(config)
         trait_factory = traits.AxelrodTraitFactory(config)
-        self.pop = pop.FixedTraitStructurePopulationBase(config,graph_factory, trait_factory)
+        self.pop = pop.FixedTraitStructurePopulation(config,graph_factory, trait_factory)
         self.pop.initialize_population()
 
 

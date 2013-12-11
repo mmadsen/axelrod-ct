@@ -91,16 +91,56 @@ class BaseGraphPopulation(object):
         raise NotImplementedError
 
 
-
-
 ###################################################################################
 
-class ExtensibleTraitStructurePopulationBase(BaseGraphPopulation):
+class TreeTraitStructurePopulation(BaseGraphPopulation):
     """
     Base class for all Axelrod models which feature a non-fixed number of features/traits per individual.
     """
     def __init__(self, simconfig,graph_factory,trait_factory):
-        super(ExtensibleTraitStructurePopulationBase, self).__init__(simconfig,graph_factory, trait_factory)
+        super(TreeTraitStructurePopulation, self).__init__(simconfig,graph_factory, trait_factory)
+
+
+    def set_agent_traits(self, agent_id, trait_set):
+        # TODO:  rewrite set traits for tree structured traits - or not?
+        self.model.node[agent_id]['traits'] = trait_set
+
+    def get_traits_packed(self,agent_traits):
+        # TODO:  rewrite packed traits network for tree structured traits
+        hashable_set = frozenset(agent_traits)
+        return hash(hashable_set)
+
+    def draw_network_colored_by_culture(self):
+        # TODO:  rewrite draw network for tree structured traits
+        nodes, traits = zip(*nx.get_node_attributes(self.model, 'traits').items())
+        nodes, pos = zip(*nx.get_node_attributes(self.model, 'pos').items())
+        color_tupled_compressed = [self.get_traits_packed(t) for t in traits]
+        nx.draw(self.model, pos=pos, nodelist=nodes, node_color=color_tupled_compressed)
+        plt.show()
+
+    # EXPLICIT OVERRIDE OF BASE CLASS METHOD!
+
+    def initialize_population(self):
+        """
+        For semantically structured traits, since the traits are not just random integers,
+        we need to have a copy of the trait "universe" -- i.e., all possible traits and their
+        relations.  So we initialize the trait universe first, and then allow the trait factory
+        to initialize our starting population on the chosen population structure.
+        """
+        self.trait_universe = self.trait_factory.initialize_traits()
+        self.trait_factory.initialize_population(self.model)
+
+
+
+
+###################################################################################
+
+class ExtensibleTraitStructurePopulation(BaseGraphPopulation):
+    """
+    Base class for all Axelrod models which feature a non-fixed number of features/traits per individual.
+    """
+    def __init__(self, simconfig,graph_factory,trait_factory):
+        super(ExtensibleTraitStructurePopulation, self).__init__(simconfig,graph_factory, trait_factory)
 
     def set_agent_traits(self, agent_id, trait_set):
         self.model.node[agent_id]['traits'] = trait_set
@@ -120,7 +160,7 @@ class ExtensibleTraitStructurePopulationBase(BaseGraphPopulation):
 
 ###################################################################################
 
-class FixedTraitStructurePopulationBase(BaseGraphPopulation):
+class FixedTraitStructurePopulation(BaseGraphPopulation):
     """
     Base class for all Axelrod models with a fixed number of features and number of traits per feature.
     Specifies no specific graph, lattice, or network model,
@@ -136,7 +176,7 @@ class FixedTraitStructurePopulationBase(BaseGraphPopulation):
     """
 
     def __init__(self, simconfig,graph_factory, trait_factory):
-        super(FixedTraitStructurePopulationBase, self).__init__(simconfig, graph_factory, trait_factory)
+        super(FixedTraitStructurePopulation, self).__init__(simconfig, graph_factory, trait_factory)
 
     # TODO:  initialization needs to be refactored before doing the structured model, so we can reuse the structure and part of the rules, but change the "traits"
 
