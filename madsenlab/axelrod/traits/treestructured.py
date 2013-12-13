@@ -162,7 +162,17 @@ class MultipleBalancedTreeStructuredTraitFactory(object):
 
     def initialize_population(self, pop_graph):
         mt = self.simconfig.maxtraits
-        # TODO:  give each individual maxtraits random chains, so traits become a set of lists.
+        for nodename in pop_graph.nodes():
+            # get a random number of initial trait chains
+            agent_traits = set()
+            init_trait_num = self.prng.random_integers(1, mt)
+
+            for i in range(0, init_trait_num):
+                chain = self.trait_set.get_random_trait_path()
+                agent_traits.add(chain)
+
+            #log.debug("traits: %s", pp.pformat(trait_set))
+            pop_graph.node[nodename]['traits'] = agent_traits
 
 
 
