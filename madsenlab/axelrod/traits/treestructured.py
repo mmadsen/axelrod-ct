@@ -157,10 +157,13 @@ class MultipleBalancedTreeStructuredTraitFactory(object):
 
         trees = nx.union_all(graphs)
         #log.debug("roots: %s", pp.pformat(roots))
-
-        return MultipleTreeStructuredTraitSet(trees, roots, self.prng)
+        self.trait_set = MultipleTreeStructuredTraitSet(trees, roots, self.prng)
+        return self.trait_set
 
     def initialize_population(self, pop_graph):
-        pass
+        mt = self.simconfig.maxtraits
+        # TODO:  give each individual maxtraits random chains, so traits become a set of lists.
+
+
 
 

@@ -40,7 +40,7 @@ class TreeStructuredTraitTest(unittest.TestCase):
         self.tf.flush()
         self.config = utils.TreeStructuredConfiguration(self.tf.name)
 
-    @unittest.skip("Skipping test_tree_construction: this creates a graph and blocks - run manually")
+    #@unittest.skip("Skipping test_tree_construction: this creates a graph and blocks - run manually")
     def test_tree_construction(self):
         self.config.depth_factor = 4
         self.config.branching_factor = 3
@@ -87,11 +87,11 @@ class TreeStructuredTraitTest(unittest.TestCase):
             rand_path = trait_univ.get_random_trait_path()
             log.info("rand path %s: %s", i, rand_path)
 
-    @unittest.skip("Skipping test_multiple_tree_creation: this creates a graph and blocks - run manually")
+    #@unittest.skip("Skipping test_multiple_tree_creation: this creates a graph and blocks - run manually")
     def test_multiple_tree_creation(self):
         self.config.depth_factor = 3
         self.config.branching_factor = 2
-        self.config.num_trees = 2
+        self.config.num_trees = 3
 
         factory = traits.MultipleBalancedTreeStructuredTraitFactory(self.config)
         trait_univ = factory.initialize_traits()
@@ -104,7 +104,6 @@ class TreeStructuredTraitTest(unittest.TestCase):
         self.config.depth_factor = 4
         self.config.branching_factor = 3
         self.config.num_trees = 4
-
         factory = traits.MultipleBalancedTreeStructuredTraitFactory(self.config)
         trait_univ = factory.initialize_traits()
 
@@ -135,6 +134,17 @@ class TreeStructuredTraitTest(unittest.TestCase):
         factory = traits.MultipleBalancedTreeStructuredTraitFactory(self.config)
         trait_univ = factory.initialize_traits()
         self.assertTrue(trait_univ.has_prereq_for_trait(30, agent_traits))
+
+    def test_random_trait_paths(self):
+        self.config.depth_factor = 3
+        self.config.branching_factor = 3
+        self.config.num_trees = 8
+        factory = traits.MultipleBalancedTreeStructuredTraitFactory(self.config)
+        trait_univ = factory.initialize_traits()
+
+        for i in range(0, 10):
+            print "%s" % trait_univ.get_random_trait_path()
+
 
 
 if __name__ == "__main__":
