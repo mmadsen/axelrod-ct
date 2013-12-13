@@ -12,3 +12,4 @@ from configuration import AxelrodConfiguration, AxelrodExtensibleConfiguration, 
 from dynamicloading import load_class
 from convergence import check_liveness
 from finalize import finalize_axelrod_model, finalize_extensible_model
+from math_functions import num_nodes_balanced_tree

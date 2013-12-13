@@ -56,9 +56,9 @@ class SquareLatticeTest(unittest.TestCase):
         for nodename in self.pop.model.nodes():
             log.info("neighbors of %s: %s  traits: %s", nodename, pp.pformat(self.pop.model.neighbors(nodename)), pp.pformat(self.pop.model.node[nodename]['traits']))
 
-        log.info("testing random agent selection")
+        #log.info("testing random agent selection")
         agent_tuple = self.pop.get_random_agent()
-        log.info("agent %s", pp.pformat(agent_tuple))
+        log.info("random agent selection....agent %s", pp.pformat(agent_tuple))
 
         log.info("testing random neighbor for selected agent")
         neighbor_tuple = self.pop.get_random_neighbor_for_agent(agent_tuple[0])

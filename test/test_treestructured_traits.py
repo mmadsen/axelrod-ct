@@ -52,7 +52,6 @@ class TreeStructuredTraitTest(unittest.TestCase):
         plt.show()
         self.assertTrue(True)
 
-
     def test_path(self):
         self.config.depth_factor = 4
         self.config.branching_factor = 3
@@ -71,8 +70,6 @@ class TreeStructuredTraitTest(unittest.TestCase):
         trait_univ = factory.initialize_traits()
         self.assertTrue(trait_univ.has_prereq_for_trait(120, agent_traits))
 
-
-
     def test_nothave_prerequisites(self):
         agent_traits = set([0, 3])
         self.config.depth_factor = 4
@@ -81,7 +78,63 @@ class TreeStructuredTraitTest(unittest.TestCase):
         trait_univ = factory.initialize_traits()
         self.assertFalse(trait_univ.has_prereq_for_trait(120, agent_traits))
 
+    def test_random_trait_paths(self):
+        self.config.depth_factor = 4
+        self.config.branching_factor = 3
+        factory = traits.BalancedTreeStructuredTraitFactory(self.config)
+        trait_univ = factory.initialize_traits()
+        for i in range(0, 10):
+            rand_path = trait_univ.get_random_trait_path()
+            log.info("rand path %s: %s", i, rand_path)
 
+    @unittest.skip("Skipping test_multiple_tree_creation: this creates a graph and blocks - run manually")
+    def test_multiple_tree_creation(self):
+        self.config.depth_factor = 3
+        self.config.branching_factor = 2
+        self.config.num_trees = 2
+
+        factory = traits.MultipleBalancedTreeStructuredTraitFactory(self.config)
+        trait_univ = factory.initialize_traits()
+        pos=nx.graphviz_layout(trait_univ.graph,prog='dot')
+        nx.draw(trait_univ.graph,pos,with_labels=True,arrows=False)
+        plt.show()
+        self.assertTrue(True)
+
+    def test_multiple_tree_correct_root(self):
+        self.config.depth_factor = 4
+        self.config.branching_factor = 3
+        self.config.num_trees = 4
+
+        factory = traits.MultipleBalancedTreeStructuredTraitFactory(self.config)
+        trait_univ = factory.initialize_traits()
+
+        node = 255
+        root_for_node = trait_univ._get_root_for_node(node)
+        expected = 244
+        log.info("the root for node %s is %s, expected %s", node, root_for_node, expected)
+        self.assertEqual(root_for_node, expected)
+
+    def test_path_multiple_trees(self):
+        self.config.depth_factor = 3
+        self.config.branching_factor = 2
+        self.config.num_trees = 2
+        expected = [16,18,22]
+
+        factory = traits.MultipleBalancedTreeStructuredTraitFactory(self.config)
+        trait_univ = factory.initialize_traits()
+        path = trait_univ.get_parents_for_node(30)
+        log.info("mult tree path - expected: %s obs: %s", expected, path)
+        self.assertEqual(expected,path)
+
+    def test_prereq_mult_trees(self):
+        self.config.depth_factor = 3
+        self.config.branching_factor = 2
+        self.config.num_trees = 2
+        agent_traits = [16,18,22]
+
+        factory = traits.MultipleBalancedTreeStructuredTraitFactory(self.config)
+        trait_univ = factory.initialize_traits()
+        self.assertTrue(trait_univ.has_prereq_for_trait(30, agent_traits))
 
 
 if __name__ == "__main__":

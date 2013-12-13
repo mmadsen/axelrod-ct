@@ -9,4 +9,5 @@ Description here
 """
 
 from unstructured import ExtensibleTraitFactory, AxelrodTraitFactory
-from semantic import BalancedTreeStructuredTraitFactory, TreeStructuredTraitSet
+from treestructured import BalancedTreeStructuredTraitFactory, TreeStructuredTraitSet, \
+    MultipleTreeStructuredTraitSet, MultipleBalancedTreeStructuredTraitFactory

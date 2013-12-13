@@ -49,7 +49,7 @@ class AxelrodAnalytics(unittest.TestCase):
 
     def test_culture_counts(self):
         counts = analysis.get_culture_counts(self.pop)
-        log.info("counts: %s", pp.pformat(counts))
+        log.info("counts: %s", counts)
 
     def test_klemm(self):
         klemm_val = analysis.klemm_normalized_L_axelrod(self.pop, self.config)
@@ -89,7 +89,7 @@ class ExtensibleAnalytics(unittest.TestCase):
 
     def test_culture_counts(self):
         counts = analysis.get_culture_counts(self.pop)
-        log.info("counts: %s", pp.pformat(counts))
+        log.info("counts: %s", counts)
 
     def test_klemm(self):
         klemm_val = analysis.klemm_normalized_L_extensible(self.pop, self.config)
