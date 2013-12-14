@@ -90,6 +90,7 @@ class MultipleTreeStructuredTraitSet(TreeStructuredTraitSet):
         allows for multiple roots (i.e., we may have multiple trees)
         """
         root_for_node = self._get_root_for_node(node_id)
+        #log.debug("getting paths from %s to %s", root_for_node, node_id)
         generator = nx.all_simple_paths(self.graph, source=root_for_node, target=node_id)
         path = generator.next()  # only one tree should come back
         path.pop() # remove last element, which is the target node_id
@@ -146,14 +147,15 @@ class MultipleBalancedTreeStructuredTraitFactory(object):
         starting_num = 0
 
         for i in range(0, n):
-            log.debug("building tree with starting root: %s", starting_num)
+            #log.debug("building tree with starting root: %s", starting_num)
             g = nx.balanced_tree(r,h)
             g = nx.convert_node_labels_to_integers(g, first_label = starting_num)
+
+            #log.debug("nodes: %s", pp.pformat(g.nodes()))
 
             graphs.append(g)
             roots.append(starting_num)
             starting_num += num_nodes
-            starting_num += 1
 
         trees = nx.union_all(graphs)
         #log.debug("roots: %s", pp.pformat(roots))
@@ -169,9 +171,9 @@ class MultipleBalancedTreeStructuredTraitFactory(object):
 
             for i in range(0, init_trait_num):
                 chain = self.trait_set.get_random_trait_path()
-                agent_traits.add(chain)
+                agent_traits.add(tuple(chain))
 
-            #log.debug("traits: %s", pp.pformat(trait_set))
+            log.debug("traits: %s", pp.pformat(agent_traits))
             pop_graph.node[nodename]['traits'] = agent_traits
 
 

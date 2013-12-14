@@ -11,6 +11,7 @@ Description here
 import unittest
 import madsenlab.axelrod.utils as utils
 import madsenlab.axelrod.traits as traits
+import madsenlab.axelrod.population as pop
 import networkx as nx
 import matplotlib.pyplot as plt
 import logging as log
@@ -40,7 +41,7 @@ class TreeStructuredTraitTest(unittest.TestCase):
         self.tf.flush()
         self.config = utils.TreeStructuredConfiguration(self.tf.name)
 
-    #@unittest.skip("Skipping test_tree_construction: this creates a graph and blocks - run manually")
+    @unittest.skip("Skipping test_tree_construction: this creates a graph and blocks - run manually")
     def test_tree_construction(self):
         self.config.depth_factor = 4
         self.config.branching_factor = 3
@@ -87,7 +88,7 @@ class TreeStructuredTraitTest(unittest.TestCase):
             rand_path = trait_univ.get_random_trait_path()
             log.info("rand path %s: %s", i, rand_path)
 
-    #@unittest.skip("Skipping test_multiple_tree_creation: this creates a graph and blocks - run manually")
+    @unittest.skip("Skipping test_multiple_tree_creation: this creates a graph and blocks - run manually")
     def test_multiple_tree_creation(self):
         self.config.depth_factor = 3
         self.config.branching_factor = 2
@@ -109,7 +110,7 @@ class TreeStructuredTraitTest(unittest.TestCase):
 
         node = 255
         root_for_node = trait_univ._get_root_for_node(node)
-        expected = 244
+        expected = 242
         log.info("the root for node %s is %s, expected %s", node, root_for_node, expected)
         self.assertEqual(root_for_node, expected)
 
@@ -117,11 +118,11 @@ class TreeStructuredTraitTest(unittest.TestCase):
         self.config.depth_factor = 3
         self.config.branching_factor = 2
         self.config.num_trees = 2
-        expected = [16,18,22]
+        expected = [15, 17, 21]
 
         factory = traits.MultipleBalancedTreeStructuredTraitFactory(self.config)
         trait_univ = factory.initialize_traits()
-        path = trait_univ.get_parents_for_node(30)
+        path = trait_univ.get_parents_for_node(29)
         log.info("mult tree path - expected: %s obs: %s", expected, path)
         self.assertEqual(expected,path)
 
@@ -129,11 +130,11 @@ class TreeStructuredTraitTest(unittest.TestCase):
         self.config.depth_factor = 3
         self.config.branching_factor = 2
         self.config.num_trees = 2
-        agent_traits = [16,18,22]
+        agent_traits = [15, 17, 21]
 
         factory = traits.MultipleBalancedTreeStructuredTraitFactory(self.config)
         trait_univ = factory.initialize_traits()
-        self.assertTrue(trait_univ.has_prereq_for_trait(30, agent_traits))
+        self.assertTrue(trait_univ.has_prereq_for_trait(29, agent_traits))
 
     def test_random_trait_paths(self):
         self.config.depth_factor = 3
@@ -143,7 +144,20 @@ class TreeStructuredTraitTest(unittest.TestCase):
         trait_univ = factory.initialize_traits()
 
         for i in range(0, 10):
-            print "%s" % trait_univ.get_random_trait_path()
+            log.info("%s", trait_univ.get_random_trait_path())
+
+    def test_mult_tree_population(self):
+        self.config.depth_factor = 3
+        self.config.branching_factor = 3
+        self.config.num_trees = 8
+        self.config.popsize = 25
+        trait_factory = traits.MultipleBalancedTreeStructuredTraitFactory(self.config)
+        graph_factory = pop.SquareLatticeFactory(self.config)
+        self.pop = pop.TreeTraitStructurePopulation(self.config,graph_factory,trait_factory)
+        self.pop.initialize_population()
+
+
+
 
 
 
