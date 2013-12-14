@@ -144,17 +144,20 @@ class TreeStructuredTraitTest(unittest.TestCase):
         trait_univ = factory.initialize_traits()
 
         for i in range(0, 10):
-            log.info("%s", trait_univ.get_random_trait_path())
+            log.info("example rand path: %s", trait_univ.get_random_trait_path())
 
     def test_mult_tree_population(self):
         self.config.depth_factor = 3
         self.config.branching_factor = 3
         self.config.num_trees = 8
+        self.config.maxtraits = 6
         self.config.popsize = 25
         trait_factory = traits.MultipleBalancedTreeStructuredTraitFactory(self.config)
         graph_factory = pop.SquareLatticeFactory(self.config)
         self.pop = pop.TreeTraitStructurePopulation(self.config,graph_factory,trait_factory)
         self.pop.initialize_population()
+
+        log.info("pop: %s", pp.pformat(self.pop, indent=1, width=40))
 
 
 

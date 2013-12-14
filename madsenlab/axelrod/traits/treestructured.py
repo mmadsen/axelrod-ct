@@ -173,7 +173,7 @@ class MultipleBalancedTreeStructuredTraitFactory(object):
                 chain = self.trait_set.get_random_trait_path()
                 agent_traits.add(tuple(chain))
 
-            log.debug("traits: %s", pp.pformat(agent_traits))
+            #log.debug("traits: %s", pp.pformat(agent_traits))
             pop_graph.node[nodename]['traits'] = agent_traits
 
 

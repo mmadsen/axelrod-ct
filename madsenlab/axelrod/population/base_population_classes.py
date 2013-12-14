@@ -131,6 +131,15 @@ class TreeTraitStructurePopulation(BaseGraphPopulation):
         self.trait_factory.initialize_population(self.model)
 
 
+    def __repr__(self):
+        rep = 'TreeTraitStructurePopulation: ['
+        for nodename in self.model.nodes():
+            rep += "node %s: " % nodename
+            rep += pp.pformat(self.model.node[nodename]['traits'])
+            rep += ",\n"
+        rep += ' ]'
+        return rep
+
 
 
 ###################################################################################
