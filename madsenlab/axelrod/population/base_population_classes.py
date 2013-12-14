@@ -95,23 +95,20 @@ class BaseGraphPopulation(object):
 
 class TreeTraitStructurePopulation(BaseGraphPopulation):
     """
-    Base class for all Axelrod models which feature a non-fixed number of features/traits per individual.
+    Base class for all Axelrod models which feature a non-fixed number of features/traits per individual where
+    traits are encoded as paths in a tree.
     """
     def __init__(self, simconfig,graph_factory,trait_factory):
-        super(TreeTraitStructurePopulation, self).__init__(simconfig,graph_factory, trait_factory)
-
+        super(TreeTraitStructurePopulation, self).__init__(simconfig,graph_factory,trait_factory)
 
     def set_agent_traits(self, agent_id, trait_set):
-        # TODO:  rewrite set traits for tree structured traits - or not?
         self.model.node[agent_id]['traits'] = trait_set
 
     def get_traits_packed(self,agent_traits):
-        # TODO:  rewrite packed traits network for tree structured traits
         hashable_set = frozenset(agent_traits)
         return hash(hashable_set)
 
     def draw_network_colored_by_culture(self):
-        # TODO:  rewrite draw network for tree structured traits
         nodes, traits = zip(*nx.get_node_attributes(self.model, 'traits').items())
         nodes, pos = zip(*nx.get_node_attributes(self.model, 'pos').items())
         color_tupled_compressed = [self.get_traits_packed(t) for t in traits]
@@ -119,7 +116,6 @@ class TreeTraitStructurePopulation(BaseGraphPopulation):
         plt.show()
 
     # EXPLICIT OVERRIDE OF BASE CLASS METHOD!
-
     def initialize_population(self):
         """
         For semantically structured traits, since the traits are not just random integers,
@@ -186,8 +182,6 @@ class FixedTraitStructurePopulation(BaseGraphPopulation):
 
     def __init__(self, simconfig,graph_factory, trait_factory):
         super(FixedTraitStructurePopulation, self).__init__(simconfig, graph_factory, trait_factory)
-
-    # TODO:  initialization needs to be refactored before doing the structured model, so we can reuse the structure and part of the rules, but change the "traits"
 
     def draw_network_colored_by_culture(self):
         nodes, colors = zip(*nx.get_node_attributes(self.model, 'traits').items())

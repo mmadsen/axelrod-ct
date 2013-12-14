@@ -159,6 +159,7 @@ class TreeStructuredTraitTest(unittest.TestCase):
 
         log.info("pop: %s", pp.pformat(self.pop, indent=1, width=40))
 
+        #self.pop.draw_network_colored_by_culture()
 
 
 
