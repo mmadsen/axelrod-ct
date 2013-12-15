@@ -10,6 +10,10 @@ Description here
 
 import logging as log
 
+#################################################
+# interaction probabilities
+
+
 def calc_probability_interaction_axelrod(agent_traits, neighbor_traits):
         """
         The probability of interaction is simply the inverse of the fraction of the features for which the
@@ -38,6 +42,8 @@ def calc_probability_interaction_extensible(agent_traits, neighbor_traits):
     #log.debug("focal: %s neighbor: %s diff: %s un: %s prob: %s", agent_traits, neighbor_traits, diff, un, prob)
     return prob
 
+#################################################
+# overlap calculations
 
 
 def calc_overlap_axelrod(agent_traits, neighbor_traits):
@@ -64,6 +70,9 @@ def calc_overlap_extensible(agent_traits, neighbor_traits):
     return overlap
 
 
+#################################################
+# differing trait/features
+
 def get_different_feature_positions_axelrod(agent_traits, neighbor_traits):
     """
     Returns a list of the positions at which two lists of traits differ (but not the differing
@@ -81,5 +90,4 @@ def get_traits_differing_from_focal_extensible(focal_traits, neighbor_traits):
     diff = neighbor_traits - focal_traits
     #log.debug("tdfrom focal: %s", diff)
     return diff
-
 

@@ -10,6 +10,7 @@ Description here
 
 import json
 from operator import itemgetter
+from numpy.random import RandomState
 import sys
 
 ##########################################################################
@@ -89,6 +90,14 @@ class BaseConfiguration(object):
         self._sim_id = None
         self._periodic = None
         self._script = None
+
+        # set up a global RNG everything can use
+        self._prng = RandomState()
+
+    @property
+    def prng(self):
+        return self._prng
+
 
     @property
     def script(self):

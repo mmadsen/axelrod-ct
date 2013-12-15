@@ -12,6 +12,7 @@ import unittest
 import madsenlab.axelrod.utils as utils
 import madsenlab.axelrod.traits as traits
 import madsenlab.axelrod.population as pop
+import madsenlab.axelrod.analysis as analysis
 import networkx as nx
 import matplotlib.pyplot as plt
 import logging as log
@@ -157,12 +158,66 @@ class TreeStructuredTraitTest(unittest.TestCase):
         self.pop = pop.TreeTraitStructurePopulation(self.config,graph_factory,trait_factory)
         self.pop.initialize_population()
 
-        log.info("pop: %s", pp.pformat(self.pop, indent=1, width=40))
+        log.info("pop: %s", pp.pformat(self.pop, indent=1, width=80))
 
         #self.pop.draw_network_colored_by_culture()
 
+    def test_agent_disjointness_multtree(self):
+        focal = set()
+        focal.add((40, 41, 44, 53))
+        focal.add((200, 203, 212))
+        focal.add((280, 283, 290, 313))
+
+        neighbor = set()
+        neighbor.add((200, 202, 207))
+        neighbor.add((240, 242, 248, 267))
+
+        self.assertTrue(focal.isdisjoint(neighbor))
 
 
+    def test_agent_subset_multtree(self):
+        focal = set()
+        focal.add((40, 41, 44, 53))
+        focal.add((200, 203, 212))
+        focal.add((280, 283, 290, 313))
+
+        neighbor = set()
+        neighbor.add((200, 203, 212))
+
+        self.assertTrue(neighbor.issubset(focal))
+
+
+    def test_probability_interaction_multtree(self):
+        focal = set()
+        focal.add((40, 41, 44, 53))
+        focal.add((280, 283, 290, 313))
+
+        neighbor = set()
+        neighbor.add((40, 41, 44, 53))
+        neighbor.add((200, 202, 207))
+
+        expected = 0.66667
+
+        prob = analysis.calc_probability_interaction_extensible(focal, neighbor)
+        log.info("prob of interaction for mult tree: %s", prob)
+        self.assertAlmostEqual(prob, expected, delta=0.01 )
+
+    def test_differing_traits_multtree(self):
+        focal = set()
+        focal.add((40, 41, 44, 53))
+        focal.add((280, 283, 290, 313))
+
+        neighbor = set()
+        neighbor.add((40, 41, 44, 53))
+        neighbor.add((200, 202, 207))
+        neighbor.add((280, 283, 290, 313))
+
+        expected = set()
+        expected.add((200, 202, 207))
+
+        differing = analysis.get_traits_differing_from_focal_extensible(focal,neighbor)
+        log.info("differing traits multtree: %s", pp.pformat(differing))
+        self.assertEqual(differing, expected)
 
 
 if __name__ == "__main__":
