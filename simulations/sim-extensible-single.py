@@ -14,6 +14,7 @@ import ming
 import argparse
 import madsenlab.axelrod.utils as utils
 import madsenlab.axelrod.data as data
+import madsenlab.axelrod.analysis as analysis
 import madsenlab.axelrod.rules as rules
 
 import uuid
@@ -33,6 +34,7 @@ def setup():
     parser.add_argument("--popsize", help="Population size", required=True)
     parser.add_argument("--maxinittraits", help="Max initial number of traits per indiv", required=True)
     parser.add_argument("--additionrate", help="Rate at which traits are added during interactions", required=True)
+    parser.add_argument("--maxtraitvalue", help="Maximum integer token for traits in the trait space", required=True)
     parser.add_argument("--periodic", help="Periodic boundary condition", choices=['1','0'], required=True)
     parser.add_argument("--diagram", help="Draw a diagram of the converged model", action="store_true")
     parser.add_argument("--drift_rate", help="Rate of drift")
@@ -60,6 +62,7 @@ def setup():
     simconfig.popsize = int(args.popsize)
     simconfig.maxtraits = int(args.maxinittraits)
     simconfig.add_rate = float(args.additionrate)
+    simconfig.max_trait_value = int(args.maxtraitvalue)
 
     simconfig.sim_id = uuid.uuid4().urn
     if args.periodic == '1':
@@ -93,6 +96,8 @@ def main():
     timestep = 0
     last_interaction = 0
 
+    counts = analysis.get_culture_counts(model)
+
     while(1):
         timestep += 1
         if(timestep % 10000 == 0):
@@ -101,6 +106,7 @@ def main():
         if model.get_time_last_interaction() != timestep:
             live = utils.check_liveness(ax, model, args, simconfig, timestep)
             if live == False:
+                log.info("Finalizing statistics at time: %s", model.get_time_last_interaction())
                 utils.finalize_extensible_model(model, args, simconfig)
                 exit(0)
 

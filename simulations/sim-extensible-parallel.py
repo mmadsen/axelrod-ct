@@ -39,7 +39,7 @@ def setup():
 
     args = parser.parse_args()
 
-    simconfig = utils.AxelrodConfiguration(args.configuration)
+    simconfig = utils.AxelrodExtensibleConfiguration(args.configuration)
 
     if args.debug == '1':
         log.basicConfig(level=log.DEBUG, format='%(asctime)s %(levelname)s: %(message)s')
@@ -63,7 +63,7 @@ def main():
     work_queue = mp.JoinableQueue()
 
     structure_class_name = simconfig.POPULATION_STRUCTURE_CLASS
-    log.info("Configuring Axelrod model with structure class: %s", structure_class_name)
+    log.info("Configuring Extensible Axelrod model with structure class: %s", structure_class_name)
 
 
 
@@ -97,23 +97,17 @@ def create_processes(queue, worker):
 
 
 def queue_simulations(queue, args):
-    basic_config = utils.AxelrodConfiguration(args.configuration)
+    basic_config = utils.AxelrodExtensibleConfiguration(args.configuration)
 
-    if basic_config.INTERACTION_RULE_CLASS == 'madsenlab.axelrod.rules.AxelrodDriftRule':
+    if basic_config.INTERACTION_RULE_CLASS == 'madsenlab.axelrod.rules.ExtensibleAxelrodRule':
         state_space = [
             basic_config.POPULATION_SIZES_STUDIED,
-            basic_config.NUMBER_OF_DIMENSIONS_OR_FEATURES,
-            basic_config.NUMBER_OF_TRAITS_PER_DIMENSION,
-            basic_config.DRIFT_RATES
-        ]
-    elif basic_config.INTERACTION_RULE_CLASS == 'madsenlab.axelrod.rules.AxelrodRule':
-        state_space = [
-            basic_config.POPULATION_SIZES_STUDIED,
-            basic_config.NUMBER_OF_DIMENSIONS_OR_FEATURES,
-            basic_config.NUMBER_OF_TRAITS_PER_DIMENSION,
+            basic_config.TRAIT_ADDITION_RATE,
+            basic_config.MAXIMUM_INITIAL_TRAITS,
+            basic_config.MAX_TRAIT_TOKEN,
         ]
     else:
-        log.error("Unknown interaction rule class: %s", basic_config.INTERACTION_RULE_CLASS)
+        log.error("This parallel sim runner not compatible with rule class: %s", basic_config.INTERACTION_RULE_CLASS)
         exit(1)
 
     for param_combination in itertools.product(*state_space):
@@ -123,10 +117,9 @@ def queue_simulations(queue, args):
             #log.debug("param combination: %s", param_combination)
             sc = copy.deepcopy(basic_config)
             sc.popsize = int(param_combination[0])
-            sc.num_features = int(param_combination[1])
-            sc.num_traits = int(param_combination[2])
-            if len(param_combination) == 4:
-                sc.drift_rate = float(param_combination[3])
+            sc.add_rate = float(param_combination[1])
+            sc.maxtraits = int(param_combination[2])
+            sc.max_trait_value = int(param_combination[3])
             sc.sim_id = uuid.uuid4().urn
             sc.script = __file__
             sc.periodic = 0
@@ -147,9 +140,8 @@ def run_simulation_worker(queue, args):
         try:
             simconfig = queue.get()
 
-            log.info("worker %s: starting run for popsize: %s numfeatures: %s numtraits: %s drift: %s",
-                     os.getpid(), simconfig.popsize, simconfig.num_features, simconfig.num_traits,
-                     simconfig.drift_rate)
+            log.info("worker %s: starting run for popsize: %s add_rate: %s maxtraits: %s",
+                     os.getpid(), simconfig.popsize, simconfig.add_rate, simconfig.maxtraits)
             gf_constructor = utils.load_class(simconfig.NETWORK_FACTORY_CLASS)
             model_constructor = utils.load_class(simconfig.POPULATION_STRUCTURE_CLASS)
             rule_constructor = utils.load_class(simconfig.INTERACTION_RULE_CLASS)
@@ -166,13 +158,13 @@ def run_simulation_worker(queue, args):
 
             while(1):
                 timestep += 1
-                if timestep % 10 == 0:
-                    log.debug("time: %s active links: %s", timestep, ax.get_fraction_links_active())
+                if timestep % 250000 == 0:
+                    log.debug("worker %s: time: %s active links: %s", os.getpid(), timestep, ax.get_fraction_links_active())
                 ax.step(timestep)
                 if model.get_time_last_interaction() != timestep:
                     live = utils.check_liveness(ax, model, args, simconfig, timestep)
                     if live == False:
-                        utils.finalize_axelrod_model(model, args, simconfig)
+                        utils.finalize_extensible_model(model, args, simconfig)
                         break
 
             # clean up before moving to next queue item

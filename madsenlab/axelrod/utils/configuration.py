@@ -366,6 +366,7 @@ class AxelrodExtensibleConfiguration(BaseConfiguration):
         self._maxtraits = None
         self._drift_rate = None
         self._add_rate = None
+        self._max_trait_value = None
 
     @property
     def maxtraits(self):
@@ -390,6 +391,15 @@ class AxelrodExtensibleConfiguration(BaseConfiguration):
     @add_rate.setter
     def add_rate(self,val):
         self._add_rate = val
+
+    @property
+    def max_trait_value(self):
+        return self._max_trait_value
+
+    @max_trait_value.setter
+    def max_trait_value(self,val):
+        self._max_trait_value = val
+
 
     def _calc_derived_values(self):
         """

@@ -10,6 +10,7 @@ Description here
 
 import networkx as nx
 from numpy.random import RandomState
+import logging as log
 
 class ExtensibleTraitFactory(object):
     """
@@ -33,13 +34,15 @@ class ExtensibleTraitFactory(object):
 
     def initialize_population(self,graph):
         mt = self.simconfig.maxtraits
+        mv = self.simconfig.max_trait_value
+        log.debug("max trait value: %s", mv)
         for nodename in graph.nodes():
             # get a random number of initial traits between 1 and mt
             trait_set = set()
             init_trait_num = self.prng.random_integers(1, mt)
 
             for i in range(0, init_trait_num):
-                trait = self.prng.random_integers(0,self.simconfig.MAX_TRAIT_TOKEN)
+                trait = self.prng.random_integers(0, mv)
                 trait_set.add(trait)
 
             #log.debug("traits: %s", pp.pformat(trait_set))

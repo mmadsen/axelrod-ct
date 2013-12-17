@@ -1,8 +1,8 @@
 {
-
+    "MAX_TRAIT_TOKEN" : [16,32,64,128,256],
     "REPLICATIONS_PER_PARAM_SET" : 10,
-    "POPULATION_SIZES_STUDIED" : [64,100],
-    "TRAIT_ADDITION_RATE" : [0.01, 0.05, 0.1, 0.25],
+    "POPULATION_SIZES_STUDIED" : [64,144,225,400],
+    "TRAIT_ADDITION_RATE" : [0.05, 0.1, 0.25],
     "MAXIMUM_INITIAL_TRAITS" : [4,8,16,32],
     "POPULATION_STRUCTURE_CLASS" : "madsenlab.axelrod.population.ExtensibleTraitStructurePopulation",
     "INTERACTION_RULE_CLASS" : "madsenlab.axelrod.rules.ExtensibleAxelrodRule",
