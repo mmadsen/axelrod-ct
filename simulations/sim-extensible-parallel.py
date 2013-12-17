@@ -104,7 +104,7 @@ def queue_simulations(queue, args):
             basic_config.POPULATION_SIZES_STUDIED,
             basic_config.TRAIT_ADDITION_RATE,
             basic_config.MAXIMUM_INITIAL_TRAITS,
-            basic_config.MAX_TRAIT_TOKEN,
+            basic_config.MAX_TRAIT_VALUE,
         ]
     else:
         log.error("This parallel sim runner not compatible with rule class: %s", basic_config.INTERACTION_RULE_CLASS)
