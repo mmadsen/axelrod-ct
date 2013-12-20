@@ -106,7 +106,6 @@ class ExtensibleAxelrodRule(object):
         Calculate the fraction of links whose probability of interaction is neither 1.0 nor 0.0
         """
         active_links = 0
-        active_links = 0
         for (a,b) in self.model.model.edges_iter():
             (a_id, a_traits) = self.model.get_agent_by_id(a)
             (b_id, b_traits) = self.model.get_agent_by_id(b)

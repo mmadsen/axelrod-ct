@@ -452,6 +452,7 @@ class TreeStructuredConfiguration(BaseConfiguration):
         self._num_trees = None
         self._branching_factor = None
         self._depth_factor = None
+        self._max_trait_value = None
 
 
     @property
@@ -493,6 +494,14 @@ class TreeStructuredConfiguration(BaseConfiguration):
     @depth_factor.setter
     def depth_factor(self,val):
         self._depth_factor = val
+
+    @property
+    def max_trait_value(self):
+        return self._max_trait_value
+
+    @max_trait_value.setter
+    def max_trait_value(self,val):
+        self._max_trait_value = val
 
 
     def _calc_derived_values(self):

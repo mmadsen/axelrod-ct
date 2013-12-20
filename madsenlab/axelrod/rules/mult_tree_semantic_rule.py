@@ -62,7 +62,6 @@ class MultipleTreeLeafPrereqRule(object):
         (neighbor_id, neighbor_traits) = self.model.get_random_neighbor_for_agent(agent_id)
 
 
-
         if agent_traits == neighbor_traits:
             return
         elif agent_traits.isdisjoint(neighbor_traits):
@@ -70,13 +69,18 @@ class MultipleTreeLeafPrereqRule(object):
         elif neighbor_traits.issubset(agent_traits):
             return
         else:
+
             prob = analysis.calc_probability_interaction_extensible(agent_traits, neighbor_traits)
             draw = npr.random()
             if draw < prob:
+                #log.debug("starting interaction")
                 neighbor_diff_traits = analysis.get_traits_differing_from_focal_extensible(agent_traits, neighbor_traits)
 
                 # get a random trait from the neighbor that we'd like to try to learn
-                (rand_trait, rand_chain) = self.get_random_differing_trait_to_learn(neighbor_diff_traits)
+                tup = self.get_random_differing_trait_to_learn(neighbor_diff_traits)
+                rand_trait = tup[0]
+                rand_chain = tup[1]
+                #log.debug("len: %s trait: %s  chain: %s", len(tup), rand_trait, rand_chain)
 
                 # do we have the prerequisites?  No?  We can't learn the trait right now.
                 if self.model.trait_universe.has_prereq_for_trait(rand_trait, agent_traits) == False:
@@ -114,17 +118,20 @@ class MultipleTreeLeafPrereqRule(object):
         if(len(all_diff_traits) == 1):
             # get the single tuple from the set and return its last element
             t = all_diff_traits.next()
+            #log.debug("len 1 diff traits: %s", t)
             return (t[-1], t)
         else:
-            draw = random.choice(all_diff_traits)
-            return (draw[-1], draw)
+            # draw is a list containing a tuple, so it needs to be dereferenced
+            draw = random.sample(all_diff_traits, 1)
+            drawn_chain = draw[0]
+            #log.debug("len > 1 traits: %s", drawn_chain)
+            return (drawn_chain[-1], drawn_chain)
 
 
     def get_fraction_links_active(self):
         """
         Calculate the fraction of links whose probability of interaction is neither 1.0 nor 0.0
         """
-        active_links = 0
         active_links = 0
         for (a,b) in self.model.model.edges_iter():
             (a_id, a_traits) = self.model.get_agent_by_id(a)
@@ -135,7 +142,7 @@ class MultipleTreeLeafPrereqRule(object):
                 active_links += 1
         num_links_total = self.model.model.number_of_edges()
         #log.debug("active links: %s total links: %s", active_links, num_links_total)
-        fraction_active = float(active_links) / num_links_total
+        fraction_active = float(active_links) / float(num_links_total)
         return fraction_active
 
 

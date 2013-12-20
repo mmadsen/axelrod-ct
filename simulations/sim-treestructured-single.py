@@ -13,8 +13,10 @@ import logging as log
 import ming
 import argparse
 import madsenlab.axelrod.utils as utils
+import madsenlab.axelrod.analysis as analysis
 import madsenlab.axelrod.data as data
 import madsenlab.axelrod.rules as rules
+import pprint as pp
 
 import uuid
 
@@ -36,11 +38,16 @@ def setup():
     parser.add_argument("--periodic", help="Periodic boundary condition", choices=['1','0'], required=True)
     parser.add_argument("--diagram", help="Draw a diagram of the converged model", action="store_true")
     parser.add_argument("--drift_rate", help="Rate of drift")
+    parser.add_argument("--maxtraitvalue", help="Maximum integer token for traits in the trait space", required=True)
+    parser.add_argument("--numtraittrees", help="Number of trait trees in the design space", required=True)
+    parser.add_argument("--branchingfactor", help="Value or mean for tree branching factor", required=True)
+    parser.add_argument("--depthfactor", help="Value or mean for tree depth factor", required=True)
+
 
 
     args = parser.parse_args()
 
-    simconfig = utils.AxelrodExtensibleConfiguration(args.configuration)
+    simconfig = utils.TreeStructuredConfiguration(args.configuration)
 
     if args.debug == '1':
         log.basicConfig(level=log.DEBUG, format='%(asctime)s %(levelname)s: %(message)s')
@@ -60,6 +67,10 @@ def setup():
     simconfig.popsize = int(args.popsize)
     simconfig.maxtraits = int(args.maxinittraits)
     simconfig.add_rate = float(args.additionrate)
+    simconfig.max_trait_value = int(args.maxtraitvalue)
+    simconfig.num_trees = int(args.numtraittrees)
+    simconfig.branching_factor = float(args.branchingfactor)
+    simconfig.depth_factor = float(args.depthfactor)
 
     simconfig.sim_id = uuid.uuid4().urn
     if args.periodic == '1':
@@ -73,8 +84,7 @@ def main():
     log.debug("Configuring Axelrod model with structure class: %s graph factory: %s interaction rule: %s", structure_class_name, simconfig.NETWORK_FACTORY_CLASS, simconfig.INTERACTION_RULE_CLASS)
 
 
-    log.debug("Run for popsize %s  maxinittraits: %s, addrate: %s", simconfig.popsize,
-             simconfig.maxtraits, simconfig.add_rate)
+    #log.debug("Run for popsize %s  maxinittraits: %s, addrate: %s, ", simconfig.popsize,  simconfig.maxtraits, simconfig.add_rate)
 
 
     model_constructor = utils.load_class(structure_class_name)
@@ -87,6 +97,11 @@ def main():
 
     model = model_constructor(simconfig, graph_factory, trait_factory)
     model.initialize_population()
+
+    counts = analysis.get_culture_counts(model)
+
+
+    log.info("population initialization complete - beginning simulation run")
 
     ax = rule_constructor(model)
 

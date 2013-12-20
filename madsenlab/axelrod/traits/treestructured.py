@@ -136,8 +136,8 @@ class MultipleBalancedTreeStructuredTraitFactory(object):
         self.prng = RandomState()
 
     def initialize_traits(self):
-        r = self.simconfig.branching_factor
-        h = self.simconfig.depth_factor
+        r = int(self.simconfig.branching_factor)
+        h = int(self.simconfig.depth_factor)
         n = self.simconfig.num_trees
 
         graphs = []
