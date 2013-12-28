@@ -77,28 +77,29 @@ class MultipleTreeLeafPrereqRule(object):
                 neighbor_diff_traits = analysis.get_traits_differing_from_focal_extensible(agent_traits, neighbor_traits)
 
                 # get a random trait from the neighbor that we'd like to try to learn
-                tup = self.get_random_differing_trait_to_learn(neighbor_diff_traits)
-                rand_trait = tup[0]
-                rand_chain = tup[1]
-                #log.debug("len: %s trait: %s  chain: %s", len(tup), rand_trait, rand_chain)
+                # THE ARRAY DEFERENCE IS ESSENTIAL SINCE random.sample returns an array, even with one element.
+                rand_trait = random.sample(neighbor_diff_traits, 1)[0]
 
                 # do we have the prerequisites?  No?  We can't learn the trait right now.
                 if self.model.trait_universe.has_prereq_for_trait(rand_trait, agent_traits) == False:
+                    #log.debug("no prerequisites, moving on")
                     return
+
+                #log.debug("has prereqs, copying")
 
                 # the agent can learn the trait, so it's a question of adding or replacing...
                 add_draw = npr.random()
                 if add_draw < add_rate:
                     # we add the neighbor's trait, without replacing an existing trait
-                    agent_traits.add(rand_chain)
-                    #log.debug("adding trait w/o replacement: %s", neighbor_random_diff_trait[0])
+                    agent_traits.add(rand_trait)
+                    #log.debug("adding trait w/o replacement: %s", rand_trait)
                     self.model.set_agent_traits(agent_id, agent_traits)
                 else:
                     # we replace an existing trait with the neighbor's trait
-                    focal_chain_to_replace = random.sample(agent_traits, 1)
-                    #log.debug("replacing trait %s with %s", focal_trait_to_replace[0], neighbor_random_diff_trait[0])
-                    agent_traits.remove(focal_chain_to_replace)
-                    agent_traits.add(rand_chain)
+                    focal_trait_to_replace = random.sample(agent_traits, 1)[0]
+                    #log.debug("replacing trait %s with %s", focal_trait_to_replace, rand_trait)
+                    agent_traits.remove(focal_trait_to_replace)
+                    agent_traits.add(rand_trait)
                     self.model.set_agent_traits(agent_id, agent_traits)
 
                 # track the interaction and time
@@ -109,23 +110,25 @@ class MultipleTreeLeafPrereqRule(object):
                 return
 
 
-    def get_random_differing_trait_to_learn(self, all_diff_traits):
-        """
-        Returns a tuple with a random leaf trait and its associated trait chain
-        If there's only one trait chain, the tuple simply contains that chain and leaf trait
-
-        """
-        if(len(all_diff_traits) == 1):
-            # get the single tuple from the set and return its last element
-            t = all_diff_traits.next()
-            #log.debug("len 1 diff traits: %s", t)
-            return (t[-1], t)
-        else:
-            # draw is a list containing a tuple, so it needs to be dereferenced
-            draw = random.sample(all_diff_traits, 1)
-            drawn_chain = draw[0]
-            #log.debug("len > 1 traits: %s", drawn_chain)
-            return (drawn_chain[-1], drawn_chain)
+    # DEPRECATED 12/29/13 - IF WE'RE JUST STORING TRAITS, NOT CHAINS, WE
+    # DON'T NEED A METHOD LIKE THIS.
+    # def get_random_differing_trait_to_learn(self, all_diff_traits):
+    #     """
+    #     Returns a tuple with a random leaf trait and its associated trait chain
+    #     If there's only one trait chain, the tuple simply contains that chain and leaf trait
+    #
+    #     """
+    #     if(len(all_diff_traits) == 1):
+    #         # get the single tuple from the set and return its last element
+    #         t = all_diff_traits.next()
+    #         #log.debug("len 1 diff traits: %s", t)
+    #         return (t[-1], t)
+    #     else:
+    #         # draw is a list containing a tuple, so it needs to be dereferenced
+    #         draw = random.sample(all_diff_traits, 1)
+    #         drawn_chain = draw[0]
+    #         #log.debug("len > 1 traits: %s", drawn_chain)
+    #         return (drawn_chain[-1], drawn_chain)
 
 
     def get_fraction_links_active(self):

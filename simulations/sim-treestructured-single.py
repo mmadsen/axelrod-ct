@@ -111,7 +111,7 @@ def main():
     while(1):
         timestep += 1
         if(timestep % 10000 == 0):
-            log.debug("time: %s  frac active links %s", timestep, ax.get_fraction_links_active())
+            log.debug("time: %s  frac active links %s  copying events: %s", timestep, ax.get_fraction_links_active(), model.get_interactions())
         ax.step(timestep)
         if model.get_time_last_interaction() != timestep:
             live = utils.check_liveness(ax, model, args, simconfig, timestep)

@@ -280,7 +280,7 @@ class AxelrodConfiguration(BaseConfiguration):
 
 
     # For Latex or Pandoc output, we also filter out any object instance variables, and output only the class-level variables.
-    vars_to_filter = ['config', "_popsize", "_num_features", "_num_traits", "_sim_id", "_periodic", "_script", "_drift_rate"]
+    vars_to_filter = ['config', '_prng', "_popsize", "_num_features", "_num_traits", "_sim_id", "_periodic", "_script", "_drift_rate"]
     """
     List of variables which are never (or at least currently) pretty-printed into summary tables using the latex or markdown/pandoc methods
 
@@ -357,6 +357,13 @@ class AxelrodExtensibleConfiguration(BaseConfiguration):
     MAX_TRAIT_TOKEN = 100
     """
     Traits can be any token from 0 to this value.
+    """
+    # For Latex or Pandoc output, we also filter out any object instance variables, and output only the class-level variables.
+    vars_to_filter = ['config', '_prng', "_popsize", "_num_features", "_num_traits", "_sim_id", "_periodic", "_script", "_drift_rate"]
+    """
+    List of variables which are never (or at least currently) pretty-printed into summary tables using the latex or markdown/pandoc methods
+
+    Some variables might be here because they're currently unused or unimplemented....
     """
 
 
@@ -440,6 +447,14 @@ class TreeStructuredConfiguration(BaseConfiguration):
     """
     Interpretable either as the fixed depth for regular trees (e.g., balanced trees), or the mean depth for
     random trees.
+    """
+
+    # For Latex or Pandoc output, we also filter out any object instance variables, and output only the class-level variables.
+    vars_to_filter = ['config', '_prng', "_popsize", "_num_features", "_num_traits", "_sim_id", "_periodic", "_script", "_drift_rate"]
+    """
+    List of variables which are never (or at least currently) pretty-printed into summary tables using the latex or markdown/pandoc methods
+
+    Some variables might be here because they're currently unused or unimplemented....
     """
 
 

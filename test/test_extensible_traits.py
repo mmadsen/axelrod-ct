@@ -42,6 +42,7 @@ class ExtensibleTraitTest(unittest.TestCase):
         config.popsize = 25
         config.maxtraits = 16
         config.add_rate = 0.1
+        config.max_trait_value = 100
 
         graph_factory = pop.SquareLatticeFactory(config)
         trait_factory = traits.ExtensibleTraitFactory(config)

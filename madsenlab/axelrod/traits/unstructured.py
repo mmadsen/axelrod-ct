@@ -30,7 +30,7 @@ class ExtensibleTraitFactory(object):
 
     def __init__(self, simconfig):
         self.simconfig = simconfig
-        self.prng = RandomState()  # allow the library to choose a seed via OS specific mechanism
+        self.prng = self.simconfig.prng  # allow the library to choose a seed via OS specific mechanism
 
     def initialize_population(self,graph):
         mt = self.simconfig.maxtraits

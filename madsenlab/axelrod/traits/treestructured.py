@@ -63,6 +63,18 @@ class TreeStructuredTraitSet(object):
         #log.debug("rand trait: %s path: %s", draw, pp.pformat(path))
         return path
 
+
+    def get_random_trait(self):
+        """
+        Returns a random trait from a tree in the trait graph.
+        """
+        num_t = len(self.graph.nodes())
+
+        draw = self.prng.random_integers(0, num_t - 1)
+        return draw
+
+
+
 ##########################################################################
 
 class MultipleTreeStructuredTraitSet(TreeStructuredTraitSet):
@@ -125,6 +137,7 @@ class BalancedTreeStructuredTraitFactory(object):
 
 
     def initialize_population(self, pop_graph):
+        # TODO:  Unfinished - could stay that way, never need just one tree.
         pass
 
 
@@ -158,7 +171,7 @@ class MultipleBalancedTreeStructuredTraitFactory(object):
             starting_num += num_nodes
 
         trees = nx.union_all(graphs)
-        #log.debug("roots: %s", pp.pformat(roots))
+        log.debug("num traits: %s  roots: %s", len(trees.nodes()), pp.pformat(roots))
         self.trait_set = MultipleTreeStructuredTraitSet(trees, roots, self.prng)
         return self.trait_set
 
@@ -170,11 +183,32 @@ class MultipleBalancedTreeStructuredTraitFactory(object):
             init_trait_num = self.prng.random_integers(1, mt)
 
             for i in range(0, init_trait_num):
-                chain = self.trait_set.get_random_trait_path()
-                agent_traits.add(tuple(chain))
+                trait = self.trait_set.get_random_trait()
+                agent_traits.add(trait)
 
             #log.debug("traits: %s", pp.pformat(agent_traits))
             pop_graph.node[nodename]['traits'] = agent_traits
+
+
+    def initialize_population(self, pop_graph):
+        """
+        Initializes a population with
+
+        """
+        mt = self.simconfig.maxtraits
+        for nodename in pop_graph.nodes():
+            # get a random number of initial trait chains
+            agent_traits = set()
+            init_trait_num = self.prng.random_integers(1, mt)
+
+            for i in range(0, init_trait_num):
+                path = self.trait_set.get_random_trait_path()
+                agent_traits.update(path)
+                log.debug("agent traits: %s", agent_traits)
+
+            #log.debug("traits: %s", pp.pformat(agent_traits))
+            pop_graph.node[nodename]['traits'] = agent_traits
+
 
 
 
