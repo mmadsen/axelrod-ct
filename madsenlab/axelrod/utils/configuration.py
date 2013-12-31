@@ -372,8 +372,7 @@ class AxelrodExtensibleConfiguration(BaseConfiguration):
 
         self._maxtraits = None
         self._drift_rate = None
-        self._add_rate = None
-        self._max_trait_value = None
+        self._addition_rate = None
 
     @property
     def maxtraits(self):
@@ -392,21 +391,12 @@ class AxelrodExtensibleConfiguration(BaseConfiguration):
         self._drift_rate = r
 
     @property
-    def add_rate(self):
-        return self._add_rate
+    def addition_rate(self):
+        return self._addition_rate
 
-    @add_rate.setter
-    def add_rate(self,val):
-        self._add_rate = val
-
-    @property
-    def max_trait_value(self):
-        return self._max_trait_value
-
-    @max_trait_value.setter
-    def max_trait_value(self,val):
-        self._max_trait_value = val
-
+    @addition_rate.setter
+    def addition_rate(self,val):
+        self._addition_rate = val
 
     def _calc_derived_values(self):
         """
@@ -418,12 +408,19 @@ class AxelrodExtensibleConfiguration(BaseConfiguration):
 
 class TreeStructuredConfiguration(BaseConfiguration):
 
-    TRAIT_ADDITION_RATE = [0.01, 0.05, 0.1, 0.25]
+    TRAIT_LEARNING_RATE = [0.01, 0.05, 0.1, 0.25]
     """
     When an interaction occurs, some models may allow the trait list to grow by adding a neighbor's trait
     to the list, instead of replacing an existing trait with it.  This isn't very interesting in a basic
     extensible model, but it's the foundation for models where addition happens for a *reason* -- i.e.,
     learning prerequisites, etc.
+    """
+
+    TRAIT_LOSS_RATE = [0.0, 0.05, 0.1, 0.2]
+    """
+    Occasionally, individuals may forget or lose a skill.  This crudely models that process through a loss rate,
+    where the traits lost are chosen uniformly at random.  When the rate is 0.0, no losses occur during that
+    simulation run
     """
 
     MAXIMUM_INITIAL_TRAITS = [4,8,16,32]
@@ -463,12 +460,21 @@ class TreeStructuredConfiguration(BaseConfiguration):
         super(TreeStructuredConfiguration, self).__init__(config_file)
 
         self._maxtraits = None
-        self._add_rate = None
+        self._learning_rate = None
         self._num_trees = None
         self._branching_factor = None
         self._depth_factor = None
         self._max_trait_value = None
+        self._loss_rate = None
 
+
+    @property
+    def loss_rate(self):
+        return self._loss_rate
+
+    @loss_rate.setter
+    def loss_rate(self,val):
+        self._loss_rate = val
 
     @property
     def maxtraits(self):
@@ -479,12 +485,12 @@ class TreeStructuredConfiguration(BaseConfiguration):
         self._maxtraits = val
 
     @property
-    def add_rate(self):
-        return self._add_rate
+    def learning_rate(self):
+        return self._learning_rate
 
-    @add_rate.setter
-    def add_rate(self,val):
-        self._add_rate = val
+    @learning_rate.setter
+    def learning_rate(self,val):
+        self._learning_rate = val
 
     @property
     def num_trees(self):

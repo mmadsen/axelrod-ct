@@ -34,11 +34,11 @@ def setup():
     parser.add_argument("--configuration", help="Configuration file for experiment", required=True)
     parser.add_argument("--popsize", help="Population size", required=True)
     parser.add_argument("--maxinittraits", help="Max initial number of traits per indiv", required=True)
-    parser.add_argument("--additionrate", help="Rate at which traits are added during interactions", required=True)
+    parser.add_argument("--learningrate", help="Rate at which traits are learned during interactions", required=True)
+    parser.add_argument("--lossrate", help="Rate at which traits are lost randomly by individuals (0.0 turns this off)", required=True)
     parser.add_argument("--periodic", help="Periodic boundary condition", choices=['1','0'], required=True)
     parser.add_argument("--diagram", help="Draw a diagram of the converged model", action="store_true")
     parser.add_argument("--drift_rate", help="Rate of drift")
-    parser.add_argument("--maxtraitvalue", help="Maximum integer token for traits in the trait space", required=True)
     parser.add_argument("--numtraittrees", help="Number of trait trees in the design space", required=True)
     parser.add_argument("--branchingfactor", help="Value or mean for tree branching factor", required=True)
     parser.add_argument("--depthfactor", help="Value or mean for tree depth factor", required=True)
@@ -66,11 +66,11 @@ def setup():
 
     simconfig.popsize = int(args.popsize)
     simconfig.maxtraits = int(args.maxinittraits)
-    simconfig.add_rate = float(args.additionrate)
-    simconfig.max_trait_value = int(args.maxtraitvalue)
+    simconfig.learning_rate = float(args.learningrate)
     simconfig.num_trees = int(args.numtraittrees)
     simconfig.branching_factor = float(args.branchingfactor)
     simconfig.depth_factor = float(args.depthfactor)
+    simconfig.loss_rate = float(args.lossrate)
 
     simconfig.sim_id = uuid.uuid4().urn
     if args.periodic == '1':

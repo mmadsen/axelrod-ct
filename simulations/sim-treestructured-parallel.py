@@ -99,15 +99,15 @@ def create_processes(queue, worker):
 def queue_simulations(queue, args):
     basic_config = utils.TreeStructuredConfiguration(args.configuration)
 
-    if basic_config.INTERACTION_RULE_CLASS == 'madsenlab.axelrod.rules.MultipleTreeLeafPrereqRule':
+    if basic_config.INTERACTION_RULE_CLASS == 'madsenlab.axelrod.rules.MultipleTreePrerequisitesLearningCopyingRule':
         state_space = [
             basic_config.POPULATION_SIZES_STUDIED,
-            basic_config.TRAIT_ADDITION_RATE,
+            basic_config.TRAIT_LEARNING_RATE,
             basic_config.MAXIMUM_INITIAL_TRAITS,
-            basic_config.MAX_TRAIT_VALUE,
             basic_config.NUM_TRAIT_TREES,
             basic_config.TREE_BRANCHING_FACTOR,
             basic_config.TREE_DEPTH_FACTOR,
+            basic_config.TRAIT_LOSS_RATE,
         ]
     else:
         log.error("This parallel sim runner not compatible with rule class: %s", basic_config.INTERACTION_RULE_CLASS)
@@ -122,10 +122,10 @@ def queue_simulations(queue, args):
             sc.popsize = int(param_combination[0])
             sc.add_rate = float(param_combination[1])
             sc.maxtraits = int(param_combination[2])
-            sc.max_trait_value = int(param_combination[3])
-            sc.num_trees = int(param_combination[4])
-            sc.branching_factor = float(param_combination[5])
-            sc.depth_factor = float(param_combination[6])
+            sc.num_trees = int(param_combination[3])
+            sc.branching_factor = float(param_combination[4])
+            sc.depth_factor = float(param_combination[5])
+            sc.loss_rate = float(param_combination[6])
             sc.sim_id = uuid.uuid4().urn
             sc.script = __file__
             sc.periodic = 0
