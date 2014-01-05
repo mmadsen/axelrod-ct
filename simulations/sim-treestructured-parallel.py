@@ -170,7 +170,7 @@ def run_simulation_worker(queue, args):
                 if model.get_time_last_interaction() != timestep:
                     live = utils.check_liveness(ax, model, args, simconfig, timestep)
                     if live == False:
-                        utils.finalize_extensible_model(model, args, simconfig)
+                        utils.finalize_treestructured_model(model, args, simconfig)
                         break
 
             # clean up before moving to next queue item

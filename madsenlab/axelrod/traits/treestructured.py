@@ -44,7 +44,7 @@ class TreeStructuredTraitSet(object):
         # first element is the relevant root, so we have to work from the tail up
         prereqs.reverse()
         for t in prereqs:
-            log.debug("testing prereq: %s from %s", t, prereqs)
+            #log.debug("testing prereq: %s from %s", t, prereqs)
             if t not in agent_traits:
                 return t
 
@@ -218,11 +218,13 @@ class MultipleBalancedTreeStructuredTraitFactory(object):
             # get a random number of initial trait chains
             agent_traits = set()
             init_trait_num = self.prng.random_integers(1, mt)
+            #log.debug("init trait num: %s", init_trait_num)
 
             for i in range(0, init_trait_num):
                 path = self.trait_set.get_random_trait_path()
                 agent_traits.update(path)
-                log.debug("agent traits: %s", agent_traits)
+
+            #log.debug("agent traits: %s", agent_traits)
 
             #log.debug("traits: %s", pp.pformat(agent_traits))
             pop_graph.node[nodename]['traits'] = agent_traits

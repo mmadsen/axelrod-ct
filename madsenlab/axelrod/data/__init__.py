@@ -12,6 +12,7 @@ Description here
 import logging as log
 from axelrod_run_original import AxelrodStatsOriginal, store_stats_axelrod_original
 from axelrod_run_extensible import AxelrodStatsExtensible, store_stats_axelrod_extensible
+from axelrod_run_treestructured import AxelrodStatsTreestructured, store_stats_axelrod_treestructured
 from dbutils import *
 
 
@@ -29,5 +30,5 @@ experiment = "test"
 # of the data object being stored.  Ming configuration is then automatic so that simulation simulations need
 # include only two lines which are fully generic.
 
-modules = [axelrod_run_original]
+modules = [axelrod_run_original, axelrod_run_extensible, axelrod_run_treestructured]
 

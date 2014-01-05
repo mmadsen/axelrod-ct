@@ -52,4 +52,28 @@ def finalize_extensible_model(model, args, simconfig):
         model.draw_network_colored_by_culture()
 
 
+def finalize_treestructured_model(model, args, simconfig):
+    counts = stats.get_culture_counts(model)
+    (mean_traits,sd_traits) = stats.get_culture_size_statistics(model)
+    log.debug("culture size - mean: %s sd: %s", mean_traits, sd_traits)
+    klemm = stats.klemm_normalized_L_extensible(model, simconfig)
+    data.store_stats_axelrod_treestructured(simconfig.popsize,
+                                      simconfig.sim_id,
+                                      simconfig.maxtraits,
+                                      simconfig.learning_rate,
+                                      simconfig.loss_rate,
+                                      simconfig.num_trees,
+                                      simconfig.branching_factor,
+                                      simconfig.depth_factor,
+                                      simconfig.INTERACTION_RULE_CLASS,
+                                      simconfig.POPULATION_STRUCTURE_CLASS,
+                                      simconfig.script,
+                                      len(counts),
+                                      model.get_time_last_interaction(),
+                                      counts,
+                                      klemm,
+                                      mean_traits,
+                                      sd_traits)
+    if args.diagram == True:
+        model.draw_network_colored_by_culture()
 

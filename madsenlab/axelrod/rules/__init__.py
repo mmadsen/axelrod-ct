@@ -9,4 +9,4 @@ Description here
 """
 from axelrod_rule import AxelrodRule, AxelrodDriftRule
 from extensible_axelrod_rule import ExtensibleAxelrodRule
-from mult_tree_semantic_rule import MultipleTreeLeafPrereqRule, MultipleTreePrerequisitesLearningCopyingRule
+from mult_tree_semantic_rule import MultipleTreePrerequisitesLearningCopyingRule

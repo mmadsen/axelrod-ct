@@ -116,7 +116,7 @@ def main():
         if model.get_time_last_interaction() != timestep:
             live = utils.check_liveness(ax, model, args, simconfig, timestep)
             if live == False:
-                utils.finalize_extensible_model(model, args, simconfig)
+                utils.finalize_treestructured_model(model, args, simconfig)
                 exit(0)
 
 # end main
