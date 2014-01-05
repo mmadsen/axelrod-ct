@@ -33,6 +33,24 @@ class TreeStructuredTraitSet(object):
         path.pop() # remove last element, which is the target node_id
         return path
 
+    def get_deepest_missing_prereq_for_trait(self, trait, agent_traits):
+        """
+        Given an agent's trait set, and a potential trait to adopt, returns the trait
+        which is closest to the root of its trait tree that the agent *does not already
+        possess*.  This should be called after _has_prereq_for_trait_ has returned False,
+        otherwise it is not guaranteed to return a defined trait value.
+        """
+        prereqs = self.get_parents_for_node(trait)
+        # first element is the relevant root, so we have to work from the tail up
+        prereqs.reverse()
+        for t in prereqs:
+            log.debug("testing prereq: %s from %s", t, prereqs)
+            if t not in agent_traits:
+                return t
+
+        # this should not happen if called after has_prereq_for_trait(t) == False
+        return None
+
 
     def has_prereq_for_trait(self, trait, agent_traits):
         """

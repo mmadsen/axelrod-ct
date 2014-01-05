@@ -75,8 +75,9 @@ class MultipleTreePrerequisitesLearningCopyingRule(object):
 
                 if self.model.trait_universe.has_prereq_for_trait(rand_trait, agent_traits) == False:
                     if npr.random() < learning_rate:
-                        # TODO:  find the deepest missing prerequisite for rand_trait
-                        pass
+                        needed_prereq = self.model.trait_universe.get_deepest_missing_prereq_for_trait(rand_trait, agent_traits)
+                        agent_traits.add(needed_prereq)
+                        self.model.set_agent_traits(agent_id, agent_traits)
 
                 else:  # has prereqs, add or replace an existing trait, according to the loss rate
                     if npr.random() < loss_rate:
