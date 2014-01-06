@@ -36,7 +36,7 @@ def get_culture_counts(pop):
     return stored_counts
 
 
-def get_culture_size_statistics(pop):
+def get_num_traits_per_individual_stats(pop):
     """
     Takes an instance of a population and returns a tuple with the mean and standard deviation of the
     number of traits per individual.  Only useful for the extensible and semantic models.

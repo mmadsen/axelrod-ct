@@ -10,6 +10,7 @@ Description here
 
 import networkx as nx
 from numpy.random import RandomState
+import matplotlib.pyplot as plt
 import madsenlab.axelrod.utils as utils
 import logging as log
 import pprint as pp
@@ -127,6 +128,14 @@ class MultipleTreeStructuredTraitSet(TreeStructuredTraitSet):
         return path
 
 
+    def draw_trait_network_for_culture(self, culture, node_list):
+        trait_subgraph = self.graph.subgraph(node_list)
+        pos=nx.graphviz_layout(trait_subgraph,prog='dot')
+        nx.draw(trait_subgraph,pos,with_labels=True,arrows=False,label=culture)
+        plt.show()
+
+
+
 
 
 ##########################################################################
@@ -193,19 +202,6 @@ class MultipleBalancedTreeStructuredTraitFactory(object):
         self.trait_set = MultipleTreeStructuredTraitSet(trees, roots, self.prng)
         return self.trait_set
 
-    def initialize_population(self, pop_graph):
-        mt = self.simconfig.maxtraits
-        for nodename in pop_graph.nodes():
-            # get a random number of initial trait chains
-            agent_traits = set()
-            init_trait_num = self.prng.random_integers(1, mt)
-
-            for i in range(0, init_trait_num):
-                trait = self.trait_set.get_random_trait()
-                agent_traits.add(trait)
-
-            #log.debug("traits: %s", pp.pformat(agent_traits))
-            pop_graph.node[nodename]['traits'] = agent_traits
 
 
     def initialize_population(self, pop_graph):

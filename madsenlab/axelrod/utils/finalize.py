@@ -31,7 +31,7 @@ def finalize_axelrod_model(model,args,simconfig):
 
 def finalize_extensible_model(model, args, simconfig):
     counts = stats.get_culture_counts(model)
-    (mean_traits,sd_traits) = stats.get_culture_size_statistics(model)
+    (mean_traits,sd_traits) = stats.get_num_traits_per_individual_stats(model)
     log.debug("culture size - mean: %s sd: %s", mean_traits, sd_traits)
     klemm = stats.klemm_normalized_L_extensible(model, simconfig)
     data.store_stats_axelrod_extensible(simconfig.popsize,
@@ -54,7 +54,7 @@ def finalize_extensible_model(model, args, simconfig):
 
 def finalize_treestructured_model(model, args, simconfig):
     counts = stats.get_culture_counts(model)
-    (mean_traits,sd_traits) = stats.get_culture_size_statistics(model)
+    (mean_traits,sd_traits) = stats.get_num_traits_per_individual_stats(model)
     log.debug("culture size - mean: %s sd: %s", mean_traits, sd_traits)
     klemm = stats.klemm_normalized_L_extensible(model, simconfig)
     data.store_stats_axelrod_treestructured(simconfig.popsize,
@@ -75,5 +75,31 @@ def finalize_treestructured_model(model, args, simconfig):
                                       mean_traits,
                                       sd_traits)
     if args.diagram == True:
-        model.draw_network_colored_by_culture()
+        #model.draw_network_colored_by_culture()
+        traitset_map = get_traitset_map(model)
+        for culture, traits in traitset_map.items():
+            model.trait_universe.draw_trait_network_for_culture(culture, traits)
+
+
+def get_traitset_map(pop):
+    """
+    Utility method which returns a map of culture ID's (hashes) and the trait set
+     corresponding to a random individual of that culture (actually, the first one
+     we encounter).
+    """
+    traitsets = {}
+    graph = pop.model
+    for nodename in graph.nodes():
+        traits = graph.node[nodename]['traits']
+        culture = pop.get_traits_packed(traits)
+        if culture not in traitsets:
+            traitsets[culture] = traits
+    return traitsets
+
+
+
+
+
+
+
 
