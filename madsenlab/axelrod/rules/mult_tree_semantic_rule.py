@@ -80,23 +80,23 @@ class MultipleTreePrerequisitesLearningCopyingRule(object):
                         self.model.set_agent_traits(agent_id, agent_traits)
 
                 else:  # has prereqs, add or replace an existing trait, according to the loss rate
-                    if npr.random() < loss_rate:
-                        # we replace an existing trait with the neighbor's trait
-                        focal_trait_to_replace = random.sample(agent_traits, 1)[0]
-                        #log.debug("replacing trait %s with %s", focal_trait_to_replace, rand_trait)
-                        agent_traits.remove(focal_trait_to_replace)
-                        agent_traits.add(rand_trait)
-                        self.model.set_agent_traits(agent_id, agent_traits)
-                    else:
-                        # we add the neighbor's trait, without replacing an existing trait
-                        agent_traits.add(rand_trait)
-                        #log.debug("adding trait w/o replacement: %s", rand_trait)
-                        self.model.set_agent_traits(agent_id, agent_traits)
+                    # we add the neighbor's trait, without replacing an existing trait
+                    agent_traits.add(rand_trait)
+                    #log.debug("adding trait w/o replacement: %s", rand_trait)
+                    self.model.set_agent_traits(agent_id, agent_traits)
 
                 # track the interaction and time
                 self.model.update_interactions(timestep)
 
-
+        # now we see if somebody forgets something
+        if npr.random() < loss_rate:
+            (loss_agent_id, loss_agent_traits) = self.model.get_random_agent()
+            if len(loss_agent_traits) < 1:
+                return
+            trait_to_lose = random.sample(loss_agent_traits, 1)[0]
+            loss_agent_traits.remove(trait_to_lose)
+            self.model.set_agent_traits(loss_agent_id, loss_agent_traits)
+            self.model.update_loss_events()
 
         # now, we see if an innovation happens in the population and perform it if so.
         if npr.random() < innov_rate:

@@ -113,7 +113,7 @@ def main():
     while(1):
         timestep += 1
         if(timestep % 10000 == 0):
-            log.debug("time: %s  active: %s  copies: %s  innov: %s", timestep, ax.get_fraction_links_active(), model.get_interactions(), model.get_innovations())
+            log.debug("time: %s  active: %s  copies: %s  innov: %s losses: %s", timestep, ax.get_fraction_links_active(), model.get_interactions(), model.get_innovations(), model.get_losses())
         ax.step(timestep)
         if model.get_time_last_interaction() != timestep:
             live = utils.check_liveness(ax, model, args, simconfig, timestep)

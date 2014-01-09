@@ -31,6 +31,7 @@ class BaseGraphPopulation(object):
         self.simconfig = simconfig
         self.interactions = 0
         self.innovations = 0
+        self.losses = 0
         self.time_step_last_interaction = 0
         self.prng = RandomState()  # allow the library to choose a seed via OS specific mechanism
         self.graph_factory = graph_factory
@@ -75,6 +76,9 @@ class BaseGraphPopulation(object):
     def update_innovations(self):
         self.innovations += 1
 
+    def update_loss_events(self):
+        self.losses += 1
+
     def get_time_last_interaction(self):
         return self.time_step_last_interaction
 
@@ -83,6 +87,9 @@ class BaseGraphPopulation(object):
 
     def get_innovations(self):
         return self.innovations
+
+    def get_losses(self):
+        return self.losses
 
     def initialize_population(self):
         self.trait_factory.initialize_population(self.model)
