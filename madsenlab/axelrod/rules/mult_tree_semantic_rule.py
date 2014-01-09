@@ -79,10 +79,17 @@ class MultipleTreePrerequisitesLearningCopyingRule(object):
                         agent_traits.add(needed_prereq)
                         self.model.set_agent_traits(agent_id, agent_traits)
 
-                else:  # has prereqs, add or replace an existing trait, according to the loss rate
-                    # we add the neighbor's trait, without replacing an existing trait
+                else:
+                    # find a random trait that focal has but the neighbor does not
+                    # and we get rid of it, learning the neighbor's trait instead
+                    #log.debug("agent: %s neighbor: %s", agent_traits, neighbor_traits)
+                    unique_to_focal = agent_traits.difference(neighbor_traits)
+                    #log.debug("unique to focal: %s", unique_to_focal)
+                    if len(unique_to_focal) > 0:
+                        focal_trait_to_replace = random.sample(unique_to_focal, 1)[0]
+                        #log.debug("replacing trait %s with %s", focal_trait_to_replace, rand_trait)
+                        agent_traits.remove(focal_trait_to_replace)
                     agent_traits.add(rand_trait)
-                    #log.debug("adding trait w/o replacement: %s", rand_trait)
                     self.model.set_agent_traits(agent_id, agent_traits)
 
                 # track the interaction and time
