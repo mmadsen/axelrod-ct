@@ -36,6 +36,7 @@ def setup():
     parser.add_argument("--maxinittraits", help="Max initial number of traits per indiv", required=True)
     parser.add_argument("--learningrate", help="Rate at which traits are learned during interactions", required=True)
     parser.add_argument("--lossrate", help="Rate at which traits are lost randomly by individuals (0.0 turns this off)", required=True)
+    parser.add_argument("--innovrate", help="Rate at which innovations occur in population", required=True)
     parser.add_argument("--periodic", help="Periodic boundary condition", choices=['1','0'], required=True)
     parser.add_argument("--diagram", help="Draw a diagram of the converged model", action="store_true")
     parser.add_argument("--drift_rate", help="Rate of drift")
@@ -71,6 +72,7 @@ def setup():
     simconfig.branching_factor = float(args.branchingfactor)
     simconfig.depth_factor = float(args.depthfactor)
     simconfig.loss_rate = float(args.lossrate)
+    simconfig.innov_rate = float(args.innovrate)
 
     simconfig.sim_id = uuid.uuid4().urn
     if args.periodic == '1':
@@ -98,7 +100,7 @@ def main():
     model = model_constructor(simconfig, graph_factory, trait_factory)
     model.initialize_population()
 
-    counts = analysis.get_culture_counts(model)
+    #counts = analysis.get_culture_counts(model)
 
 
     log.info("population initialization complete - beginning simulation run")
@@ -111,7 +113,7 @@ def main():
     while(1):
         timestep += 1
         if(timestep % 10000 == 0):
-            log.debug("time: %s  frac active links %s  copying events: %s", timestep, ax.get_fraction_links_active(), model.get_interactions())
+            log.debug("time: %s  active: %s  copies: %s  innov: %s", timestep, ax.get_fraction_links_active(), model.get_interactions(), model.get_innovations())
         ax.step(timestep)
         if model.get_time_last_interaction() != timestep:
             live = utils.check_liveness(ax, model, args, simconfig, timestep)

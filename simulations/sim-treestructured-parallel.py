@@ -108,6 +108,7 @@ def queue_simulations(queue, args):
             basic_config.TREE_BRANCHING_FACTOR,
             basic_config.TREE_DEPTH_FACTOR,
             basic_config.TRAIT_LOSS_RATE,
+            basic_config.INNOVATION_RATE,
         ]
     else:
         log.error("This parallel sim runner not compatible with rule class: %s", basic_config.INTERACTION_RULE_CLASS)
@@ -126,6 +127,7 @@ def queue_simulations(queue, args):
             sc.branching_factor = float(param_combination[4])
             sc.depth_factor = float(param_combination[5])
             sc.loss_rate = float(param_combination[6])
+            sc.innov_rate = float(param_combination[7])
             sc.sim_id = uuid.uuid4().urn
             sc.script = __file__
             sc.periodic = 0

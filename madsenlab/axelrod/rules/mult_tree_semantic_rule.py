@@ -51,6 +51,7 @@ class MultipleTreePrerequisitesLearningCopyingRule(object):
 
         learning_rate = self.sc.learning_rate
         loss_rate = self.sc.loss_rate
+        innov_rate = self.sc.innov_rate
 
         (agent_id, agent_traits) = self.model.get_random_agent()
         (neighbor_id, neighbor_traits) = self.model.get_random_neighbor_for_agent(agent_id)
@@ -63,7 +64,6 @@ class MultipleTreePrerequisitesLearningCopyingRule(object):
         elif neighbor_traits.issubset(agent_traits):
             return
         else:
-
             prob = analysis.calc_probability_interaction_extensible(agent_traits, neighbor_traits)
             if npr.random() < prob:
                 #log.debug("starting interaction")
@@ -93,14 +93,21 @@ class MultipleTreePrerequisitesLearningCopyingRule(object):
                         #log.debug("adding trait w/o replacement: %s", rand_trait)
                         self.model.set_agent_traits(agent_id, agent_traits)
 
-
                 # track the interaction and time
                 self.model.update_interactions(timestep)
-            else:
-                # no interaction given the random draw and probability, so just return
-                #log.debug("no interaction")
-                return
 
+
+
+        # now, we see if an innovation happens in the population and perform it if so.
+        if npr.random() < innov_rate:
+            (innov_agent_id, innov_agent_traits) = self.model.get_random_agent()
+            random_innovation = self.model.trait_universe.get_random_trait_not_in_set(innov_agent_traits)
+            path = self.model.trait_universe.get_parents_for_node(random_innovation)
+            path.append(random_innovation)
+            innov_agent_traits.update(path)
+            self.model.set_agent_traits(innov_agent_id, innov_agent_traits)
+            self.model.update_innovations()
+            #log.debug("innovation - adding trait path %s to agent %s", path, innov_agent_id)
 
 
     def get_fraction_links_active(self):

@@ -10,10 +10,12 @@ Description here
 
 import networkx as nx
 from numpy.random import RandomState
+import numpy as np
 import matplotlib.pyplot as plt
 import madsenlab.axelrod.utils as utils
 import logging as log
 import pprint as pp
+import random
 
 ##########################################################################
 class TreeStructuredTraitSet(object):
@@ -93,15 +95,25 @@ class TreeStructuredTraitSet(object):
         return draw
 
 
+    def get_random_trait_not_in_set(self, agent_traits):
+        full_trait_set = set(self.graph.nodes())
+        not_in_agent = full_trait_set.difference(agent_traits)
+        rand_trait = random.sample(not_in_agent, 1)[0]
+        #log.debug("random trait not in agent: %s", rand_trait)
+        return rand_trait
+
+
 
 ##########################################################################
 
 class MultipleTreeStructuredTraitSet(TreeStructuredTraitSet):
 
-    def __init__(self, graph, root_list, prng):
+    def __init__(self, graph, root_list, prng, simconfig):
         self.graph = graph
         self.prng = prng
         self.roots = root_list
+        self.branching = simconfig.branching_factor
+        self.depth = simconfig.depth_factor
 
 
     def _get_root_for_node(self, node):
@@ -133,6 +145,40 @@ class MultipleTreeStructuredTraitSet(TreeStructuredTraitSet):
         pos=nx.graphviz_layout(trait_subgraph,prog='dot')
         nx.draw(trait_subgraph,pos,with_labels=True,arrows=False,label=culture)
         plt.show()
+
+
+    def get_random_trait_path_rootbiased(self):
+        # choose a random root
+        root = random.sample(self.roots, 1)[0]
+        # choose how deep we go, limited to max depth of tree, but Poisson biased heavily towards the root
+        depth = np.random.poisson(0.5, 1)[0]
+        if depth > self.depth:
+            depth = self.depth
+        #log.debug("initializing a trait at depth %s", depth)
+
+        # shortcut the root
+        if depth == 0:
+            return [root]
+
+        # given a balanced tree, the nodes at depth d begin at
+        # begin = sum(r^i) where i runs from 0 to d-1.  There are then r^d nodes
+        # at that level.  so we find a random node at that level by
+        # taking a uniform random from the interval [begin,r^d)
+        begin = root
+        m = int(self.branching) - 1
+        b = int(self.branching)
+        for i in range(0, m):
+            begin += b ** i
+        l = b ** depth
+
+        #log.debug("begin: %s length: %s", begin, l)
+
+        random_node = np.random.randint(begin, (begin + l), size=1)[0]
+        path = self.get_parents_for_node(random_node)
+        path.append(random_node)
+        #log.debug("rand path: %s", path)
+        return path
+
 
 
 
@@ -176,37 +222,59 @@ class MultipleBalancedTreeStructuredTraitFactory(object):
         self.prng = RandomState()
 
     def initialize_traits(self):
-        r = int(self.simconfig.branching_factor)
-        h = int(self.simconfig.depth_factor)
-        n = self.simconfig.num_trees
+        self.r = int(self.simconfig.branching_factor)
+        self.h = int(self.simconfig.depth_factor)
+        self.n = self.simconfig.num_trees
 
         graphs = []
-        roots = []
+        self.roots = []
 
-        num_nodes = utils.num_nodes_balanced_tree(r, h)
+        num_nodes = utils.num_nodes_balanced_tree(self.r, self.h)
         starting_num = 0
 
-        for i in range(0, n):
+        for i in range(0, self.n):
             #log.debug("building tree with starting root: %s", starting_num)
-            g = nx.balanced_tree(r,h)
+            g = nx.balanced_tree(self.r,self.h)
             g = nx.convert_node_labels_to_integers(g, first_label = starting_num)
 
             #log.debug("nodes: %s", pp.pformat(g.nodes()))
 
             graphs.append(g)
-            roots.append(starting_num)
+            self.roots.append(starting_num)
             starting_num += num_nodes
 
         trees = nx.union_all(graphs)
-        log.debug("num traits: %s  roots: %s", len(trees.nodes()), pp.pformat(roots))
-        self.trait_set = MultipleTreeStructuredTraitSet(trees, roots, self.prng)
+        log.debug("num traits: %s  roots: %s", len(trees.nodes()), pp.pformat(self.roots))
+        self.trait_set = MultipleTreeStructuredTraitSet(trees, self.roots, self.prng, self.simconfig)
         return self.trait_set
 
 
 
+    # def initialize_population(self, pop_graph):
+    #     """
+    #     Initializes a population with
+    #
+    #     """
+    #     mt = self.simconfig.maxtraits
+    #     for nodename in pop_graph.nodes():
+    #         # get a random number of initial trait chains
+    #         agent_traits = set()
+    #         init_trait_num = self.prng.random_integers(1, mt)
+    #         #log.debug("init trait num: %s", init_trait_num)
+    #
+    #         for i in range(0, init_trait_num):
+    #             path = self.trait_set.get_random_trait_path()
+    #             agent_traits.update(path)
+    #
+    #         #log.debug("agent traits: %s", agent_traits)
+    #
+    #         #log.debug("traits: %s", pp.pformat(agent_traits))
+    #         pop_graph.node[nodename]['traits'] = agent_traits
+
+
     def initialize_population(self, pop_graph):
         """
-        Initializes a population with
+        Initializes a population with traits, biased toward the roots.
 
         """
         mt = self.simconfig.maxtraits
@@ -217,15 +285,12 @@ class MultipleBalancedTreeStructuredTraitFactory(object):
             #log.debug("init trait num: %s", init_trait_num)
 
             for i in range(0, init_trait_num):
-                path = self.trait_set.get_random_trait_path()
+                path = self.trait_set.get_random_trait_path_rootbiased()
                 agent_traits.update(path)
 
             #log.debug("agent traits: %s", agent_traits)
 
             #log.debug("traits: %s", pp.pformat(agent_traits))
             pop_graph.node[nodename]['traits'] = agent_traits
-
-
-
 
 

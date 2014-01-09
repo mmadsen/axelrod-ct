@@ -38,6 +38,9 @@ def calc_probability_interaction_extensible(agent_traits, neighbor_traits):
     diff = agent_traits.symmetric_difference(neighbor_traits)
     un = agent_traits.union(neighbor_traits)
 
+    if len(un) == 0:
+        return 1.0
+
     prob = float(len(diff)) / float(len(un))
     #log.debug("focal: %s neighbor: %s diff: %s un: %s prob: %s", agent_traits, neighbor_traits, diff, un, prob)
     return prob

@@ -408,6 +408,12 @@ class AxelrodExtensibleConfiguration(BaseConfiguration):
 
 class TreeStructuredConfiguration(BaseConfiguration):
 
+    INNOVATION_RATE = [0.01, 0.05, 0.005, 0.001]
+    """
+    The population-level innovation rate, whereby a random individual adds a trait they don't have (and any prerequisites
+    needed.
+    """
+
     TRAIT_LEARNING_RATE = [0.01, 0.05, 0.1, 0.25]
     """
     When an interaction occurs, some models may allow the trait list to grow by adding a neighbor's trait
@@ -446,6 +452,7 @@ class TreeStructuredConfiguration(BaseConfiguration):
     random trees.
     """
 
+
     # For Latex or Pandoc output, we also filter out any object instance variables, and output only the class-level variables.
     vars_to_filter = ['config', '_prng', "_popsize", "_num_features", "_num_traits", "_sim_id", "_periodic", "_script", "_drift_rate"]
     """
@@ -465,6 +472,15 @@ class TreeStructuredConfiguration(BaseConfiguration):
         self._branching_factor = None
         self._depth_factor = None
         self._loss_rate = None
+        self._innov_rate = None
+
+    @property
+    def innov_rate(self):
+        return self._innov_rate
+
+    @innov_rate.setter
+    def innov_rate(self, val):
+        self._innov_rate = val
 
 
     @property
