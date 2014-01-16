@@ -10,6 +10,7 @@ Description here
 from madsenlab.axelrod import analysis as stats
 import madsenlab.axelrod.data as data
 import logging as log
+import pprint as pp
 
 def finalize_axelrod_model(model,args,simconfig):
     counts = stats.get_culture_counts(model)
@@ -57,6 +58,15 @@ def finalize_treestructured_model(model, args, simconfig):
     (mean_traits,sd_traits) = stats.get_num_traits_per_individual_stats(model)
     log.debug("culture size - mean: %s sd: %s", mean_traits, sd_traits)
     klemm = stats.klemm_normalized_L_extensible(model, simconfig)
+
+    graphml_blobs = []
+    traitset_map = get_traitset_map(model)
+    for culture, traits in traitset_map.items():
+        g = dict(cultureid=str(culture), content=model.trait_universe.get_graphml_for_culture(traits))
+        graphml_blobs.append(g)
+
+    #log.debug("graphml: %s", pp.pformat(graphml_blobs))
+
     data.store_stats_axelrod_treestructured(simconfig.popsize,
                                       simconfig.sim_id,
                                       simconfig.maxtraits,
@@ -73,10 +83,9 @@ def finalize_treestructured_model(model, args, simconfig):
                                       counts,
                                       klemm,
                                       mean_traits,
-                                      sd_traits)
+                                      sd_traits,
+                                      graphml_blobs)
     if args.diagram == True:
-        #model.draw_network_colored_by_culture()
-        traitset_map = get_traitset_map(model)
         for culture, traits in traitset_map.items():
             model.trait_universe.draw_trait_network_for_culture(culture, traits)
 

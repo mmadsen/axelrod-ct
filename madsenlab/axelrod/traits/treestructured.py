@@ -104,6 +104,10 @@ class TreeStructuredTraitSet(object):
 
 
 
+
+
+
+
 ##########################################################################
 
 class MultipleTreeStructuredTraitSet(TreeStructuredTraitSet):
@@ -145,6 +149,12 @@ class MultipleTreeStructuredTraitSet(TreeStructuredTraitSet):
         pos=nx.graphviz_layout(trait_subgraph,prog='dot')
         nx.draw(trait_subgraph,pos,with_labels=True,arrows=False,label=culture)
         plt.show()
+
+
+    def get_graphml_for_culture(self, node_list):
+        trait_subgraph = self.graph.subgraph(node_list)
+        linefeed=chr(10)
+        return linefeed.join(nx.generate_graphml(trait_subgraph))
 
 
     def get_random_trait_path_rootbiased(self):
