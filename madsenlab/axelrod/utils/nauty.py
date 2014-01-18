@@ -31,13 +31,15 @@ def get_dreadnaught_for_graph(graph):
     dn += str(n)
     dn += ' g\n'
     for line in nx.generate_adjlist(graph):
-        #edges = line.split()
+        edges = line.split()
         #if len(edges) == 1:
         #    dn += ';\n'
-        #    break
-        #dn += " ".join(edges[1:])
-        dn += line
-        dn += ';\n'
+
+        if len(edges) == 1:
+            dn += ";\n"
+        else:
+            dn += " ".join(edges[1:])
+            dn += ";\n"
     dn += 'x\n';
     return dn
 
