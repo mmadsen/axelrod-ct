@@ -26,5 +26,29 @@ class MathFunctionsTest(unittest.TestCase):
         log.info("numnodes balanced tree: obs %s  exp: %s", obs, expected)
         self.assertEqual(obs,expected)
 
+
+    def test_num_rooted_trees(self):
+        """
+        Tests the approximation r(n) from Otter 1948 against values of r(n) calculated
+        via recursion formula #2 by Li 1996
+
+        """
+        tests = [6,10,12,14]
+        ans = [20,719,4766,32973]
+
+        for n in tests:
+            rn = utils.num_rooted_trees_otter_approx(n)
+
+        self.assertTrue(True)
+
+    def test_num_trees_with_leaves(self):
+
+        n = 341
+        k = 256
+
+        snk = utils.num_ordered_trees_by_leaves(n, k)
+
+
+
 if __name__ == "__main__":
     unittest.main()

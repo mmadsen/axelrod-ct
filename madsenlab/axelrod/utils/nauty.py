@@ -26,21 +26,26 @@ def get_dreadnaught_for_graph(graph):
     attributes, so "primary" storage of graphs should use the GraphML format.
 
     """
+    linefeed = chr(10)
     n = graph.number_of_nodes()
     dn = "n="
     dn += str(n)
-    dn += ' g\n'
+    dn += ' g'
+    dn += linefeed
     for line in nx.generate_adjlist(graph):
         edges = line.split()
         #if len(edges) == 1:
         #    dn += ';\n'
 
         if len(edges) == 1:
-            dn += ";\n"
+            dn += ";"
+            dn += linefeed
         else:
             dn += " ".join(edges[1:])
-            dn += ";\n"
-    dn += 'x\n';
+            dn += ";"
+            dn += linefeed
+    dn += 'x';
+    dn += linefeed
     return dn
 
 
