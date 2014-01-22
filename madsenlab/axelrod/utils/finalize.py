@@ -7,7 +7,7 @@
 Description here
 
 """
-from madsenlab.axelrod import analysis as stats
+import madsenlab.axelrod.analysis as stats
 import madsenlab.axelrod.data as data
 import logging as log
 import pprint as pp

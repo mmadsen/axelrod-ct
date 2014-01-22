@@ -13,6 +13,7 @@ from numpy.random import RandomState
 import numpy as np
 import matplotlib.pyplot as plt
 import madsenlab.axelrod.utils as utils
+import madsenlab.axelrod.analysis as stats
 import logging as log
 import pprint as pp
 import random
@@ -239,7 +240,7 @@ class MultipleBalancedTreeStructuredTraitFactory(object):
         graphs = []
         self.roots = []
 
-        num_nodes = utils.num_nodes_balanced_tree(self.r, self.h)
+        num_nodes = stats.num_nodes_balanced_tree(self.r, self.h)
         starting_num = 0
 
         for i in range(0, self.n):

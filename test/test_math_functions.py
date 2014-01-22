@@ -10,7 +10,7 @@ Description here
 
 
 import unittest
-import madsenlab.axelrod.utils as utils
+import madsenlab.axelrod.analysis as stats
 import logging as log
 
 
@@ -22,7 +22,7 @@ class MathFunctionsTest(unittest.TestCase):
         height = 4
         expected = 121
 
-        obs = utils.num_nodes_balanced_tree(branching,height)
+        obs = stats.num_nodes_balanced_tree(branching,height)
         log.info("numnodes balanced tree: obs %s  exp: %s", obs, expected)
         self.assertEqual(obs,expected)
 
@@ -37,7 +37,7 @@ class MathFunctionsTest(unittest.TestCase):
         ans = [20,719,4766,32973]
 
         for n in tests:
-            rn = utils.num_rooted_trees_otter_approx(n)
+            rn = stats.num_rooted_trees_otter_approx(n)
 
         self.assertTrue(True)
 
@@ -46,7 +46,7 @@ class MathFunctionsTest(unittest.TestCase):
         n = 341
         k = 256
 
-        snk = utils.num_ordered_trees_by_leaves(n, k)
+        snk = stats.num_ordered_trees_by_leaves(n, k)
 
 
 

@@ -40,7 +40,7 @@ def num_rooted_trees_otter_approx(n):
     D = 0.43992401257
 
     rn = int(m.ceil(D * (a ** n) * (n ** (-3.0/2.0))))
-    log.debug("n: %s  r(n): %s", n, rn)
+    #log.debug("n: %s  r(n): %s", n, rn)
     return rn
 
 
@@ -59,6 +59,24 @@ def num_ordered_trees_by_leaves(n, k):
     b1 = ss.binom(n-2, k-1)
     b2 = ss.binom(n-1, k-1)
     s_nk = ( b1 * b2 ) / k
-    log.debug("n: %s k leaves: %s  s_nk: %s", n, k, s_nk)
+    #log.debug("n: %s k leaves: %s  s_nk: %s", n, k, s_nk)
     return s_nk
 
+
+def num_leaves_in_tree(g):
+    """
+    Returns the number of leaves in a rooted tree.
+    """
+    leaves = 0
+    node_ids = g.nodes()
+    # check root to make sure it's not odd and has only one child
+    root_id = min(node_ids)
+    if(len(g.neighbors(root_id)) == 1):
+        log.debug("root on graph has only one neighbor, ignoring it for leaf calculation")
+        node_ids.remove(root_id)
+    # now iterate through nodes, anytime you find a node with only one neighbor, it's a leaf
+    for node in node_ids:
+        if(len(g.neighbors(node)) == 1):
+            leaves += 1
+
+    return leaves
