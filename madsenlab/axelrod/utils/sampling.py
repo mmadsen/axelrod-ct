@@ -11,8 +11,10 @@ import madsenlab.axelrod.analysis as stats
 import madsenlab.axelrod.data as data
 import logging as log
 import pprint as pp
+import numpy as np
+import math as m
 
-def finalize_axelrod_model(model,args,simconfig):
+def sample_axelrod_model(model,args,simconfig):
     counts = stats.get_culture_counts(model)
     klemm = stats.klemm_normalized_L_axelrod(model,simconfig)
     data.store_stats_axelrod_original(simconfig.popsize,
@@ -30,7 +32,7 @@ def finalize_axelrod_model(model,args,simconfig):
     if args.diagram == True:
         model.draw_network_colored_by_culture()
 
-def finalize_extensible_model(model, args, simconfig):
+def sample_extensible_model(model, args, simconfig):
     counts = stats.get_culture_counts(model)
     (mean_traits,sd_traits) = stats.get_num_traits_per_individual_stats(model)
     log.debug("culture size - mean: %s sd: %s", mean_traits, sd_traits)
@@ -53,7 +55,7 @@ def finalize_extensible_model(model, args, simconfig):
         model.draw_network_colored_by_culture()
 
 
-def finalize_treestructured_model(model, args, simconfig):
+def sample_treestructured_model(model, args, simconfig, finalized):
 
     counts = stats.get_culture_counts(model)
     (mean_traits,sd_traits) = stats.get_num_traits_per_individual_stats(model)
@@ -89,7 +91,8 @@ def finalize_treestructured_model(model, args, simconfig):
                                       mean_traits,
                                       sd_traits,
                                       graphml_blobs,
-                                      trait_tree_stats)
+                                      trait_tree_stats,
+                                      finalized)
     if args.diagram == True:
         for culture, traits in traitset_map.items():
             model.trait_universe.draw_trait_network_for_culture(culture, traits)
@@ -110,7 +113,18 @@ def get_tree_symmetries_for_traitset(model, simconfig, cultureid, traitset):
         groupsizes.append( results[ 'groupsize'])
         densities.append( results['remainingdensity'])
 
-    r = dict(cultureid=str(cultureid), orbit_number=order, group_size=groupsizes, remaining_density=densities )
+    mean_orbit = np.mean(np.asarray(order))
+    sd_orbit = m.sqrt(np.var(np.asarray(order)))
+    mean_groupsize = np.mean(np.asarray(groupsizes))
+    sd_groupsize = m.sqrt(np.var(np.asarray(groupsizes)))
+    mean_densities = np.mean(np.asarray(densities))
+    sd_densities = np.sqrt(np.var(np.asarray(densities)))
+
+    r = dict(cultureid=str(cultureid), orbit_number=order, group_size=groupsizes,
+             remaining_density=densities, mean_orbits=mean_orbit, sd_orbits=sd_orbit,
+             mean_groupsize=mean_groupsize, sd_groupsize=sd_groupsize,mean_density=mean_densities,
+             sd_density=sd_densities
+             )
     return r
 
 
@@ -131,6 +145,10 @@ def get_traitset_map(pop):
 
 
 
+
+
+
+# TODO:  summary stats for orbit number and remaining density, maybe group size?  Including evenness measure
 
 
 

@@ -107,7 +107,7 @@ def main():
             live = utils.check_liveness(ax, model, args, simconfig, timestep)
             if live == False:
                 log.info("Finalizing statistics at time: %s", model.get_time_last_interaction())
-                utils.finalize_extensible_model(model, args, simconfig)
+                utils.sample_extensible_model(model, args, simconfig)
                 exit(0)
 
 # end main

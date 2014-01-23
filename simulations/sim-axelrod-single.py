@@ -101,7 +101,7 @@ def main():
         if model.get_time_last_interaction() != timestep:
             live = utils.check_liveness(ax, model, args, simconfig, timestep)
             if live == False:
-                utils.finalize_axelrod_model(model, args, simconfig)
+                utils.sample_axelrod_model(model, args, simconfig)
                 exit(0)
 
 # end main
