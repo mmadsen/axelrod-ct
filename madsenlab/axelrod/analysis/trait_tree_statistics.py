@@ -74,7 +74,11 @@ class BalancedTreeAutomorphismStatistics(object):
         in the format described in the class docstring.
         """
         results = {}
-        dread_graph = self._get_dreadnaught_for_graph(graph)
+
+        # we reformat the vertex labels
+        g = nx.convert_node_labels_to_integers(graph)
+
+        dread_graph = self._get_dreadnaught_for_graph(g)
         raw = self._get_raw_nauty_output(dread_graph)
         log.debug("raw: %s", raw)
 

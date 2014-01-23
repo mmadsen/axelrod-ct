@@ -157,6 +157,10 @@ class MultipleTreeStructuredTraitSet(TreeStructuredTraitSet):
         linefeed=chr(10)
         return linefeed.join(nx.generate_graphml(trait_subgraph))
 
+    def get_trait_graph_components(self, node_list):
+        trait_subgraph = self.graph.subgraph(node_list)
+        return nx.connected_component_subgraphs(trait_subgraph)
+
 
     def get_random_trait_path_rootbiased(self):
         # choose a random root

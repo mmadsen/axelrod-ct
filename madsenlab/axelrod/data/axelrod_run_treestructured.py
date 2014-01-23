@@ -36,7 +36,8 @@ def _get_collection_id():
 
 def store_stats_axelrod_treestructured(popsize,sim_id,maxinit,learning_rate,
                                  loss_rate, num_trees, branching, depth,ruleclass,popclass,script,
-                                 num_cultures,convergence_time,counts,klemm,mean_traits,sd_traits,graphml_blobs):
+                                 num_cultures,convergence_time,counts,klemm,mean_traits,sd_traits,graphml_blobs,
+                                 trait_stats):
     """Stores the parameters and metadata for a simulation run in the database.
 
     """
@@ -58,7 +59,9 @@ def store_stats_axelrod_treestructured(popsize,sim_id,maxinit,learning_rate,
         klemm_normalized_L = klemm,
         mean_trait_num = mean_traits,
         sd_trait_num = sd_traits,
-        culture_graphml_repr = graphml_blobs
+        culture_graphml_repr = graphml_blobs,
+        trait_graph_stats = trait_stats
+
     )).m.insert()
     return True
 
@@ -88,5 +91,12 @@ class AxelrodStatsTreestructured(Document):
     mean_trait_num = Field(float)
     sd_trait_num = Field(float)
     culture_graphml_repr = Field([dict(cultureid=str,content=str)])
+    trait_graph_stats = Field([dict(cultureid=str,
+                                    orbit_number=[int],
+                                    group_size=[float],
+                                    remaining_density=[float]
+                                    )])
+
+
 
 

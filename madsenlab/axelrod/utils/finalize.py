@@ -54,16 +54,20 @@ def finalize_extensible_model(model, args, simconfig):
 
 
 def finalize_treestructured_model(model, args, simconfig):
+
     counts = stats.get_culture_counts(model)
     (mean_traits,sd_traits) = stats.get_num_traits_per_individual_stats(model)
     log.debug("culture size - mean: %s sd: %s", mean_traits, sd_traits)
     klemm = stats.klemm_normalized_L_extensible(model, simconfig)
 
     graphml_blobs = []
+    trait_tree_stats = []
     traitset_map = get_traitset_map(model)
     for culture, traits in traitset_map.items():
         g = dict(cultureid=str(culture), content=model.trait_universe.get_graphml_for_culture(traits))
         graphml_blobs.append(g)
+        trait_tree_stats.append( get_tree_symmetries_for_traitset(model, simconfig, culture, traits))
+
 
     #log.debug("graphml: %s", pp.pformat(graphml_blobs))
 
@@ -84,10 +88,30 @@ def finalize_treestructured_model(model, args, simconfig):
                                       klemm,
                                       mean_traits,
                                       sd_traits,
-                                      graphml_blobs)
+                                      graphml_blobs,
+                                      trait_tree_stats)
     if args.diagram == True:
         for culture, traits in traitset_map.items():
             model.trait_universe.draw_trait_network_for_culture(culture, traits)
+
+
+
+
+def get_tree_symmetries_for_traitset(model, simconfig, cultureid, traitset):
+    order = []
+    groupsizes = []
+    densities = []
+
+    symstats = stats.BalancedTreeAutomorphismStatistics(simconfig)
+    subgraph_set = model.trait_universe.get_trait_graph_components(traitset)
+    for subgraph in subgraph_set:
+        results = symstats.calculate_graph_symmetries(subgraph)
+        order.append( results['orbits'])
+        groupsizes.append( results[ 'groupsize'])
+        densities.append( results['remainingdensity'])
+
+    r = dict(cultureid=str(cultureid), orbit_number=order, group_size=groupsizes, remaining_density=densities )
+    return r
 
 
 def get_traitset_map(pop):
