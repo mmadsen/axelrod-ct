@@ -166,14 +166,21 @@ def run_simulation_worker(queue, args):
 
             while(1):
                 timestep += 1
+                ax.step(timestep)
                 if timestep % 250000 == 0:
                     log.debug("worker %s: time: %s active links: %s", os.getpid(), timestep, ax.get_fraction_links_active())
-                ax.step(timestep)
+                if timestep > 250000 and timestep % 250000  == 0:
+                    utils.sample_treestructured_model(model, args, simconfig, finalized=0)
                 if model.get_time_last_interaction() != timestep:
                     live = utils.check_liveness(ax, model, args, simconfig, timestep)
                     if live == False:
                         utils.sample_treestructured_model(model, args, simconfig)
                         break
+                        # if the simulation is cycling endlessly, and after the cutoff time, sample and end
+                if timestep > simconfig.maxtime:
+                    log.info("Simulation has not converged within %s, taking final sample and terminating", simconfig.maxtime)
+                    utils.sample_treestructured_model(model, args, simconfig, finalized=0)
+                    break
 
             # clean up before moving to next queue item
             simconfig = None

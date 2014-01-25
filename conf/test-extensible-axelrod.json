@@ -4,6 +4,7 @@
     "POPULATION_SIZES_STUDIED" : [64,144,225,400],
     "TRAIT_ADDITION_RATE" : [0.05, 0.1, 0.25],
     "MAXIMUM_INITIAL_TRAITS" : [4,8,16,32],
+    "SIMULATION_CUTOFF_TIME" : 2000000,
     "POPULATION_STRUCTURE_CLASS" : "madsenlab.axelrod.population.ExtensibleTraitStructurePopulation",
     "INTERACTION_RULE_CLASS" : "madsenlab.axelrod.rules.ExtensibleAxelrodRule",
     "NETWORK_FACTORY_CLASS" : "madsenlab.axelrod.population.SquareLatticeFactory",

@@ -37,7 +37,7 @@ def klemm_normalized_L_axelrod(pop,simconfig):
         sums += (F - overlap)
 
     result = norm_constant * sums
-    log.debug("Klemm normalized L: %s  norm constant: %s sum: %s", result, norm_constant, sums )
+    #log.debug("Klemm normalized L: %s  norm constant: %s sum: %s", result, norm_constant, sums )
     return result
 
 
@@ -74,5 +74,5 @@ def klemm_normalized_L_extensible(pop, simconfig):
         sums += (F - overlap)
 
     result = norm_constant * sums
-    log.debug("Klemm normalized L: %s  norm constant: %s sum: %s", result, norm_constant, sums )
+    #log.debug("Klemm normalized L: %s  norm constant: %s sum: %s", result, norm_constant, sums )
     return result

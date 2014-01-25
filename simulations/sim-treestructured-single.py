@@ -73,6 +73,8 @@ def setup():
     simconfig.depth_factor = float(args.depthfactor)
     simconfig.loss_rate = float(args.lossrate)
     simconfig.innov_rate = float(args.innovrate)
+    simconfig.maxtime = simconfig.SIMULATION_CUTOFF_TIME
+    simconfig.script = __file__
 
     simconfig.sim_id = uuid.uuid4().urn
     if args.periodic == '1':
@@ -112,14 +114,22 @@ def main():
 
     while(1):
         timestep += 1
-        if(timestep % 10000 == 0):
-            log.debug("time: %s  active: %s  copies: %s  innov: %s losses: %s", timestep, ax.get_fraction_links_active(), model.get_interactions(), model.get_innovations(), model.get_losses())
         ax.step(timestep)
+        if (timestep % 100000) == 0:
+            log.debug("time: %s  active: %s  copies: %s  innov: %s losses: %s", timestep, ax.get_fraction_links_active(), model.get_interactions(), model.get_innovations(), model.get_losses())
+        if timestep > 250000 and timestep % 250000  == 0:
+            utils.sample_treestructured_model(model, args, simconfig, finalized=0)
         if model.get_time_last_interaction() != timestep:
             live = utils.check_liveness(ax, model, args, simconfig, timestep)
             if live == False:
                 utils.sample_treestructured_model(model, args, simconfig, finalized=1)
                 exit(0)
+
+        # if the simulation is cycling endlessly, and after the cutoff time, sample and end
+        if timestep > simconfig.maxtime:
+            log.info("Simulation has not converged within %s, taking final sample and terminating", simconfig.maxtime)
+            utils.sample_treestructured_model(model, args, simconfig, finalized=0)
+            exit(0)
 
 # end main
 

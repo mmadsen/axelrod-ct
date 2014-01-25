@@ -56,10 +56,10 @@ def sample_extensible_model(model, args, simconfig):
 
 
 def sample_treestructured_model(model, args, simconfig, finalized):
-
+    log.debug("sampling tree structured model")
     counts = stats.get_culture_counts(model)
     (mean_traits,sd_traits) = stats.get_num_traits_per_individual_stats(model)
-    log.debug("culture size - mean: %s sd: %s", mean_traits, sd_traits)
+    #log.debug("culture size - mean: %s sd: %s", mean_traits, sd_traits)
     klemm = stats.klemm_normalized_L_extensible(model, simconfig)
 
     graphml_blobs = []
@@ -73,6 +73,12 @@ def sample_treestructured_model(model, args, simconfig, finalized):
 
     #log.debug("graphml: %s", pp.pformat(graphml_blobs))
 
+    sample_time = model.get_time_last_interaction()
+    if finalized == 1:
+        convergence_time = model.get_time_last_interaction()
+    else:
+        convergence_time = 0
+
     data.store_stats_axelrod_treestructured(simconfig.popsize,
                                       simconfig.sim_id,
                                       simconfig.maxtraits,
@@ -85,7 +91,8 @@ def sample_treestructured_model(model, args, simconfig, finalized):
                                       simconfig.POPULATION_STRUCTURE_CLASS,
                                       simconfig.script,
                                       len(counts),
-                                      model.get_time_last_interaction(),
+                                      convergence_time,
+                                      sample_time,
                                       counts,
                                       klemm,
                                       mean_traits,

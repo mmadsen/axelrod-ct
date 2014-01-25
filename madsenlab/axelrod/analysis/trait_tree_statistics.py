@@ -80,7 +80,7 @@ class BalancedTreeAutomorphismStatistics(object):
 
         dread_graph = self._get_dreadnaught_for_graph(g)
         raw = self._get_raw_nauty_output(dread_graph)
-        log.debug("raw: %s", raw)
+        #log.debug("raw: %s", raw)
 
 
         lines = raw.split('\n')

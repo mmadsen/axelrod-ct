@@ -32,7 +32,7 @@ def get_culture_counts(pop):
     stored_counts = []
     for key,val in counts.items():
         stored_counts.append(dict(cultureid=str(key),count=val))
-    log.debug("counts: %s", stored_counts)
+    #log.debug("counts: %s", stored_counts)
     return stored_counts
 
 

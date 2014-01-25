@@ -42,7 +42,12 @@ class BaseConfiguration(object):
 
     STRUCTURE_PERIODIC_BOUNDARY = [True, False]
 
-    REPLICATIONS_PER_PARAM_SET = 8
+    SIMULATION_CUTOFF_TIME = 2000000
+    """
+    The time at which we terminate a simulation which is cycling endlessly with active links.
+    """
+
+    REPLICATIONS_PER_PARAM_SET = 10
     """
     For each combination of simulation parameters, CTPy and simuPOP will run this many replicate
     populations, saving samples identically for each, but initializing each replicate with a
@@ -57,6 +62,16 @@ class BaseConfiguration(object):
     going to model this on a grid, these numbers should be perfect squares, so that if the population size is N,
     the lattice size (on a side) is SQRT(N).
     """
+
+    base_parameter_labels = {
+        'POPULATION_SIZES_STUDIED' : 'Population sizes',
+        'STRUCTURE_PERIODIC_BOUNDARY' : 'Does the population structure have a periodic boundary condition?',
+        'REPLICATIONS_PER_PARAM_SET' : 'Replicate simulation runs at each parameter combination',
+        'NUMBER_OF_TRAITS_PER_DIMENSION': 'Number of traits per locus/dimension/feature',
+        'NUMBER_OF_DIMENSIONS_OR_FEATURES': 'Number of loci/dimensions/features each individual holds',
+        'SIMULATION_CUTOFF_TIME' : 'Maximum time after which a simulation is sampled and terminated if it does not converge',
+    }
+
 
     def __init__(self, config_file):
         # if we don't give a configuration file on the command line, then we
@@ -90,6 +105,7 @@ class BaseConfiguration(object):
         self._sim_id = None
         self._periodic = None
         self._script = None
+        self._max_time = None
 
         # set up a global RNG everything can use
         self._prng = RandomState()
@@ -131,6 +147,14 @@ class BaseConfiguration(object):
     @popsize.setter
     def popsize(self, val):
         self._popsize = val
+
+    @property
+    def maxtime(self):
+        return self._max_time
+
+    @maxtime.setter
+    def maxtime(self,val):
+        self._max_time = val
 
 
     def __repr__(self):
@@ -280,7 +304,7 @@ class AxelrodConfiguration(BaseConfiguration):
 
 
     # For Latex or Pandoc output, we also filter out any object instance variables, and output only the class-level variables.
-    vars_to_filter = ['config', '_prng', "_popsize", "_num_features", "_num_traits", "_sim_id", "_periodic", "_script", "_drift_rate"]
+    vars_to_filter = ['config', '_prng', "_popsize", "_num_features", "_num_traits", "_sim_id", "_periodic", "_script", "_drift_rate", "_max_time", "_num_features", "_num_traits"]
     """
     List of variables which are never (or at least currently) pretty-printed into summary tables using the latex or markdown/pandoc methods
 
@@ -365,6 +389,8 @@ class AxelrodExtensibleConfiguration(BaseConfiguration):
 
     Some variables might be here because they're currently unused or unimplemented....
     """
+
+
 
 
     def __init__(self, config_file):
@@ -452,9 +478,23 @@ class TreeStructuredConfiguration(BaseConfiguration):
     random trees.
     """
 
+    parameter_labels = {
+        'INNOVATION_RATE' : 'Population rate at which new traits arise by individual learning',
+        'TRAIT_LEARNING_RATE' : 'Individual rate at which a missing prerequisite is learned during an interaction',
+        'TRAIT_LOSS_RATE' : 'Population rate at which existing traits are lost, perhaps by disuse',
+        'MAXIMUM_INITIAL_TRAITS': 'Maximum number of initial traits (and their prerequisites) each individual is endowed with',
+        'NUM_TRAIT_TREES': 'Number of distinct trees of traits and prerequisites',
+        'TREE_BRANCHING_FACTOR' : 'Number of branches at each level of a trait tree',
+        'TREE_DEPTH_FACTOR' : 'Number of levels of traits/prerequisites in each trait tree'
+    }
+
 
     # For Latex or Pandoc output, we also filter out any object instance variables, and output only the class-level variables.
-    vars_to_filter = ['config', '_prng', "_popsize", "_num_features", "_num_traits", "_sim_id", "_periodic", "_script", "_drift_rate"]
+    vars_to_filter = ['config', '_prng', "_popsize", "_num_features", "_num_traits", "_sim_id", "_periodic", "_script", "_drift_rate", "_maxtraits",
+                      "_learning_rate", "_num_trees", "_branching_factor", "_depth_factor", "_loss_rate", "_innov_rate", "_max_time",
+                      "INTERACTION_RULE_CLASS", "POPULATION_STRUCTURE_CLASS", "NETWORK_FACTORY_CLASS", "TRAIT_FACTORY_CLASS"]
+
+
     """
     List of variables which are never (or at least currently) pretty-printed into summary tables using the latex or markdown/pandoc methods
 
@@ -465,6 +505,9 @@ class TreeStructuredConfiguration(BaseConfiguration):
 
     def __init__(self, config_file):
         super(TreeStructuredConfiguration, self).__init__(config_file)
+
+        # unify the base configuration labels with the specific parameters from this class
+        self.parameter_labels.update(self.base_parameter_labels)
 
         self._maxtraits = None
         self._learning_rate = None

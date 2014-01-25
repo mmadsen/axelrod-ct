@@ -4,6 +4,7 @@
     "POPULATION_SIZES_STUDIED" : [64,100],
     "NUMBER_OF_DIMENSIONS_OR_FEATURES" : [2,3,4,8],
     "NUMBER_OF_TRAITS_PER_DIMENSION" :  [2,3,4,8,16],
+    "SIMULATION_CUTOFF_TIME" : 2000000,
     "POPULATION_STRUCTURE_CLASS" : "madsenlab.axelrod.population.FixedTraitStructurePopulation",
     "INTERACTION_RULE_CLASS" : "madsenlab.axelrod.rules.AxelrodRule",
     "NETWORK_FACTORY_CLASS" : "madsenlab.axelrod.population.SquareLatticeFactory",

@@ -72,7 +72,7 @@ def num_leaves_in_tree(g):
     # check root to make sure it's not odd and has only one child
     root_id = min(node_ids)
     if(len(g.neighbors(root_id)) == 1):
-        log.debug("root on graph has only one neighbor, ignoring it for leaf calculation")
+        #log.debug("root on graph has only one neighbor, ignoring it for leaf calculation")
         node_ids.remove(root_id)
     # now iterate through nodes, anytime you find a node with only one neighbor, it's a leaf
     for node in node_ids:
