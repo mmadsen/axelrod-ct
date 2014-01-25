@@ -121,13 +121,14 @@ def queue_simulations(queue, args):
             #log.debug("param combination: %s", param_combination)
             sc = copy.deepcopy(basic_config)
             sc.popsize = int(param_combination[0])
-            sc.add_rate = float(param_combination[1])
+            sc.learning_rate = float(param_combination[1])
             sc.maxtraits = int(param_combination[2])
             sc.num_trees = int(param_combination[3])
             sc.branching_factor = float(param_combination[4])
             sc.depth_factor = float(param_combination[5])
             sc.loss_rate = float(param_combination[6])
             sc.innov_rate = float(param_combination[7])
+            sc.maxtime = sc.SIMULATION_CUTOFF_TIME
             sc.sim_id = uuid.uuid4().urn
             sc.script = __file__
             sc.periodic = 0
@@ -148,8 +149,10 @@ def run_simulation_worker(queue, args):
         try:
             simconfig = queue.get()
 
-            log.info("worker %s: starting run for popsize: %s add_rate: %s maxtraits: %s",
-                     os.getpid(), simconfig.popsize, simconfig.add_rate, simconfig.maxtraits)
+            log.info("worker %s: starting pop: %s LR: %s init_trait: %s IR: %s LR: %s NT: %s BF: %s DF: %s",
+                     os.getpid(), simconfig.popsize, simconfig.learning_rate, simconfig.maxtraits,
+                     simconfig.innov_rate, simconfig.loss_rate, simconfig.num_trees,simconfig.branching_factor,
+                     simconfig.depth_factor)
             gf_constructor = utils.load_class(simconfig.NETWORK_FACTORY_CLASS)
             model_constructor = utils.load_class(simconfig.POPULATION_STRUCTURE_CLASS)
             rule_constructor = utils.load_class(simconfig.INTERACTION_RULE_CLASS)
@@ -174,7 +177,7 @@ def run_simulation_worker(queue, args):
                 if model.get_time_last_interaction() != timestep:
                     live = utils.check_liveness(ax, model, args, simconfig, timestep)
                     if live == False:
-                        utils.sample_treestructured_model(model, args, simconfig)
+                        utils.sample_treestructured_model(model, args, simconfig, finalized=1)
                         break
                         # if the simulation is cycling endlessly, and after the cutoff time, sample and end
                 if timestep > simconfig.maxtime:

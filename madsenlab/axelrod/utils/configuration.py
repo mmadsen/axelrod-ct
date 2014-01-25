@@ -516,6 +516,16 @@ class TreeStructuredConfiguration(BaseConfiguration):
         self._depth_factor = None
         self._loss_rate = None
         self._innov_rate = None
+        self._save_graphs = False
+
+
+    @property
+    def save_graphs(self):
+        return self._save_graphs
+
+    @save_graphs.setter
+    def save_graphs(self, val):
+        self._save_graphs = val
 
     @property
     def innov_rate(self):

@@ -43,7 +43,7 @@ def setup():
     parser.add_argument("--numtraittrees", help="Number of trait trees in the design space", required=True)
     parser.add_argument("--branchingfactor", help="Value or mean for tree branching factor", required=True)
     parser.add_argument("--depthfactor", help="Value or mean for tree depth factor", required=True)
-
+    parser.add_argument("--savetraitgraphs", help="Saves a snapshot of trait tree graphs", action="store_true")
 
 
     args = parser.parse_args()
@@ -75,11 +75,12 @@ def setup():
     simconfig.innov_rate = float(args.innovrate)
     simconfig.maxtime = simconfig.SIMULATION_CUTOFF_TIME
     simconfig.script = __file__
+    simconfig.save_graphs = args.savetraitgraphs
 
     simconfig.sim_id = uuid.uuid4().urn
     if args.periodic == '1':
         simconfig.periodic = 1
-    elif args.periodic == '0':
+    else:
         simconfig.periodic = 0
 
 

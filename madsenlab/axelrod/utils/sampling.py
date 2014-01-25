@@ -67,7 +67,8 @@ def sample_treestructured_model(model, args, simconfig, finalized):
     traitset_map = get_traitset_map(model)
     for culture, traits in traitset_map.items():
         g = dict(cultureid=str(culture), content=model.trait_universe.get_graphml_for_culture(traits))
-        graphml_blobs.append(g)
+        if simconfig.save_graphs == True:
+            graphml_blobs.append(g)
         trait_tree_stats.append( get_tree_symmetries_for_traitset(model, simconfig, culture, traits))
 
 
