@@ -492,7 +492,7 @@ class TreeStructuredConfiguration(BaseConfiguration):
     # For Latex or Pandoc output, we also filter out any object instance variables, and output only the class-level variables.
     vars_to_filter = ['config', '_prng', "_popsize", "_num_features", "_num_traits", "_sim_id", "_periodic", "_script", "_drift_rate", "_maxtraits",
                       "_learning_rate", "_num_trees", "_branching_factor", "_depth_factor", "_loss_rate", "_innov_rate", "_max_time",
-                      "INTERACTION_RULE_CLASS", "POPULATION_STRUCTURE_CLASS", "NETWORK_FACTORY_CLASS", "TRAIT_FACTORY_CLASS"]
+                      "_save_graphs", "INTERACTION_RULE_CLASS", "POPULATION_STRUCTURE_CLASS", "NETWORK_FACTORY_CLASS", "TRAIT_FACTORY_CLASS"]
 
 
     """
