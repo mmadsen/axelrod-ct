@@ -122,14 +122,14 @@ class MultipleTreePrerequisitesLearningCopyingRule(object):
         Calculate the fraction of links whose probability of interaction is neither 1.0 nor 0.0
         """
         active_links = 0
-        for (a,b) in self.model.model.edges_iter():
+        for (a,b) in self.model.agentgraph.edges_iter():
             (a_id, a_traits) = self.model.get_agent_by_id(a)
             (b_id, b_traits) = self.model.get_agent_by_id(b)
             prob = analysis.calc_probability_interaction_extensible(a_traits, b_traits)
             if prob > 0.0 and prob < 1.0:
                 #log.debug("active link (%s %s) prob: %s  a_trait: %s  b_trait: %s", a_id, b_id, prob, a_traits, b_traits)
                 active_links += 1
-        num_links_total = self.model.model.number_of_edges()
+        num_links_total = self.model.agentgraph.number_of_edges()
         #log.debug("active links: %s total links: %s", active_links, num_links_total)
         fraction_active = float(active_links) / float(num_links_total)
         return fraction_active

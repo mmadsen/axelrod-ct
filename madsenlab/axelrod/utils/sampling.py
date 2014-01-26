@@ -57,7 +57,10 @@ def sample_extensible_model(model, args, simconfig):
 
 def sample_treestructured_model(model, args, simconfig, finalized):
     log.debug("sampling tree structured model")
-    counts = stats.get_culture_counts(model)
+    trait_analyzer = stats.PopulationTraitFrequencyAnalyzer(model)
+    trait_analyzer.calculate_trait_frequencies()
+
+    culture_counts = stats.get_culture_counts(model)
     (mean_traits,sd_traits) = stats.get_num_traits_per_individual_stats(model)
     #log.debug("culture size - mean: %s sd: %s", mean_traits, sd_traits)
     klemm = stats.klemm_normalized_L_extensible(model, simconfig)
@@ -91,15 +94,17 @@ def sample_treestructured_model(model, args, simconfig, finalized):
                                       simconfig.INTERACTION_RULE_CLASS,
                                       simconfig.POPULATION_STRUCTURE_CLASS,
                                       simconfig.script,
-                                      len(counts),
+                                      len(culture_counts),
                                       convergence_time,
                                       sample_time,
-                                      counts,
+                                      culture_counts,
                                       klemm,
                                       mean_traits,
                                       sd_traits,
                                       graphml_blobs,
                                       trait_tree_stats,
+                                      trait_analyzer.get_trait_richness(),
+                                      trait_analyzer.get_trait_evenness_entropy(),
                                       finalized)
     if args.diagram == True:
         for culture, traits in traitset_map.items():
@@ -143,21 +148,13 @@ def get_traitset_map(pop):
      we encounter).
     """
     traitsets = {}
-    graph = pop.model
+    graph = pop.agentgraph
     for nodename in graph.nodes():
         traits = graph.node[nodename]['traits']
         culture = pop.get_traits_packed(traits)
         if culture not in traitsets:
             traitsets[culture] = traits
     return traitsets
-
-
-
-
-
-
-# TODO:  summary stats for orbit number and remaining density, maybe group size?  Including evenness measure
-
 
 
 

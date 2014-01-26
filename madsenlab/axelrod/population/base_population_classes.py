@@ -38,11 +38,11 @@ class BaseGraphPopulation(object):
         self.trait_factory = trait_factory
 
         # initialize the graph structure via the factory object
-        self.model = self.graph_factory.get_graph()
+        self.agentgraph = self.graph_factory.get_graph()
 
 
     def get_agent_by_id(self, agent_id):
-        return (agent_id, self.model.node[agent_id]['traits'])
+        return (agent_id, self.agentgraph.node[agent_id]['traits'])
 
     def get_random_agent(self):
         """
@@ -59,10 +59,10 @@ class BaseGraphPopulation(object):
         Returns a random agent chosen from among the neighbors of agent_id.  The format is the same as
         get_random_agent -- a two element tuple with the neighbor's ID and their trait list.
         """
-        neighbor_list = self.model.neighbors(agent_id)
+        neighbor_list = self.agentgraph.neighbors(agent_id)
         num_neighbors = len(neighbor_list)
         rand_neighbor_id = neighbor_list[self.prng.randint(0,num_neighbors)]
-        trait_list = self.model.node[rand_neighbor_id]['traits']
+        trait_list = self.agentgraph.node[rand_neighbor_id]['traits']
         return self.get_agent_by_id(rand_neighbor_id)
 
 
@@ -92,7 +92,7 @@ class BaseGraphPopulation(object):
         return self.losses
 
     def initialize_population(self):
-        self.trait_factory.initialize_population(self.model)
+        self.trait_factory.initialize_population(self.agentgraph)
 
     ### Abstract methods - derived classes need to override
     def draw_network_colored_by_culture(self):
@@ -116,17 +116,17 @@ class TreeTraitStructurePopulation(BaseGraphPopulation):
         super(TreeTraitStructurePopulation, self).__init__(simconfig,graph_factory,trait_factory)
 
     def set_agent_traits(self, agent_id, trait_set):
-        self.model.node[agent_id]['traits'] = trait_set
+        self.agentgraph.node[agent_id]['traits'] = trait_set
 
     def get_traits_packed(self,agent_traits):
         hashable_set = frozenset(agent_traits)
         return hash(hashable_set)
 
     def draw_network_colored_by_culture(self):
-        nodes, traits = zip(*nx.get_node_attributes(self.model, 'traits').items())
-        nodes, pos = zip(*nx.get_node_attributes(self.model, 'pos').items())
+        nodes, traits = zip(*nx.get_node_attributes(self.agentgraph, 'traits').items())
+        nodes, pos = zip(*nx.get_node_attributes(self.agentgraph, 'pos').items())
         color_tupled_compressed = [self.get_traits_packed(t) for t in traits]
-        nx.draw(self.model, pos=pos, nodelist=nodes, node_color=color_tupled_compressed)
+        nx.draw(self.agentgraph, pos=pos, nodelist=nodes, node_color=color_tupled_compressed)
         plt.show()
 
     # EXPLICIT OVERRIDE OF BASE CLASS METHOD!
@@ -138,14 +138,14 @@ class TreeTraitStructurePopulation(BaseGraphPopulation):
         to initialize our starting population on the chosen population structure.
         """
         self.trait_universe = self.trait_factory.initialize_traits()
-        self.trait_factory.initialize_population(self.model)
+        self.trait_factory.initialize_population(self.agentgraph)
 
 
     def __repr__(self):
         rep = 'TreeTraitStructurePopulation: ['
-        for nodename in self.model.nodes():
+        for nodename in self.agentgraph.nodes():
             rep += "node %s: " % nodename
-            rep += pp.pformat(self.model.node[nodename]['traits'])
+            rep += pp.pformat(self.agentgraph.node[nodename]['traits'])
             rep += ",\n"
         rep += ' ]'
         return rep
@@ -162,17 +162,17 @@ class ExtensibleTraitStructurePopulation(BaseGraphPopulation):
         super(ExtensibleTraitStructurePopulation, self).__init__(simconfig,graph_factory, trait_factory)
 
     def set_agent_traits(self, agent_id, trait_set):
-        self.model.node[agent_id]['traits'] = trait_set
+        self.agentgraph.node[agent_id]['traits'] = trait_set
 
     def get_traits_packed(self,agent_traits):
         hashable_set = frozenset(agent_traits)
         return hash(hashable_set)
 
     def draw_network_colored_by_culture(self):
-        nodes, traits = zip(*nx.get_node_attributes(self.model, 'traits').items())
-        nodes, pos = zip(*nx.get_node_attributes(self.model, 'pos').items())
+        nodes, traits = zip(*nx.get_node_attributes(self.agentgraph, 'traits').items())
+        nodes, pos = zip(*nx.get_node_attributes(self.agentgraph, 'pos').items())
         color_tupled_compressed = [self.get_traits_packed(t) for t in traits]
-        nx.draw(self.model, pos=pos, nodelist=nodes, node_color=color_tupled_compressed)
+        nx.draw(self.agentgraph, pos=pos, nodelist=nodes, node_color=color_tupled_compressed)
         plt.show()
 
 
@@ -198,10 +198,10 @@ class FixedTraitStructurePopulation(BaseGraphPopulation):
         super(FixedTraitStructurePopulation, self).__init__(simconfig, graph_factory, trait_factory)
 
     def draw_network_colored_by_culture(self):
-        nodes, colors = zip(*nx.get_node_attributes(self.model, 'traits').items())
-        nodes, pos = zip(*nx.get_node_attributes(self.model, 'pos').items())
+        nodes, colors = zip(*nx.get_node_attributes(self.agentgraph, 'traits').items())
+        nodes, pos = zip(*nx.get_node_attributes(self.agentgraph, 'pos').items())
         color_tupled_compressed = [int(''.join(str(i) for i in t)) for t in colors]
-        nx.draw(self.model, pos=pos, nodelist=nodes, node_color=color_tupled_compressed)
+        nx.draw(self.agentgraph, pos=pos, nodelist=nodes, node_color=color_tupled_compressed)
         plt.show()
 
     def get_traits_packed(self,agent_traits):
@@ -213,7 +213,7 @@ class FixedTraitStructurePopulation(BaseGraphPopulation):
         Stores a modified version of the trait list for an agent.
         """
         #old_traits = self.model.node[agent_id]['traits']
-        self.model.node[agent_id]['traits'] = trait_list
+        self.agentgraph.node[agent_id]['traits'] = trait_list
         #new_traits = self.model.node[agent_id]['traits']
         #log.debug("setting agent %s: target traits: %s  old: %s new: %s", agent_id, trait_list, old_traits, new_traits)
 

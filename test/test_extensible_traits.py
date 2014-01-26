@@ -52,7 +52,7 @@ class ExtensibleTraitTest(unittest.TestCase):
 
     def test_node_coloring(self):
 
-        node0_traits = self.pop.model.node[0]['traits']
+        node0_traits = self.pop.agentgraph.node[0]['traits']
         pack = self.pop.get_traits_packed(node0_traits)
         log.info("node0_traits: %s packed: %s", pp.pformat(node0_traits), pack)
         self.assertTrue(isinstance(pack, (int, long)))

@@ -20,7 +20,7 @@ def klemm_normalized_L_axelrod(pop,simconfig):
     Variable names differ from the rest of the codebase, but are designed to be identical to the Klemm notation.
     """
     # following is shorthand for the NetworkX graph
-    g = pop.model
+    g = pop.agentgraph
     N = simconfig.popsize
     z = pop.get_coordination_number()
     F = simconfig.num_features
@@ -53,13 +53,13 @@ def klemm_normalized_L_extensible(pop, simconfig):
     Basic idea is the same as the core axelrod model, except num_features is the max number of traits in the
     population
     """
-    g = pop.model
+    g = pop.agentgraph
     N = simconfig.popsize
     z = pop.get_coordination_number()
 
     sizes = []
-    for nodename in pop.model.nodes():
-        sizes.append(len(pop.model.node[nodename]['traits']))
+    for nodename in g.nodes():
+        sizes.append(len(g.node[nodename]['traits']))
     F = np.amax(np.asarray(sizes))
 
 

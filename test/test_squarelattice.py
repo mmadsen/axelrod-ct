@@ -50,11 +50,11 @@ class SquareLatticeTest(unittest.TestCase):
 
 
     def test_lattice_initialization(self):
-        for nodename in self.pop.model.nodes(data=True):
+        for nodename in self.pop.agentgraph.nodes(data=True):
             pp.pprint(nodename)
 
-        for nodename in self.pop.model.nodes():
-            log.info("neighbors of %s: %s  traits: %s", nodename, pp.pformat(self.pop.model.neighbors(nodename)), pp.pformat(self.pop.model.node[nodename]['traits']))
+        for nodename in self.pop.agentgraph.nodes():
+            log.info("neighbors of %s: %s  traits: %s", nodename, pp.pformat(self.pop.agentgraph.neighbors(nodename)), pp.pformat(self.pop.agentgraph.node[nodename]['traits']))
 
         #log.info("testing random agent selection")
         agent_tuple = self.pop.get_random_agent()

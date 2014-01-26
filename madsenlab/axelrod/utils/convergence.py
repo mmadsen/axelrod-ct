@@ -13,7 +13,7 @@ import logging as log
 
 def check_liveness(ax, model, args, simconfig, timestep):
     diff = timestep - model.get_time_last_interaction()
-    num_links = model.model.number_of_edges()
+    num_links = model.agentgraph.number_of_edges()
 
     if (diff > (5 * num_links)):
         #log.debug("No interactions have occurred since %s - for %s ticks, which is 5 * %s network edges", model.get_time_last_interaction(), diff, num_links)
