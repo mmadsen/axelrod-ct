@@ -76,7 +76,7 @@ class TreeStructuredTraitSet(object):
 
         Useful for initializing a population.
         """
-        num_t = len(self.graph.nodes())
+        num_t = self.graph.number_of_nodes()
 
         draw = self.prng.random_integers(0, num_t - 1)
         path = self.get_parents_for_node(draw)
@@ -165,6 +165,7 @@ class MultipleTreeStructuredTraitSet(TreeStructuredTraitSet):
     def get_random_trait_path_rootbiased(self):
         # choose a random root
         root = random.sample(self.roots, 1)[0]
+        #log.debug("root chosen: %s", root)
         # choose how deep we go, limited to max depth of tree, but Poisson biased heavily towards the root
         depth = np.random.poisson(0.5, 1)[0]
         if depth > self.depth:
@@ -175,20 +176,52 @@ class MultipleTreeStructuredTraitSet(TreeStructuredTraitSet):
         if depth == 0:
             return [root]
 
+
+
+        # given a depth, now we walk random links "down" to that depth, and
+        # given a node chosen from random links, we return the path from that
+        # node back to the root.  We keep track of the edge by which we get
+        # to each node to exclude the parent links in the path from being
+        # chosen.
+
+        current = root
+        prev = current
+        random_node = None
+        d = depth
+
+        while d > 0:
+            #log.debug("d: %s current: %s prev: %s", d, current, prev)
+            neighbors = self.graph.neighbors(current)
+            #log.debug("neighbors: %s", pp.pformat(neighbors))
+            if prev in neighbors:
+                neighbors.remove(prev)
+            random_node = random.sample(neighbors, 1)[0]
+            prev = current
+            current = random_node
+            d -= 1
+
+        #log.debug("random node: %s", random_node)
+
+
+
+
+
+
         # given a balanced tree, the nodes at depth d begin at
         # begin = sum(r^i) where i runs from 0 to d-1.  There are then r^d nodes
         # at that level.  so we find a random node at that level by
         # taking a uniform random from the interval [begin,r^d)
-        begin = root
-        m = int(self.branching) - 1
-        b = int(self.branching)
-        for i in range(0, m):
-            begin += b ** i
-        l = b ** depth
-
-        #log.debug("begin: %s length: %s", begin, l)
-
-        random_node = np.random.randint(begin, (begin + l), size=1)[0]
+        # begin = root
+        # m = int(self.branching) - 1
+        # b = int(self.branching)
+        # for i in range(0, m):
+        #     begin += b ** i
+        # l = b ** depth
+        #
+        # log.debug("b: %s begin: %s length: %s", b, begin, l)
+        #
+        # random_node = np.random.randint(begin, (begin + l), size=1)[0]
+        # log.debug("random node: %s", random_node)
         path = self.get_parents_for_node(random_node)
         path.append(random_node)
         #log.debug("rand path: %s", path)

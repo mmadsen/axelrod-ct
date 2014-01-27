@@ -106,7 +106,7 @@ def sample_treestructured_model(model, args, simconfig, finalized):
                                       trait_analyzer.get_trait_richness(),
                                       trait_analyzer.get_trait_evenness_entropy(),
                                       finalized)
-    if args.diagram == True:
+    if args.diagram == True and finalized == 1:
         for culture, traits in traitset_map.items():
             model.trait_universe.draw_trait_network_for_culture(culture, traits)
 
@@ -138,6 +138,7 @@ def get_tree_symmetries_for_traitset(model, simconfig, cultureid, traitset):
              mean_groupsize=mean_groupsize, sd_groupsize=sd_groupsize,mean_density=mean_densities,
              sd_density=sd_densities
              )
+    #log.debug("groupstats: %s", r)
     return r
 
 

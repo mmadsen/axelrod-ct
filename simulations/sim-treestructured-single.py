@@ -112,13 +112,17 @@ def main():
 
     timestep = 0
     last_interaction = 0
+    first_snapshot_time = simconfig.maxtime / 2
+
+
+
 
     while(1):
         timestep += 1
         ax.step(timestep)
         if (timestep % 100000) == 0:
             log.debug("time: %s  active: %s  copies: %s  innov: %s losses: %s", timestep, ax.get_fraction_links_active(), model.get_interactions(), model.get_innovations(), model.get_losses())
-        if timestep > 250000 and timestep % 250000  == 0:
+        if timestep > first_snapshot_time and timestep % 250000  == 0:
             utils.sample_treestructured_model(model, args, simconfig, finalized=0)
         if model.get_time_last_interaction() != timestep:
             live = utils.check_liveness(ax, model, args, simconfig, timestep)

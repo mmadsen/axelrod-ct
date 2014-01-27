@@ -126,9 +126,9 @@ class PopulationTraitFrequencyAnalyzer(object):
             for trait in agent_traits:
                 trait_counts[trait] += 1
 
-        log.debug("counts: %s", pp.pformat(trait_counts))
+        #log.debug("counts: %s", pp.pformat(trait_counts))
 
         self.freq = {k : float(v)/float(total) for k,v in trait_counts.items()}
-        log.debug("freq: %s", pp.pformat(self.freq))
+        #log.debug("freq: %s", pp.pformat(self.freq))
 
 
