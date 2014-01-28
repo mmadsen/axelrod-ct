@@ -13,7 +13,7 @@ import logging as log
 import ming
 import argparse
 import madsenlab.axelrod.utils as utils
-import madsenlab.axelrod.analysis as analysis
+import madsenlab.axelrod.analysis as stats
 import madsenlab.axelrod.data as data
 import madsenlab.axelrod.rules as rules
 import pprint as pp

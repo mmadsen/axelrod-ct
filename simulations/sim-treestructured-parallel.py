@@ -22,6 +22,7 @@ import multiprocessing as mp
 import madsenlab.axelrod.utils as utils
 import madsenlab.axelrod.data as data
 import madsenlab.axelrod.rules as rules
+import madsenlab.axelrod.analysis as stats
 
 
 

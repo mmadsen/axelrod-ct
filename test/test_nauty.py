@@ -60,5 +60,6 @@ class NautyTest(unittest.TestCase):
         else:
             self.assertTrue(False)
 
+
 if __name__ == "__main__":
     unittest.main()

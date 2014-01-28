@@ -11,5 +11,6 @@ Description here
 from configuration import AxelrodConfiguration, AxelrodExtensibleConfiguration, TreeStructuredConfiguration
 from dynamicloading import load_class
 from convergence import check_liveness
-from sampling import sample_axelrod_model, sample_extensible_model, sample_treestructured_model
+from sampling import sample_extensible_model, sample_treestructured_model, sample_axelrod_model
+
 

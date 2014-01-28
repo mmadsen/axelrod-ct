@@ -105,7 +105,9 @@ class AxelrodStatsTreestructured(Document):
                                     mean_groupsize = float,
                                     sd_groupsize = float,
                                     mean_density = float,
-                                    sd_density = float
+                                    sd_density = float,
+                                    mean_radii = float,
+                                    sd_radii = float
                                     )])
     trait_richness = Field(float)
     trait_evenness_entropy = Field(float)

@@ -130,6 +130,9 @@ class BalancedTreeAutomorphismStatistics(object):
         graph_size = graph.number_of_nodes()
         results['remainingdensity'] = float(graph_size) / float(self.n_per_tree)
 
+        # calculate the maximum depth of each trait tree
+        results['radius'] = nx.radius(g)
+
         return results
 
 
