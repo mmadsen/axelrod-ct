@@ -13,6 +13,7 @@ import logging as log
 import pprint as pp
 import numpy as np
 import math as m
+import networkx as nx
 
 def sample_axelrod_model(model,args,simconfig):
     counts = stats.get_culture_counts(model)
@@ -83,6 +84,8 @@ def sample_treestructured_model(model, args, simconfig, finalized):
     else:
         convergence_time = 0
 
+    # Not recording the entropy yet, it doesn't mean anything given the way frequencies work.
+
     data.store_stats_axelrod_treestructured(simconfig.popsize,
                                       simconfig.sim_id,
                                       simconfig.maxtraits,
@@ -104,7 +107,7 @@ def sample_treestructured_model(model, args, simconfig, finalized):
                                       graphml_blobs,
                                       trait_tree_stats,
                                       trait_analyzer.get_trait_richness(),
-                                      trait_analyzer.get_trait_evenness_entropy(),
+                                      None,
                                       finalized)
     if args.diagram == True and finalized == 1:
         for culture, traits in traitset_map.items():
@@ -118,6 +121,7 @@ def get_tree_symmetries_for_traitset(model, simconfig, cultureid, traitset):
     groupsizes = []
     densities = []
     radii = []
+    mean_degree = []
 
     symstats = stats.BalancedTreeAutomorphismStatistics(simconfig)
     subgraph_set = model.trait_universe.get_trait_graph_components(traitset)
@@ -127,6 +131,7 @@ def get_tree_symmetries_for_traitset(model, simconfig, cultureid, traitset):
         groupsizes.append( results[ 'groupsize'])
         densities.append( results['remainingdensity'])
         radii.append( results['radius'])
+        mean_degree.append( np.mean(np.asarray(nx.degree(subgraph).values())))
 
     mean_orbit = np.mean(np.asarray(order))
     sd_orbit = m.sqrt(np.var(np.asarray(order)))
@@ -136,11 +141,12 @@ def get_tree_symmetries_for_traitset(model, simconfig, cultureid, traitset):
     sd_densities = np.sqrt(np.var(np.asarray(densities)))
     mean_radii = np.mean(np.asarray(radii))
     sd_radii = np.sqrt(np.var(np.asarray(radii)))
+    mean_degree = np.mean(np.asarray(mean_degree))
 
     r = dict(cultureid=str(cultureid), orbit_number=order, group_size=groupsizes,
              remaining_density=densities, mean_orbits=mean_orbit, sd_orbits=sd_orbit,
              mean_groupsize=mean_groupsize, sd_groupsize=sd_groupsize,mean_density=mean_densities,
-             sd_density=sd_densities,mean_radii=mean_radii,sd_radii=sd_radii
+             sd_density=sd_densities,mean_radii=mean_radii,sd_radii=sd_radii, mean_degree=mean_degree
              )
     #log.debug("groupstats: %s", r)
     return r
