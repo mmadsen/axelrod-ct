@@ -8,7 +8,7 @@
     "NUM_TRAIT_TREES" : [4,8,12,16],
     "TREE_BRANCHING_FACTOR" : [2,3,4,6],
     "TREE_DEPTH_FACTOR" : [3,4,6,8],
-    "SIMULATION_CUTOFF_TIME" : 2000000,
+    "SIMULATION_CUTOFF_TIME" : 4000000,
     "POPULATION_STRUCTURE_CLASS" : "madsenlab.axelrod.population.TreeTraitStructurePopulation",
     "INTERACTION_RULE_CLASS" : "madsenlab.axelrod.rules.MultipleTreePrerequisitesLearningCopyingRule",
     "NETWORK_FACTORY_CLASS" : "madsenlab.axelrod.population.SquareLatticeFactory",
