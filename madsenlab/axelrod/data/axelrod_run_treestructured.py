@@ -74,6 +74,7 @@ def store_stats_axelrod_treestructured(popsize,sim_id,maxinit,learning_rate,
 def columns_to_export_for_analysis():
     cols = [
         "simulation_run_id",
+        "population_size",
         "max_init_traits",
         "learning_rate",
         "loss_rate",
