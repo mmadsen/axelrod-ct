@@ -21,7 +21,7 @@ from dbutils import *
 # bogus values are to ensure that CLI processing and configuration is working without bugs
 dbhost = "override"
 dbport = "override"
-experiment = "test"
+experiment_name = "test"
 
 
 # When a new module is added for data, the module's filename should be added to the module list below,
