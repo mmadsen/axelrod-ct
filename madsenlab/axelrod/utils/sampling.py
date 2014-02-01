@@ -91,6 +91,7 @@ def sample_treestructured_model(model, args, simconfig, finalized):
                                       simconfig.maxtraits,
                                       simconfig.learning_rate,
                                       simconfig.loss_rate,
+                                      simconfig.innov_rate,
                                       simconfig.num_trees,
                                       simconfig.branching_factor,
                                       simconfig.depth_factor,
