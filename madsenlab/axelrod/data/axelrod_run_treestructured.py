@@ -77,6 +77,7 @@ def columns_to_export_for_analysis():
         "max_init_traits",
         "learning_rate",
         "loss_rate",
+        "innovation_rate",
         "num_trait_trees",
         "branching_factor",
         "depth_factor",
