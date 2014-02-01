@@ -31,6 +31,7 @@ def setup():
     parser.add_argument("--dbport", help="database port, defaults to 27017", default="27017")
     parser.add_argument("--configuration", help="Path to configuration file")
     parser.add_argument("--model", choices=['axelrod', 'extensible', 'treestructured'], required=True)
+    parser.add_argument("--finalized", help="Only export runs which finalized after convergence", action="store_true")
 
     args = parser.parse_args()
 
@@ -113,7 +114,10 @@ if __name__ == "__main__":
     headers = dict((n,n) for n in fieldnames)
     writer.writerow(headers)
 
-    cursor = data.AxelrodStatsTreestructured.m.find(dict(),dict(timeout=False))
+    if args.finalized == True:
+        cursor = data.AxelrodStatsTreestructured.m.find(dict(run_finalized=1),dict(timeout=False))
+    else:
+        cursor = data.AxelrodStatsTreestructured.m.find(dict(),dict(timeout=False))
 
 
 
