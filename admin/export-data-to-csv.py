@@ -123,7 +123,7 @@ if __name__ == "__main__":
 
     for sample in cursor:
         row = dict()
-        for field in orig_fields:
+        for field in sorted(orig_fields):
             row[field] = sample[field]
 
         # now pull apart the trait graph list - producing a row for each element of the trait graph list

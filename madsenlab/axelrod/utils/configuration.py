@@ -478,6 +478,11 @@ class TreeStructuredConfiguration(BaseConfiguration):
     random trees.
     """
 
+    WS_REWIRING_FACTOR = [0.05,0.075,0.1,0.2]
+    """
+    When using the Watts-Strogatz small-world lattice, this represents the probability of rewiring a vertex
+    """
+
     parameter_labels = {
         'INNOVATION_RATE' : 'Population rate at which new traits arise by individual learning',
         'TRAIT_LEARNING_RATE' : 'Individual rate at which a missing prerequisite is learned during an interaction',
@@ -485,7 +490,8 @@ class TreeStructuredConfiguration(BaseConfiguration):
         'MAXIMUM_INITIAL_TRAITS': 'Maximum number of initial traits (and their prerequisites) each individual is endowed with',
         'NUM_TRAIT_TREES': 'Number of distinct trees of traits and prerequisites',
         'TREE_BRANCHING_FACTOR' : 'Number of branches at each level of a trait tree',
-        'TREE_DEPTH_FACTOR' : 'Number of levels of traits/prerequisites in each trait tree'
+        'TREE_DEPTH_FACTOR' : 'Number of levels of traits/prerequisites in each trait tree',
+        'WS_REWIRING_FACTOR' : 'Rewiring probability for Watts-Strogatz small world lattices',
     }
 
 
@@ -517,7 +523,16 @@ class TreeStructuredConfiguration(BaseConfiguration):
         self._loss_rate = None
         self._innov_rate = None
         self._save_graphs = False
+        self._wsrewiring = None
 
+
+    @property
+    def ws_rewiring(self):
+        return self._wsrewiring
+
+    @ws_rewiring.setter
+    def ws_rewiring(self,val):
+        self._wsrewiring = val
 
     @property
     def save_graphs(self):

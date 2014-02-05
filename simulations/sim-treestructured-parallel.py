@@ -115,6 +115,10 @@ def queue_simulations(queue, args):
         log.error("This parallel sim runner not compatible with rule class: %s", basic_config.INTERACTION_RULE_CLASS)
         exit(1)
 
+
+    if basic_config.NETWORK_FACTORY_CLASS == 'madsenlab.axelrod.population.WattsStrogatzSmallWorldFactory':
+        state_space.append(basic_config.WS_REWIRING_FACTOR)
+
     for param_combination in itertools.product(*state_space):
         # for each parameter combination, make a copy of the base configuration
         # set the specific param combo values, and queue the object
@@ -129,6 +133,10 @@ def queue_simulations(queue, args):
             sc.depth_factor = float(param_combination[5])
             sc.loss_rate = float(param_combination[6])
             sc.innov_rate = float(param_combination[7])
+
+            if len(param_combination) == 9:
+                sc.ws_rewiring = float(param_combination[8])
+
             sc.maxtime = sc.SIMULATION_CUTOFF_TIME
             sc.sim_id = uuid.uuid4().urn
             sc.script = __file__
@@ -150,10 +158,10 @@ def run_simulation_worker(queue, args):
         try:
             simconfig = queue.get()
 
-            log.info("worker %s: starting pop: %s LR: %s init_trait: %s IR: %s LR: %s NT: %s BF: %s DF: %s",
+            log.info("worker %s: starting pop: %s LR: %s init_trait: %s IR: %s LR: %s NT: %s BF: %s DF: %s WSR: %s",
                      os.getpid(), simconfig.popsize, simconfig.learning_rate, simconfig.maxtraits,
                      simconfig.innov_rate, simconfig.loss_rate, simconfig.num_trees,simconfig.branching_factor,
-                     simconfig.depth_factor)
+                     simconfig.depth_factor, simconfig.ws_rewiring)
             gf_constructor = utils.load_class(simconfig.NETWORK_FACTORY_CLASS)
             model_constructor = utils.load_class(simconfig.POPULATION_STRUCTURE_CLASS)
             rule_constructor = utils.load_class(simconfig.INTERACTION_RULE_CLASS)

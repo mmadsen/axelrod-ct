@@ -97,6 +97,7 @@ def sample_treestructured_model(model, args, simconfig, finalized):
                                       simconfig.depth_factor,
                                       simconfig.INTERACTION_RULE_CLASS,
                                       simconfig.POPULATION_STRUCTURE_CLASS,
+                                      simconfig.NETWORK_FACTORY_CLASS,
                                       simconfig.script,
                                       len(culture_counts),
                                       convergence_time,
@@ -109,7 +110,9 @@ def sample_treestructured_model(model, args, simconfig, finalized):
                                       trait_tree_stats,
                                       trait_analyzer.get_trait_richness(),
                                       None,
-                                      finalized)
+                                      finalized,
+                                      simconfig.ws_rewiring)
+
     if args.diagram == True and finalized == 1:
         for culture, traits in traitset_map.items():
             model.trait_universe.draw_trait_network_for_culture(culture, traits)

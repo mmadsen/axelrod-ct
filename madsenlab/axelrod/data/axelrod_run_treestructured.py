@@ -35,9 +35,9 @@ def _get_collection_id():
 
 
 def store_stats_axelrod_treestructured(popsize,sim_id,maxinit,learning_rate,
-                                 loss_rate, innov_rate, num_trees, branching, depth,ruleclass,popclass,script,
+                                 loss_rate, innov_rate, num_trees, branching, depth,ruleclass,popclass,networkclass,script,
                                  num_cultures,convergence_time,sample_time,counts,klemm,mean_traits,sd_traits,graphml_blobs,
-                                 trait_stats,trait_rich,trait_entropy,final):
+                                 trait_stats,trait_rich,trait_entropy,final,swrewiring):
     """Stores the parameters and metadata for a simulation run in the database.
 
     """
@@ -54,6 +54,7 @@ def store_stats_axelrod_treestructured(popsize,sim_id,maxinit,learning_rate,
         depth_factor = depth,
         rule_class = ruleclass,
         pop_class = popclass,
+        network_class = networkclass,
         num_culture_regions = num_cultures,
         convergence_time = convergence_time,
         sample_time = sample_time,
@@ -65,7 +66,9 @@ def store_stats_axelrod_treestructured(popsize,sim_id,maxinit,learning_rate,
         trait_graph_stats = trait_stats,
         trait_richness = trait_rich,
         trait_evenness_entropy = trait_entropy,
-        run_finalized = final
+        run_finalized = final,
+        sw_rewiring_prob = swrewiring
+
 
     )).m.insert()
     return True
@@ -74,6 +77,7 @@ def store_stats_axelrod_treestructured(popsize,sim_id,maxinit,learning_rate,
 def columns_to_export_for_analysis():
     cols = [
         "simulation_run_id",
+        "network_class",
         "population_size",
         "max_init_traits",
         "learning_rate",
@@ -88,6 +92,7 @@ def columns_to_export_for_analysis():
         "convergence_time",
         "mean_trait_num",
         "trait_richness",
+        "sw_rewiring_prob",
     ]
     return cols
 
@@ -109,6 +114,7 @@ class AxelrodStatsTreestructured(Document):
     innovation_rate = Field(float)
     rule_class = Field(str)
     pop_class = Field(str)
+    network_class = Field(str)
     population_size = Field(int)
     simulation_run_id = Field(str)
     num_culture_regions = Field(int)
@@ -135,6 +141,7 @@ class AxelrodStatsTreestructured(Document):
                                     )])
     trait_richness = Field(float)
     trait_evenness_entropy = Field(float)
+    sw_rewiring_prob = Field(float)
     #trait_freq = Field()
     run_finalized = Field(int)
 

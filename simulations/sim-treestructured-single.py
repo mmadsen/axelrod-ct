@@ -39,7 +39,7 @@ def setup():
     parser.add_argument("--innovrate", help="Rate at which innovations occur in population", required=True)
     parser.add_argument("--periodic", help="Periodic boundary condition", choices=['1','0'], required=True)
     parser.add_argument("--diagram", help="Draw a diagram of the converged model", action="store_true")
-    parser.add_argument("--drift_rate", help="Rate of drift")
+    parser.add_argument("--swrewiring", help="Rewiring probability for Watts-Strogatz population graph", required=False)
     parser.add_argument("--numtraittrees", help="Number of trait trees in the design space", required=True)
     parser.add_argument("--branchingfactor", help="Value or mean for tree branching factor", required=True)
     parser.add_argument("--depthfactor", help="Value or mean for tree depth factor", required=True)
@@ -62,8 +62,8 @@ def setup():
     config = data.getMingConfiguration(data.modules)
     ming.configure(**config)
 
-    if args.drift_rate:
-        simconfig.drift_rate = float(args.drift_rate)
+    if args.swrewiring:
+        simconfig.ws_rewiring = float(args.swrewiring)
 
     simconfig.popsize = int(args.popsize)
     simconfig.maxtraits = int(args.maxinittraits)
