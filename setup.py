@@ -23,31 +23,3 @@ setup(name="axelrod-ct",
           'Topic :: Scientific/Engineering',
       ]
       )
-
-
-      # install_requires = [
-      #   "argparse",
-      #   "copy",
-      #   "csv",
-      #   "importlib",
-      #   "itertools",
-      #   "json",
-      #   "logging",
-      #   "math",
-      #   "matplotlib",
-      #   "ming",
-      #   "multiprocessing",
-      #   "networkx",
-      #   "numpy",
-      #   "os",
-      #   "pprint",
-      #   "random",
-      #   "re",
-      #   "scipy",
-      #   "subprocess",
-      #   "sys",
-      #   "tempfile",
-      #   "time",
-      #   "unittest",
-      #   "uuid",
-      # ]
