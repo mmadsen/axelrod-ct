@@ -103,6 +103,8 @@ def main():
     model = model_constructor(simconfig, graph_factory, trait_factory)
     model.initialize_population()
 
+
+
     #counts = analysis.get_culture_counts(model)
 
 
