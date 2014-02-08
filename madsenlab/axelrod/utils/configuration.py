@@ -176,7 +176,7 @@ class BaseConfiguration(object):
 
         """
         if 'caption' not in kwargs or kwargs['caption'] is None:
-            caption_text = "\\caption{Parameters for Axelrod Simulations for Experiment Name: "
+            caption_text = "\\caption{Parameters for Semantic Axelrod simulations for Experiment Name: "
             caption_text += experiment
             caption_text += '}\n'
         else:
@@ -213,14 +213,14 @@ class BaseConfiguration(object):
             else:
                 s += str(var[1])
 
-            s += '\\\\ \n'
+            s += '\\\\ \n \\hline \n'
             t.append(s)
 
 
         t.append('\\hline\n')
         t.append('\\end{tabular}\n')
         t.append(caption_text)
-        t.append('\\label{tab:ctpy-sim-parameters}\n')
+        t.append('\\label{tab:axelrodct-sim-parameters}\n')
         t.append('\\end{table}\n')
 
         return ''.join(t)
@@ -487,17 +487,17 @@ class TreeStructuredConfiguration(BaseConfiguration):
         'INNOVATION_RATE' : 'Population rate at which new traits arise by individual learning',
         'TRAIT_LEARNING_RATE' : 'Individual rate at which a missing prerequisite is learned during an interaction',
         'TRAIT_LOSS_RATE' : 'Population rate at which existing traits are lost, perhaps by disuse',
-        'MAXIMUM_INITIAL_TRAITS': 'Maximum number of initial traits (and their prerequisites) each individual is endowed with',
+        'MAXIMUM_INITIAL_TRAITS': 'Maximum number of initial traits (not including their prerequisites) each individual is endowed with',
         'NUM_TRAIT_TREES': 'Number of distinct trees of traits and prerequisites',
         'TREE_BRANCHING_FACTOR' : 'Number of branches at each level of a trait tree',
-        'TREE_DEPTH_FACTOR' : 'Number of levels of traits/prerequisites in each trait tree',
+        'TREE_DEPTH_FACTOR' : 'Depth of traits/prerequisites in each trait tree',
         'WS_REWIRING_FACTOR' : 'Rewiring probability for Watts-Strogatz small world lattices',
     }
 
 
     # For Latex or Pandoc output, we also filter out any object instance variables, and output only the class-level variables.
     vars_to_filter = ['config', '_prng', "_popsize", "_num_features", "_num_traits", "_sim_id", "_periodic", "_script", "_drift_rate", "_maxtraits",
-                      "_learning_rate", "_num_trees", "_branching_factor", "_depth_factor", "_loss_rate", "_innov_rate", "_max_time",
+                      "_learning_rate", "_num_trees", "_branching_factor", "_depth_factor", "_loss_rate", "_innov_rate", "_max_time", "_wsrewiring",
                       "_save_graphs", "INTERACTION_RULE_CLASS", "POPULATION_STRUCTURE_CLASS", "NETWORK_FACTORY_CLASS", "TRAIT_FACTORY_CLASS"]
 
 
