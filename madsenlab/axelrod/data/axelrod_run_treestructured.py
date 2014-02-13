@@ -126,6 +126,7 @@ class AxelrodStatsTreestructured(Document):
     sd_trait_num = Field(float)
     culture_graphml_repr = Field([dict(cultureid=str,content=str)])
     trait_graph_stats = Field([dict(cultureid=str,
+                                    culture_count=int,
                                     orbit_number=[int],
                                     group_size=[float],
                                     remaining_density=[float],

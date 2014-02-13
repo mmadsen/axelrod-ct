@@ -96,7 +96,7 @@ def main():
     timestep = 0
     last_interaction = 0
 
-    counts = analysis.get_culture_counts(model)
+    counts = analysis.get_culture_counts_dbformat(model)
 
     while(1):
         timestep += 1

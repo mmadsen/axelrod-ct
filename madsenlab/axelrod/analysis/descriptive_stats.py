@@ -14,7 +14,16 @@ import numpy as np
 import math as m
 import pprint as pp
 
-def get_culture_counts(pop):
+def get_culture_count_map(pop):
+    counts = defaultdict(int)
+    graph = pop.agentgraph
+    for nodename in graph.nodes():
+        traits = graph.node[nodename]['traits']
+        culture = pop.get_traits_packed(traits)
+        counts[culture] += 1
+    return counts
+
+def get_culture_counts_dbformat(pop):
     """
     Takes an instance of a "population" and counts the distinct trait lists (i.e., cultures in the
     Axelrod model sense) in the population.  Cultures are represented by packing the feature/trait list

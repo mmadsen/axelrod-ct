@@ -68,7 +68,6 @@ def main():
     file_cycle = itertools.cycle(file_list)
 
 
-
     basic_config = utils.TreeStructuredConfiguration(args.configuration)
 
     if basic_config.INTERACTION_RULE_CLASS == 'madsenlab.axelrod.rules.MultipleTreePrerequisitesLearningCopyingRule':

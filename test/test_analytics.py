@@ -48,7 +48,7 @@ class AxelrodAnalytics(unittest.TestCase):
 
 
     def test_culture_counts(self):
-        counts = analysis.get_culture_counts(self.pop)
+        counts = analysis.get_culture_counts_dbformat(self.pop)
         log.info("counts: %s", counts)
 
     def test_klemm(self):
@@ -89,7 +89,7 @@ class ExtensibleAnalytics(unittest.TestCase):
 
 
     def test_culture_counts(self):
-        counts = analysis.get_culture_counts(self.pop)
+        counts = analysis.get_culture_counts_dbformat(self.pop)
         log.info("counts: %s", counts)
 
     def test_klemm(self):
