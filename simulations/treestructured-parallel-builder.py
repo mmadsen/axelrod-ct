@@ -27,6 +27,7 @@ def setup():
     parser.add_argument("--dbport", help="database port, defaults to 27017", default="27017")
     parser.add_argument("--configuration", help="Configuration file for experiment", required=True)
     parser.add_argument("--parallelism", help="Number of concurrent processes to run", default="4")
+    parser.add_argument("--savetraitgraphs", help="Saves a snapshot of trait tree graphs", action="store_true")
 
     args = parser.parse_args()
 
@@ -58,7 +59,7 @@ def main():
         filename = ''
         filename += base_name
         filename += str(i)
-        filename += ".py"
+        filename += ".sh"
 
         f = open(filename, 'w')
 
@@ -120,6 +121,9 @@ def main():
             if len(param_combination) == 9:
                 cmd += " --swrewiring "
                 cmd += str(param_combination[8])
+
+            if args.savetraitgraphs:
+                cmd += " --savetraitgraphs "
 
             cmd += '\n'
 
