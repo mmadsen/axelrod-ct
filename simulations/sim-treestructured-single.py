@@ -44,6 +44,8 @@ def setup():
     parser.add_argument("--branchingfactor", help="Value or mean for tree branching factor", required=True)
     parser.add_argument("--depthfactor", help="Value or mean for tree depth factor", required=True)
     parser.add_argument("--savetraitgraphs", help="Saves a snapshot of trait tree graphs", action="store_true")
+    parser.add_argument("--samplinginterval", help="Interval between samples, once sampling begins, defaults to 250K steps", default="250000")
+    parser.add_argument("--samplingstarttime", help="Time at which sampling begins, defaults to 1000000 steps", default="1000000")
 
 
     args = parser.parse_args()
@@ -124,7 +126,7 @@ def main():
         ax.step(timestep)
         if (timestep % 100000) == 0:
             log.debug("time: %s  active: %s  copies: %s  innov: %s losses: %s", timestep, ax.get_fraction_links_active(), model.get_interactions(), model.get_innovations(), model.get_losses())
-        if timestep > first_snapshot_time and timestep % 250000  == 0:
+        if timestep > int(args.samplingstarttime) and timestep % int(args.samplinginterval)  == 0:
             utils.sample_treestructured_model(model, args, simconfig, finalized=0)
         if model.get_time_last_interaction() != timestep:
             live = utils.check_liveness(ax, model, args, simconfig, timestep)
