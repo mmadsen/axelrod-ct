@@ -107,7 +107,7 @@ if __name__ == "__main__":
 
     fieldnames = data.axelrod_run_treestructured.columns_to_export_for_analysis()
     orig_fields = fieldnames[:]
-    fieldnames.extend(["mean_radii", "mean_degree", "sd_groupsize", "sd_orbits", "sd_radii", "sd_density", "mean_groupsize", "mean_density", "mean_orbits"])
+    fieldnames.extend(["cultureid", "culture_count", "mean_radii", "mean_degree", "sd_groupsize", "sd_orbits", "sd_radii", "sd_density", "mean_groupsize", "mean_density", "mean_orbits"])
     ofile  = open(outputFileName, "wb")
     writer = csv.DictWriter(ofile, fieldnames=fieldnames, quotechar='"', quoting=csv.QUOTE_ALL)
 
@@ -130,6 +130,8 @@ if __name__ == "__main__":
         tg_stats = sample['trait_graph_stats']
         for tg in tg_stats:
             log.debug("tg: %s", tg)
+            row['cultureid'] = tg['cultureid']
+            row['culture_count'] = tg['culture_count']
             row['mean_orbits'] = tg['mean_orbits']
             row['sd_orbits'] = tg['sd_orbits']
             row['mean_groupsize'] = tg['mean_groupsize']
