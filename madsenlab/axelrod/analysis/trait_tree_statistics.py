@@ -66,28 +66,14 @@ class BalancedTreeAutomorphismStatistics(object):
     # cpu time = 0.04 seconds
     #  0; 1:4 (4); 5:20 (16); 21:84 (64); 85:340 (256);
 
-    def calculate_graph_symmetries(self, graph):
-        """
-        Public API for calculating graph symmetries.  Takes a single networkx graph (usually
-        representing a graph of traits and usually single component (although there's no particular
-        reason why disconnected graphs will not work).  Returns a dict with symmetry statistics,
-        in the format described in the class docstring.
-        """
+    def _parse_nauty_output(self, raw, graph):
         results = {}
 
-        # we reformat the vertex labels
-        g = nx.convert_node_labels_to_integers(graph)
-
-        dread_graph = self._get_dreadnaught_for_graph(g)
-        raw = self._get_raw_nauty_output(dread_graph)
-        #log.debug("raw: %s", raw)
-
-
         lines = raw.split('\n')
+        numlines = len(lines)
         # orbit number is in the first line, as is grpsize
         onum_pat = re.compile('(\d+) orbit.*;')
         exp_pat = re.compile(r"grpsize=([\d|\.|e|E]+);")
-
         m = onum_pat.search(lines[0])
         num_orbits = None
         if m:
@@ -95,9 +81,7 @@ class BalancedTreeAutomorphismStatistics(object):
             #log.debug("num orbits: %s", num_orbits)
         else:
             log.error("Could not parse number of orbits from nauty output")
-
         results['orbits'] = num_orbits
-
         m2 = exp_pat.search(lines[0])
         groupsize = None
         if m2:
@@ -105,33 +89,51 @@ class BalancedTreeAutomorphismStatistics(object):
             #log.debug("groupsize: %s", groupsize)
         else:
             log.error("Could not parse groupsize from nauty output")
-
         results['groupsize'] = groupsize
-
         single_num = re.compile('\w*(\d+)$')
         multiple_num = re.compile('.*\((\d+)\).*')
-
-        raw_orbits = lines[2].split(';')
         orbit_multiplicites = []
-        for o in raw_orbits:
-            m = single_num.search(o)
-            if m:
-                orbit_multiplicites.append(1)
-            else:
-                m2 = multiple_num.search(o)
-                if m2:
-                    mult = m2.group(1)
-                    orbit_multiplicites.append(int(mult))
+        for lineno in range(2, numlines):
+            raw_orbits = lines[lineno].split(';')
+
+            for o in raw_orbits:
+                m = single_num.search(o)
+                if m:
+                    orbit_multiplicites.append(1)
+                else:
+                    m2 = multiple_num.search(o)
+                    if m2:
+                        mult = m2.group(1)
+                        orbit_multiplicites.append(int(mult))
 
         #log.debug("multiplicites: %s", orbit_multiplicites)
-
         results['orbitcounts'] = orbit_multiplicites
-
-        graph_size = graph.number_of_nodes()
-        results['remainingdensity'] = float(graph_size) / float(self.n_per_tree)
-
+        results['remainingdensity'] = float(graph.number_of_nodes()) / float(self.n_per_tree)
         # calculate the maximum depth of each trait tree
-        results['radius'] = nx.radius(g)
+        results['radius'] = nx.radius(graph)
+
+        return results
+
+
+
+    def calculate_graph_symmetries(self, graph):
+        """
+        Public API for calculating graph symmetries.  Takes a single networkx graph (usually
+        representing a graph of traits and usually single component (although there's no particular
+        reason why disconnected graphs will not work).  Returns a dict with symmetry statistics,
+        in the format described in the class docstring.
+        """
+
+        # we reformat the vertex labels
+        g = nx.convert_node_labels_to_integers(graph)
+
+        dread_graph = self._get_dreadnaught_for_graph(g)
+        num_vertices = g.number_of_nodes()
+        raw = self._get_raw_nauty_output(dread_graph)
+        #log.debug("raw: %s", raw)
+
+
+        results = self._parse_nauty_output(raw, g)
 
         return results
 
@@ -171,6 +173,58 @@ class BalancedTreeAutomorphismStatistics(object):
         dn += 'x o';
         dn += linefeed
         return dn
+
+
+    def _format_graph_as_nauty(self, graph):
+        """
+        Constructs a representation of the adjacency structure of the graph in the format
+        that dreadnaught/nauty understands.  This employs the networkx "adjlist" format but
+        extends it slightly.
+
+        Only adjacency information is preserved in this format -- no additional vertex or edge
+        attributes, so "primary" storage of graphs should use the GraphML format.
+
+        """
+
+        linefeed = chr(10)
+        n = graph.number_of_nodes()
+        dn = "n="
+        dn += str(n)
+        dn += ' g'
+        dn += linefeed
+
+        for i in range(0, n):
+            nlist = graph.neighbors(i)
+
+            # we want to list only vertices which are greater than our own index;
+            # any vertices S less than our own index T would have resulted in (S,T)
+            # being mentioned when S was processed.
+            nlist_greater = [j for j in nlist if j > i]
+            if len(nlist_greater) == 1:
+                dn += str(i)
+                dn += ": "
+                dn += str(nlist_greater[0])
+                dn += ";"
+                dn += linefeed
+            elif len(nlist_greater) > 1:
+                dn += str(i)
+                dn += ": "
+                dn += " ".join(map(str,nlist_greater))
+                dn += ";"
+                dn += linefeed
+            else:
+                # we don't have to do anything
+                pass
+        dn += "."
+        dn += linefeed
+        dn += "x o"
+        dn += linefeed
+        return dn
+
+
+
+
+
 
 
     def _get_raw_nauty_output(self,formatted):

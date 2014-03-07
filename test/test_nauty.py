@@ -40,12 +40,12 @@ class NautyTest(unittest.TestCase):
     def tearDown(self):
         os.remove(self.tf.name)
 
-    def test_dreadnaught_format(self):
+    def test_num_orbits(self):
 
         # build a simple example graph
         g = nx.petersen_graph()
         sym = stats.BalancedTreeAutomorphismStatistics(self.sc)
-        dg = sym._get_dreadnaught_for_graph(g)
+        dg = sym._format_graph_as_nauty(g)
         nauty_format = sym._get_raw_nauty_output(dg)
         log.info("%s", nauty_format)
 
@@ -59,6 +59,30 @@ class NautyTest(unittest.TestCase):
             self.assertEqual(1, int(num_orbits))
         else:
             self.assertTrue(False)
+
+
+    def test_orbit_multiplicites(self):
+
+        g = nx.read_adjlist("testdata/asymmetric-tree.adjlist", nodetype=int)
+        #g = nx.read_dot("testdata/asymmetric-tree.dot")
+
+        sym = stats.BalancedTreeAutomorphismStatistics(self.sc)
+        dg = sym._format_graph_as_nauty(g)
+        raw = sym._get_raw_nauty_output(dg)
+
+        results = sym._parse_nauty_output(raw, g)
+
+        obs = len(results['orbitcounts'])
+        log.info("results: %s", results)
+        self.assertEqual(obs, 26)
+
+
+    def test_nauty_format(self):
+        # build a simple example graph
+        g = nx.complete_graph(6)
+        sym = stats.BalancedTreeAutomorphismStatistics(self.sc)
+        dg = sym._format_graph_as_nauty(g)
+        log.info(dg)
 
 
 if __name__ == "__main__":
