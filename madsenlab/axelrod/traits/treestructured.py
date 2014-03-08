@@ -161,6 +161,9 @@ class MultipleTreeStructuredTraitSet(TreeStructuredTraitSet):
         trait_subgraph = self.graph.subgraph(node_list)
         return nx.connected_component_subgraphs(trait_subgraph)
 
+    def get_trait_forest_from_traits(self, node_list):
+        return self.graph.subgraph(node_list)
+
 
     def get_random_trait_path_rootbiased(self):
         # choose a random root

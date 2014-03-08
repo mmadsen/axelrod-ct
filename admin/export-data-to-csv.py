@@ -107,7 +107,11 @@ if __name__ == "__main__":
 
     fieldnames = data.axelrod_run_treestructured.columns_to_export_for_analysis()
     orig_fields = fieldnames[:]
-    fieldnames.extend(["cultureid", "culture_count", "mean_radii", "mean_degree", "sd_groupsize", "sd_orbits", "sd_radii", "sd_density", "mean_groupsize", "mean_density", "mean_orbits"])
+    fieldnames.extend(["cultureid", "culture_count", "mean_radii", "sd_radii",
+                       "orbit_number", "autgroupsize", "remaining_density",
+                       "mean_degree", "sd_degree",
+                       "mean_orbit_multiplicity", "sd_orbit_multiplicity",
+                       "max_orbit_multiplicity"])
     ofile  = open(outputFileName, "wb")
     writer = csv.DictWriter(ofile, fieldnames=fieldnames, quotechar='"', quoting=csv.QUOTE_ALL)
 
@@ -132,15 +136,16 @@ if __name__ == "__main__":
             log.debug("tg: %s", tg)
             row['cultureid'] = tg['cultureid']
             row['culture_count'] = tg['culture_count']
-            row['mean_orbits'] = tg['mean_orbits']
-            row['sd_orbits'] = tg['sd_orbits']
-            row['mean_groupsize'] = tg['mean_groupsize']
-            row['sd_groupsize'] = tg['sd_groupsize']
-            row['mean_density'] = tg['mean_density']
-            row['sd_density'] = tg['sd_density']
             row['mean_radii'] = tg['mean_radii']
             row['sd_radii'] = tg['sd_radii']
             row['mean_degree'] = tg['mean_degree']
+            row['sd_degree'] = tg['sd_degree']
+            row['orbit_number'] = tg['orbit_number']
+            row['autgroupsize'] = tg['autgroupsize']
+            row['remaining_density'] = tg['remaining_density'],
+            row['mean_orbit_multiplicity'] = tg['mean_orbit_multiplicity'],
+            row['sd_orbit_multiplicity_orbit_multiplicity'] = tg['sd_orbit_multiplicity'],
+            row['max_orbit_multiplicity'] = tg['max_orbit_multiplicity']
 
             writer.writerow(row)
 

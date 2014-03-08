@@ -108,9 +108,7 @@ class BalancedTreeAutomorphismStatistics(object):
 
         #log.debug("multiplicites: %s", orbit_multiplicites)
         results['orbitcounts'] = orbit_multiplicites
-        results['remainingdensity'] = float(graph.number_of_nodes()) / float(self.n_per_tree)
-        # calculate the maximum depth of each trait tree
-        results['radius'] = nx.radius(graph)
+
 
         return results
 
@@ -132,8 +130,11 @@ class BalancedTreeAutomorphismStatistics(object):
         raw = self._get_raw_nauty_output(dread_graph)
         #log.debug("raw: %s", raw)
 
-
         results = self._parse_nauty_output(raw, g)
+
+        # TODO: Figure out how to handle density and radius for multi-component graphs
+        results['remainingdensity'] = float(g.number_of_nodes()) / (float(self.n_per_tree) * float(self.num_trees))
+
 
         return results
 

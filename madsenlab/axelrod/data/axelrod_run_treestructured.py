@@ -127,18 +127,17 @@ class AxelrodStatsTreestructured(Document):
     culture_graphml_repr = Field([dict(cultureid=str,content=str)])
     trait_graph_stats = Field([dict(cultureid=str,
                                     culture_count=int,
-                                    orbit_number=[int],
-                                    group_size=[float],
-                                    remaining_density=[float],
-                                    mean_orbits = float,
-                                    sd_orbits = float,
-                                    mean_groupsize = float,
-                                    sd_groupsize = float,
-                                    mean_density = float,
-                                    sd_density = float,
+                                    orbit_multiplicities=[int],
+                                    orbit_number = float,
+                                    autgroupsize = float,
+                                    remaining_density = float,
                                     mean_radii = float,
                                     sd_radii = float,
-                                    mean_degree = float
+                                    mean_degree = float,
+                                    sd_degree = float,
+                                    mean_orbit_multiplicity = float,
+                                    sd_orbit_multiplicity = float,
+                                    max_orbit_multiplicity = int
                                     )])
     trait_richness = Field(float)
     trait_evenness_entropy = Field(float)

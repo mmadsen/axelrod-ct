@@ -126,32 +126,36 @@ def get_tree_symmetries_for_traitset(model, simconfig, cultureid, traitset, cult
     groupsizes = []
     densities = []
     radii = []
-    mean_degree = []
 
     symstats = stats.BalancedTreeAutomorphismStatistics(simconfig)
     subgraph_set = model.trait_universe.get_trait_graph_components(traitset)
-    for subgraph in subgraph_set:
-        results = symstats.calculate_graph_symmetries(subgraph)
-        order.append( results['orbits'])
-        groupsizes.append( results[ 'groupsize'])
-        densities.append( results['remainingdensity'])
-        radii.append( results['radius'])
-        mean_degree.append( np.mean(np.asarray(nx.degree(subgraph).values())))
+    trait_subgraph = model.trait_universe.get_trait_forest_from_traits(traitset)
+    results = symstats.calculate_graph_symmetries(trait_subgraph)
 
-    mean_orbit = np.mean(np.asarray(order))
-    sd_orbit = m.sqrt(np.var(np.asarray(order)))
-    mean_groupsize = np.mean(np.asarray(groupsizes))
-    sd_groupsize = m.sqrt(np.var(np.asarray(groupsizes)))
-    mean_densities = np.mean(np.asarray(densities))
-    sd_densities = np.sqrt(np.var(np.asarray(densities)))
+    for subgraph in subgraph_set:
+        radii.append( nx.radius(subgraph))
+
     mean_radii = np.mean(np.asarray(radii))
     sd_radii = np.sqrt(np.var(np.asarray(radii)))
-    mean_degree = np.mean(np.asarray(mean_degree))
+    degrees = nx.degree(trait_subgraph).values()
+    mean_degree = np.mean(np.asarray(degrees))
+    sd_degree = np.sqrt(np.var(np.asarray(degrees)))
+    mean_orbit_mult = np.mean(np.asarray(results['orbitcounts']))
+    sd_orbit_mult = np.sqrt(np.var(np.asarray(results['orbitcounts'])))
+    max_orbit_mult = np.nanmax(np.asarray(results['orbitcounts']))
 
-    r = dict(cultureid=str(cultureid), culture_count=culture_count_map[cultureid], orbit_number=order, group_size=groupsizes,
-             remaining_density=densities, mean_orbits=mean_orbit, sd_orbits=sd_orbit,
-             mean_groupsize=mean_groupsize, sd_groupsize=sd_groupsize,mean_density=mean_densities,
-             sd_density=sd_densities,mean_radii=mean_radii,sd_radii=sd_radii, mean_degree=mean_degree
+    r = dict(cultureid=str(cultureid), culture_count=culture_count_map[cultureid],
+             orbit_multiplicities=results['orbitcounts'],
+             orbit_number=results['orbits'],
+             autgroupsize=results['groupsize'],
+             remaining_density=results['remainingdensity'],
+             mean_radii=mean_radii,
+             sd_radii=sd_radii,
+             mean_degree=mean_degree,
+             sd_degree=sd_degree,
+             mean_orbit_multiplicity=mean_orbit_mult,
+             sd_orbit_multiplicity=sd_orbit_mult,
+             max_orbit_multiplicity=max_orbit_mult
              )
     #log.debug("groupstats: %s", r)
     return r
