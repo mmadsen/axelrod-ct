@@ -133,7 +133,7 @@ if __name__ == "__main__":
         # now pull apart the trait graph list - producing a row for each element of the trait graph list
         tg_stats = sample['trait_graph_stats']
         for tg in tg_stats:
-            log.debug("tg: %s", tg)
+            #log.info("tg: %s", tg)
             row['cultureid'] = tg['cultureid']
             row['culture_count'] = tg['culture_count']
             row['mean_radii'] = tg['mean_radii']
@@ -142,11 +142,12 @@ if __name__ == "__main__":
             row['sd_degree'] = tg['sd_degree']
             row['orbit_number'] = tg['orbit_number']
             row['autgroupsize'] = tg['autgroupsize']
-            row['remaining_density'] = tg['remaining_density'],
-            row['mean_orbit_multiplicity'] = tg['mean_orbit_multiplicity'],
-            row['sd_orbit_multiplicity'] = tg['sd_orbit_multiplicity'],
+            row['remaining_density'] = tg['remaining_density']
+            row['mean_orbit_multiplicity'] = tg['mean_orbit_multiplicity']
+            row['sd_orbit_multiplicity'] = tg['sd_orbit_multiplicity']
             row['max_orbit_multiplicity'] = tg['max_orbit_multiplicity']
 
+            #log.info("row: %s", row)
             writer.writerow(row)
 
     ofile.close()
