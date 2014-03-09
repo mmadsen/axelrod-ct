@@ -144,7 +144,7 @@ if __name__ == "__main__":
             row['autgroupsize'] = tg['autgroupsize']
             row['remaining_density'] = tg['remaining_density'],
             row['mean_orbit_multiplicity'] = tg['mean_orbit_multiplicity'],
-            row['sd_orbit_multiplicity_orbit_multiplicity'] = tg['sd_orbit_multiplicity'],
+            row['sd_orbit_multiplicity'] = tg['sd_orbit_multiplicity'],
             row['max_orbit_multiplicity'] = tg['max_orbit_multiplicity']
 
             writer.writerow(row)

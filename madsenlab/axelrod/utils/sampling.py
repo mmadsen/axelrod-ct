@@ -122,9 +122,6 @@ def sample_treestructured_model(model, args, simconfig, finalized):
 
 
 def get_tree_symmetries_for_traitset(model, simconfig, cultureid, traitset, culture_count_map):
-    order = []
-    groupsizes = []
-    densities = []
     radii = []
 
     symstats = stats.BalancedTreeAutomorphismStatistics(simconfig)
