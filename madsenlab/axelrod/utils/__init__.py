@@ -12,5 +12,6 @@ from configuration import AxelrodConfiguration, AxelrodExtensibleConfiguration, 
 from dynamicloading import load_class
 from convergence import check_liveness
 from sampling import sample_extensible_model, sample_treestructured_model, sample_axelrod_model
+from graphviz import generate_ordered_dot, write_ordered_dot, convert_random_traitgraphs_to_dot, convert_single_traitgraph_to_dot
 
 
