@@ -125,6 +125,9 @@ def main():
             if args.savetraitgraphs:
                 cmd += " --savetraitgraphs "
 
+            cmd += " --samplingstarttime 5000000"
+            cmd += " --samplinginterval 1000000"
+
             cmd += '\n'
 
             fc = file_cycle.next()
