@@ -33,6 +33,10 @@ def _get_collection_id():
     return generate_collection_id("_samples_raw")
 
 
+def updateFieldAxelrodStatsTreestructured(record_id, field_name, value):
+    record = AxelrodStatsTreestructured.m.find(dict(_id=record_id)).one()
+    record[field_name] = value
+    record.m.save()
 
 
 
@@ -139,7 +143,10 @@ class AxelrodStatsTreestructured(Document):
                                     sd_degree = float,
                                     mean_orbit_multiplicity = float,
                                     sd_orbit_multiplicity = float,
-                                    max_orbit_multiplicity = int
+                                    max_orbit_multiplicity = int,
+                                    order = int,
+                                    msg_lambda = float,
+                                    msg_beta = float
                                     )])
     trait_richness = Field(float)
     trait_evenness_entropy = Field(float)
