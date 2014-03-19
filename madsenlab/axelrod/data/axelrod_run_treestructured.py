@@ -146,7 +146,8 @@ class AxelrodStatsTreestructured(Document):
                                     max_orbit_multiplicity = int,
                                     order = int,
                                     msg_lambda = float,
-                                    msg_beta = float
+                                    msg_beta = float,
+                                    mem_beta = float
                                     )])
     trait_richness = Field(float)
     trait_evenness_entropy = Field(float)

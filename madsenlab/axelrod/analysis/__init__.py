@@ -12,4 +12,5 @@ from overlap import calc_probability_interaction_axelrod, get_different_feature_
     get_traits_differing_from_focal_extensible
 from order_parameters import klemm_normalized_L_axelrod, klemm_normalized_L_extensible
 from trait_tree_statistics import BalancedTreeAutomorphismStatistics
-from math_functions import num_leaves_in_tree, num_ordered_trees_by_leaves, num_nodes_balanced_tree, num_rooted_trees_otter_approx
+from math_functions import num_leaves_in_tree, num_ordered_trees_by_leaves, num_nodes_balanced_tree, num_rooted_trees_otter_approx, \
+    ratio_order_automorphism_to_symmetric_group

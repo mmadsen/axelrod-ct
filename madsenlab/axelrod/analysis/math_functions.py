@@ -12,6 +12,30 @@ import logging as log
 import math as m
 import scipy.special as ss
 import scipy.misc as sm
+import numpy as np
+
+
+def ratio_order_automorphism_to_symmetric_group(groupsize, order):
+    """
+    Calculates the ratio of the size of a graph's automorphism group, to the
+    maximum possible automorphism group for the most symmetric graph with the same
+    number of vertices.  For a general graph, this is the order of the symmetric
+    group with n vertices, or n!.
+
+    For a rooted tree with n vertices, the maximum symmetry is achieved by the
+    corolla with n vertices (i.e., n-1 leaves on the root).
+
+    If the order of the graph is zero, this method returns 0
+
+    """
+    if order == 0:
+        return 0
+    size_sn = sm.factorial(order)
+    ratio = float(groupsize) / float(size_sn)
+    frac_order = float(1) / float(order)
+    beta = np.power(ratio,frac_order)
+    return beta
+
 
 def num_nodes_balanced_tree(r,h):
     """
