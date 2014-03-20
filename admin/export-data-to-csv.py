@@ -32,6 +32,7 @@ def setup():
     parser.add_argument("--configuration", help="Path to configuration file")
     parser.add_argument("--model", choices=['axelrod', 'extensible', 'treestructured'], required=True)
     parser.add_argument("--finalized", help="Only export runs which finalized after convergence", action="store_true")
+    parser.add_argument("--filename", help="path to file for export", required=True)
 
     args = parser.parse_args()
 
@@ -101,18 +102,14 @@ if __name__ == "__main__":
     setup()
 
 
-    outputFileName = "data_"
-    outputFileName += "axelrod_stats_treestructured"
-    outputFileName += ".csv"
-
     fieldnames = data.axelrod_run_treestructured.columns_to_export_for_analysis()
     orig_fields = fieldnames[:]
     fieldnames.extend(["cultureid", "culture_count", "mean_radii", "sd_radii",
                        "orbit_number", "autgroupsize", "remaining_density",
                        "mean_degree", "sd_degree",
                        "mean_orbit_multiplicity", "sd_orbit_multiplicity",
-                       "max_orbit_multiplicity"])
-    ofile  = open(outputFileName, "wb")
+                       "max_orbit_multiplicity","order", "msg_lambda", "msg_beta", "mem_beta"])
+    ofile  = open(args.filename, "wb")
     writer = csv.DictWriter(ofile, fieldnames=fieldnames, quotechar='"', quoting=csv.QUOTE_ALL)
 
     headers = dict((n,n) for n in fieldnames)
@@ -146,6 +143,11 @@ if __name__ == "__main__":
             row['mean_orbit_multiplicity'] = tg['mean_orbit_multiplicity']
             row['sd_orbit_multiplicity'] = tg['sd_orbit_multiplicity']
             row['max_orbit_multiplicity'] = tg['max_orbit_multiplicity']
+            row['order'] = tg['order']
+            row['msg_lambda'] = tg['msg_lambda']
+            row['msg_beta'] = tg['msg_beta']
+            row['mem_beta'] = tg['mem_beta']
+
 
             #log.info("row: %s", row)
             writer.writerow(row)
