@@ -295,7 +295,7 @@ class MultipleBalancedTreeStructuredTraitFactory(object):
             starting_num += num_nodes
 
         trees = nx.union_all(graphs)
-        log.debug("num traits: %s  roots: %s", len(trees.nodes()), pp.pformat(self.roots))
+        #log.debug("num traits: %s  roots: %s", len(trees.nodes()), pp.pformat(self.roots))
         self.trait_set = MultipleTreeStructuredTraitSet(trees, self.roots, self.prng, self.simconfig)
         return self.trait_set
 
