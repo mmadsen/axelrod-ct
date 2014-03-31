@@ -40,23 +40,32 @@ def convert_traitgraph_to_dot(record_id, rec_num, format_string, directory):
     query = dict()
     query['_id'] = ObjectId(record_id)
     res = data.AxelrodStatsTreestructured.m.find(query)
+    log.debug("converting traitgraphs from %s to dot", record_id)
 
     for result in res:
         graph_list = result['culture_graphml_repr']
         graphs = []
+        #log.debug("num graphs in graphml list: %s", len(graph_list))
         for g in graph_list:
             g_c = g['content']
             graph = nx.parse_graphml(g_c)
             graphs.append(graph)
 
         for i in range(0, len(graphs)):
+            #log.debug("writing file for graph: %s", i)
+            name = str(record_id)
+            name += "-"
+            name += str(i)
+
             fname = directory
             fname += "/sample-"
             fname += format_string % rec_num
             fname += "-"
+            fname += str(i)
+            fname += "-"
             fname += str(record_id)
             fname += ".dot"
-            write_ordered_dot(graphs[i], fname, str(record_id))
+            write_ordered_dot(graphs[i], fname, name)
 
 
 

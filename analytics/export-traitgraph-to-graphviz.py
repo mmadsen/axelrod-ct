@@ -33,7 +33,7 @@ def setup():
     args = parser.parse_args()
 
 
-    if args.debug == 1:
+    if int(args.debug) == 1:
         log.basicConfig(level=log.DEBUG, format='%(asctime)s %(levelname)s: %(message)s')
     else:
         log.basicConfig(level=log.INFO, format='%(asctime)s %(levelname)s: %(message)s')

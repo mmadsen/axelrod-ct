@@ -63,13 +63,15 @@ class MultipleTreePrerequisitesLearningCopyingRule(object):
         (agent_id, agent_traits) = self.model.get_random_agent()
         (neighbor_id, neighbor_traits) = self.model.get_random_neighbor_for_agent(agent_id)
 
-
+        # FIXED BUG - WE DO NOT RETURN HERE, WE PASS, BECAUSE WE ALWAYS NEED TO STILL CHECK FOR
+        # INNOVATIONS, OTHERWISE (A) INNOVATIONS AREN'T HAPPENING AT THE CONSTANT GIVEN RATE, AND (B)
+        # WE CANNOT ESCAPE A CONVERGED STATE THROUGH NOISE
         if agent_traits == neighbor_traits:
-            return
+            pass
         elif agent_traits.isdisjoint(neighbor_traits):
-            return
+            pass
         elif neighbor_traits.issubset(agent_traits):
-            return
+            pass
         else:
             prob = analysis.calc_probability_interaction_extensible(agent_traits, neighbor_traits)
             if npr.random() < prob:
@@ -85,6 +87,7 @@ class MultipleTreePrerequisitesLearningCopyingRule(object):
                         needed_prereq = self.model.trait_universe.get_deepest_missing_prereq_for_trait(rand_trait, agent_traits)
                         agent_traits.add(needed_prereq)
                         self.model.set_agent_traits(agent_id, agent_traits)
+                        #log.debug("agent %s learned prereq %s from agent %s", agent_id, needed_prereq, neighbor_id)
 
                 else:
                     # find a random trait that focal has but the neighbor does not
@@ -113,7 +116,7 @@ class MultipleTreePrerequisitesLearningCopyingRule(object):
             loss_agent_traits.remove(trait_to_lose)
             self.model.set_agent_traits(loss_agent_id, loss_agent_traits)
             self.model.update_loss_events()
-            self.update_link_cache_for_agent(agent_id, agent_traits)
+            self.update_link_cache_for_agent(loss_agent_id, loss_agent_traits)
 
         # now, we see if an innovation happens in the population and perform it if so.
         if npr.random() < innov_rate:
@@ -124,7 +127,7 @@ class MultipleTreePrerequisitesLearningCopyingRule(object):
             innov_agent_traits.update(path)
             self.model.set_agent_traits(innov_agent_id, innov_agent_traits)
             self.model.update_innovations()
-            self.update_link_cache_for_agent(agent_id, agent_traits)
+            self.update_link_cache_for_agent(innov_agent_id, innov_agent_traits)
             #log.debug("innovation - adding trait path %s to agent %s", path, innov_agent_id)
 
 
@@ -134,10 +137,10 @@ class MultipleTreePrerequisitesLearningCopyingRule(object):
         up iterations of the model by not running a full edge iteration.  We do a full iteration
         at initialization, and then keep the active link set up to date in step() instead.
         """
-        self.initialize_link_cache()
+        self.full_update_link_cache()
 
 
-    def initialize_link_cache(self):
+    def full_update_link_cache(self):
         for (a,b) in self.model.agentgraph.edges_iter():
             (a_id, a_traits) = self.model.get_agent_by_id(a)
             (b_id, b_traits) = self.model.get_agent_by_id(b)
