@@ -15,6 +15,46 @@ import scipy.misc as sm
 import numpy as np
 
 
+
+def ratio_log_order_automorphism_to_order_balanced_forest(groupsize, balancedtreesize, num_trees, treeorder):
+    """
+    Calculates the log ratio of the size of a graph's automorphism group, assumed to be a
+    forest of trees, to the combined automorphism group size of a forest of balanced
+    trees such as those used as trait spaces here.
+    """
+    if treeorder == 0:
+        return 0
+
+    ff = m.log(m.factorial(num_trees))
+    bta = num_trees * m.log(balancedtreesize)
+    forestsize = ff + bta
+    #log.debug("group: %s vs. ff: %s  bta: %s  size: %s", m.log(groupsize), ff, bta, forestsize)
+
+    # remember, this is in log space so the ratio is the difference
+    beta = float(m.log(groupsize)) - float(forestsize)
+    return beta
+
+
+
+def ratio_log_order_automorphism_to_order_balanced_forest_large_forest(groupsize, logtreesize, num_trees, treeorder):
+    """
+    Calculates the log ratio of the size of a graph's automorphism group, assumed to be a
+    forest of trees, to the combined automorphism group size of a forest of balanced
+    trees such as those used as trait spaces here.
+    """
+    if treeorder == 0:
+        return 0
+
+    ff = m.log(m.factorial(num_trees))
+    bta = num_trees * logtreesize
+    forestsize = ff + bta
+    #log.debug("group: %s vs. ff: %s  bta: %s  size: %s", m.log(groupsize), ff, bta, forestsize)
+
+    # remember, this is in log space so the ratio is the difference
+    beta = float(m.log(groupsize)) - float(forestsize)
+    return beta
+
+
 def ratio_order_automorphism_to_symmetric_group(groupsize, order):
     """
     Calculates the ratio of the size of a graph's automorphism group, to the

@@ -127,6 +127,7 @@ class BalancedTreeAutomorphismStatistics(object):
 
         dread_graph = self._get_dreadnaught_for_graph(g)
         num_vertices = g.number_of_nodes()
+        #log.debug("dread: %s", dread_graph)
         raw = self._get_raw_nauty_output(dread_graph)
         #log.debug("raw: %s", raw)
 

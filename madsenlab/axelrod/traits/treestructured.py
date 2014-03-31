@@ -272,31 +272,16 @@ class MultipleBalancedTreeStructuredTraitFactory(object):
         self.simconfig = simconfig
         self.prng = RandomState()
 
+
+
     def initialize_traits(self):
         self.r = int(self.simconfig.branching_factor)
         self.h = int(self.simconfig.depth_factor)
         self.n = self.simconfig.num_trees
 
-        graphs = []
-        self.roots = []
-
-        num_nodes = stats.num_nodes_balanced_tree(self.r, self.h)
-        starting_num = 0
-
-        for i in range(0, self.n):
-            #log.debug("building tree with starting root: %s", starting_num)
-            g = nx.balanced_tree(self.r,self.h)
-            g = nx.convert_node_labels_to_integers(g, first_label = starting_num)
-
-            #log.debug("nodes: %s", pp.pformat(g.nodes()))
-
-            graphs.append(g)
-            self.roots.append(starting_num)
-            starting_num += num_nodes
-
-        trees = nx.union_all(graphs)
+        (trees, roots) = utils.generate_forest_balanced_trees(self.r,self.h,self.n)
         #log.debug("num traits: %s  roots: %s", len(trees.nodes()), pp.pformat(self.roots))
-        self.trait_set = MultipleTreeStructuredTraitSet(trees, self.roots, self.prng, self.simconfig)
+        self.trait_set = MultipleTreeStructuredTraitSet(trees, roots, self.prng, self.simconfig)
         return self.trait_set
 
 
