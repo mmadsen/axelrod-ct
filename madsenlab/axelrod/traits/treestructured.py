@@ -97,9 +97,18 @@ class TreeStructuredTraitSet(object):
 
 
     def get_random_trait_not_in_set(self, agent_traits):
+        """
+        In the case where an agent already has all of the traits, the "not in agent" set will be
+        null, and the random.sample call will throw an exception.  Since it doesn't hurt to
+        duplicate a trait the agent already has (it's a set, not a list), we just return a random
+        trait here to keep things moving.
+        """
         full_trait_set = set(self.graph.nodes())
         not_in_agent = full_trait_set.difference(agent_traits)
-        rand_trait = random.sample(not_in_agent, 1)[0]
+        if len(not_in_agent) == 0:
+            rand_trait = random.sample(full_trait_set, 1)[0]
+        else:
+            rand_trait = random.sample(not_in_agent, 1)[0]
         #log.debug("random trait not in agent: %s", rand_trait)
         return rand_trait
 
