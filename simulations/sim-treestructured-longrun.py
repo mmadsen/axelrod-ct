@@ -47,7 +47,7 @@ def setup():
     parser.add_argument("--depthfactor", help="Value or mean for tree depth factor", required=True)
     parser.add_argument("--savetraitgraphs", help="Saves a snapshot of trait tree graphs", action="store_true")
     parser.add_argument("--samplinginterval", help="Interval between samples, once sampling begins, defaults to 1M steps", default="1000000")
-    parser.add_argument("--samplingstarttime", help="Time at which sampling begins, defaults to 1M steps", default="1000000")
+    parser.add_argument("--samplingstarttime", help="Time at which sampling begins, defaults to 1M steps", default="6000000")
     parser.add_argument("--simulationendtime", help="Time at which simulation and sampling end, defaults to 10000000 steps", default="10000000")
 
     args = parser.parse_args()
