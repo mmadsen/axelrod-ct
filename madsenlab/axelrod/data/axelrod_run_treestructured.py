@@ -42,7 +42,7 @@ def updateFieldAxelrodStatsTreestructured(record_id, field_name, value):
 
 def store_stats_axelrod_treestructured(popsize,sim_id,maxinit,learning_rate,
                                  loss_rate, innov_rate, num_trees, branching, depth,ruleclass,popclass,networkclass,script,
-                                 num_cultures,convergence_time,sample_time,counts,klemm,mean_traits,sd_traits,graphml_blobs,
+                                 num_cultures,trait_spectrum,convergence_time,sample_time,counts,klemm,mean_traits,sd_traits,graphml_blobs,
                                  trait_stats,trait_rich,trait_entropy,final,swrewiring):
     """Stores the parameters and metadata for a simulation run in the database.
 
@@ -62,6 +62,7 @@ def store_stats_axelrod_treestructured(popsize,sim_id,maxinit,learning_rate,
         pop_class = popclass,
         network_class = networkclass,
         num_culture_regions = num_cultures,
+        trait_spectrum=trait_spectrum,
         convergence_time = convergence_time,
         sample_time = sample_time,
         culture_counts = counts,
@@ -125,6 +126,7 @@ class AxelrodStatsTreestructured(Document):
     simulation_run_id = Field(str)
     num_culture_regions = Field(int)
     culture_counts = Field([dict(cultureid=str,count=int)])
+    trait_spectrum = Field([dict(popcount=int,numtraits=int)])
     convergence_time = Field(int)
     sample_time = Field(int)
     klemm_normalized_L = Field(float)

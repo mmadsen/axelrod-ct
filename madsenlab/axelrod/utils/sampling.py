@@ -60,6 +60,7 @@ def sample_treestructured_model(model, args, simconfig, finalized):
     log.debug("sampling tree structured model")
     trait_analyzer = stats.PopulationTraitFrequencyAnalyzer(model)
     trait_analyzer.calculate_trait_frequencies()
+    trait_spectrum = trait_analyzer.get_trait_spectrum()
 
     culture_counts_dbformat = stats.get_culture_counts_dbformat(model)
     culture_count_map = stats.get_culture_count_map(model)
@@ -101,6 +102,7 @@ def sample_treestructured_model(model, args, simconfig, finalized):
                                       simconfig.NETWORK_FACTORY_CLASS,
                                       simconfig.script,
                                       len(culture_counts_dbformat),
+                                      trait_spectrum,
                                       convergence_time,
                                       sample_time,
                                       culture_counts_dbformat,

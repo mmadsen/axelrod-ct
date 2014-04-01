@@ -123,6 +123,9 @@ class PopulationTraitFrequencyAnalyzer(object):
     def get_trait_evenness_entropy(self):
         return diversity_shannon_entropy(self.freq.values())
 
+    def get_trait_spectrum(self):
+        return self.spectrum
+
 
     def calculate_trait_frequencies(self):
         self.freq = None
@@ -138,6 +141,23 @@ class PopulationTraitFrequencyAnalyzer(object):
         #log.debug("counts: %s", pp.pformat(trait_counts))
 
         self.freq = {k : float(v)/float(total) for k,v in trait_counts.items()}
-        #log.debug("freq: %s", pp.pformat(self.freq))
+        self.counts = trait_counts.items()
+
+        spectrum_count = defaultdict(int)
+        # we build the spectrum by counting the number of traits with a particular count
+        for trait, count in trait_counts.items():
+            spectrum_count[count] += 1
+
+        spectra = []
+        for popcount, numtraits in spectrum_count.items():
+            spectra.append(dict(popcount=popcount,numtraits=numtraits))
+
+        self.spectrum = spectra
+
+        #log.debug("spectrum: %s", pp.pformat(self.spectrum))
+
+
+
+
 
 
