@@ -56,7 +56,7 @@ def sample_extensible_model(model, args, simconfig):
         model.draw_network_colored_by_culture()
 
 
-def sample_treestructured_model(model, args, simconfig, finalized):
+def sample_treestructured_model(model, args, simconfig, timestep, finalized):
     log.debug("sampling tree structured model")
     trait_analyzer = stats.PopulationTraitFrequencyAnalyzer(model)
     trait_analyzer.calculate_trait_frequencies()
@@ -80,7 +80,7 @@ def sample_treestructured_model(model, args, simconfig, finalized):
 
     #log.debug("graphml: %s", pp.pformat(graphml_blobs))
 
-    sample_time = model.get_time_last_interaction()
+    sample_time = timestep
     if finalized == 1:
         convergence_time = model.get_time_last_interaction()
     else:

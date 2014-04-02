@@ -127,17 +127,17 @@ def main():
         if (timestep % 100000) == 0:
             log.debug("time: %s  active: %s  copies: %s  innov: %s losses: %s", timestep, ax.get_fraction_links_active(), model.get_interactions(), model.get_innovations(), model.get_losses())
         if timestep > int(args.samplingstarttime) and timestep % int(args.samplinginterval)  == 0:
-            utils.sample_treestructured_model(model, args, simconfig, finalized=0)
+            utils.sample_treestructured_model(model, args, simconfig, timestep, finalized=0)
         if model.get_time_last_interaction() != timestep:
             live = utils.check_liveness(ax, model, args, simconfig, timestep)
             if live == False:
-                utils.sample_treestructured_model(model, args, simconfig, finalized=1)
+                utils.sample_treestructured_model(model, args, simconfig, timestep, finalized=1)
                 exit(0)
 
         # if the simulation is cycling endlessly, and after the cutoff time, sample and end
         if timestep > simconfig.maxtime:
             log.info("Simulation has not converged within %s, taking final sample and terminating", simconfig.maxtime)
-            utils.sample_treestructured_model(model, args, simconfig, finalized=0)
+            utils.sample_treestructured_model(model, args, simconfig, timestep, finalized=0)
             exit(0)
 
 # end main

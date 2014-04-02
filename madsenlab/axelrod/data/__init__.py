@@ -13,6 +13,7 @@ import logging as log
 from axelrod_run_original import AxelrodStatsOriginal, store_stats_axelrod_original
 from axelrod_run_extensible import AxelrodStatsExtensible, store_stats_axelrod_extensible
 from axelrod_run_treestructured import AxelrodStatsTreestructured, store_stats_axelrod_treestructured, updateFieldAxelrodStatsTreestructured
+from simulation_timing import SimulationTiming, store_simulation_timing
 from dbutils import *
 
 

@@ -184,16 +184,16 @@ def run_simulation_worker(queue, args):
                     if timestep % 250000 == 0:
                         log.debug("worker %s: time: %s active links: %s", os.getpid(), timestep, ax.get_fraction_links_active())
                     if timestep > first_snapshot_time and timestep % 250000  == 0:
-                        utils.sample_treestructured_model(model, args, simconfig, finalized=0)
+                        utils.sample_treestructured_model(model, args, simconfig, timestep, finalized=0)
                     if model.get_time_last_interaction() != timestep:
                         live = utils.check_liveness(ax, model, args, simconfig, timestep)
                         if live == False:
-                            utils.sample_treestructured_model(model, args, simconfig, finalized=1)
+                            utils.sample_treestructured_model(model, args, simconfig, timestep, finalized=1)
                             break
                             # if the simulation is cycling endlessly, and after the cutoff time, sample and end
                     if timestep > simconfig.maxtime:
                         log.info("Simulation has not converged within %s, taking final sample and terminating", simconfig.maxtime)
-                        utils.sample_treestructured_model(model, args, simconfig, finalized=0)
+                        utils.sample_treestructured_model(model, args, simconfig,  timestep, finalized=0)
                         break
             except:
                 log.error("FATAL EXCEPTION - starting pop: %s LR: %s init_trait: %s IR: %s LR: %s NT: %s BF: %s DF: %s",
