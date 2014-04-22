@@ -15,6 +15,9 @@ You can run simulations directly from the source directory, or install the scrip
 
 ## Admin Programs ##
 
+**NOTE**:  all executable scripts have help for the command line options they require.  
+
+
 The `admin` directory contains scripts which allow you to export data from MongoDB to CSV files, to generate LaTeX or Markdown tables from simulation configuration files, suitable for embedding in your paper (so you don't transcribe them wrong!), scoping the size of a potential simulation configuration, and building parallelized simulation runs (the "builder") scripts.  
 
 ## Analytical Programs ##
@@ -49,6 +52,12 @@ The `simulations` directory contains:
 You will need an instance of [MongoDB](http://www.mongodb.org/) installed on a computer, with the ability to create databases and grant access if the database and simulations are run on different systems.  For a basic installation, simply install MongoDB on the same machine you are using for simulation; all programs contained herein will default to using the local instance of the database.  You can run MongoDB on any size system or laptop.  
 
 MongoDB is a "NoSQL" database, which means it has no fixed schema, and performs database operations using JSON objects for inserts and query results.  This makes it very flexible for research purposes, although the tradeoff is that databases can require a fair amount of disk space (which is cheap!).  MongoDB is mainly used as a flexible means of storing and operating on the raw data, prior to its export to R and other analytics systems.  Scripts are provided by adding derived metrics to the database, sampling it, and exporting it to CSV files for direct import to R.  
+
+### Nauty+Traces ###
+
+You will need Brendan MacKay's `nauty+Traces` software for certain calculations of graph symmetry statistics, whether or not you are concerned about those metrics (or you can disable this in the code fairly easily).  
+
+Download from (http://pallini.di.uniroma1.it/index.html), compile it with any C compiler on your system, and install the `dreadnaut` program on your system's default executable path.  Note that in parallel runs, you may be running the simulations without your full user environment (i.e., detached from a user session), so this does not mean in your own user's executable path, but somewhere on the system where a system program can also run it.  On a Mac or Linux system, an excellent choice is `/usr/local/bin`.
 
 
 ### Python ###
