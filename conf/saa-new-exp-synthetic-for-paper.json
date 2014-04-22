@@ -1,0 +1,16 @@
+{
+    "REPLICATIONS_PER_PARAM_SET" : 25,
+    "POPULATION_SIZES_STUDIED" : [100, 225, 400],
+    "TRAIT_LEARNING_RATE" : [0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
+    "TRAIT_LOSS_RATE" : [0.0000],
+    "INNOVATION_RATE" : [0.0000, 0.00005, 0.0001],
+    "MAXIMUM_INITIAL_TRAITS" : [4],
+    "NUM_TRAIT_TREES" : [4,16],
+    "TREE_BRANCHING_FACTOR" : [3, 5],
+    "TREE_DEPTH_FACTOR" : [3, 5],
+    "SIMULATION_CUTOFF_TIME" : 10000000,
+    "POPULATION_STRUCTURE_CLASS" : "madsenlab.axelrod.population.TreeTraitStructurePopulation",
+    "INTERACTION_RULE_CLASS" : "madsenlab.axelrod.rules.MultipleTreePrerequisitesLearningCopyingRule",
+    "NETWORK_FACTORY_CLASS" : "madsenlab.axelrod.population.SquareLatticeFactory",
+    "TRAIT_FACTORY_CLASS" : "madsenlab.axelrod.traits.MultipleBalancedTreeStructuredTraitFactory"
+}
