@@ -5,5 +5,4 @@ importlib
 numpy
 networkx
 matplotlib
-subprocess
 multiprocessing
