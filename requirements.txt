@@ -5,3 +5,5 @@ importlib
 networkx
 matplotlib
 multiprocessing
+numpy
+scipy
