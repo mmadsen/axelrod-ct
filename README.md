@@ -1,7 +1,8 @@
 axelrod-ct
 ==========
 
-build status
+[![Build Status](https://travis-ci.org/mmadsen/axelrod-ct.svg?branch=master)](https://travis-ci.org/mmadsen/axelrod-ct)
+
 
 Cultural Transmission Models based upon Robert Axelrod's (1997) model of homophily and culture
 
