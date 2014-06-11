@@ -3,6 +3,7 @@ ming
 uuid
 importlib
 numpy
+scipy
 networkx
 matplotlib
 multiprocessing
