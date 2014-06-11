@@ -4,6 +4,7 @@ python:
 # command to install dependencies
 before_install:
   - sudo apt-get install swig
+  - sudo apt-get install python-numpy python-scipy
   - ./install-slatkin-tools.sh
   - ./install-nauty.sh
 install:
